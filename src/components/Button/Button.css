@@ -1,0 +1,84 @@
+.custom-btn {
+  width: 100%;
+  max-width: 300px;
+  padding: 10px 20px;
+  margin-bottom: 16px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.custom-btn.primary {
+  background: #1a355b;
+  color: #fff;
+}
+
+.custom-btn.primary:hover {
+  background: #2446a4;
+}
+
+.custom-btn.secondary {
+  background: #fff;
+  color: #1a355b;
+  border: 2px solid #1a355b;
+}
+
+.custom-btn.secondary:hover {
+  background: #f1f5f9;
+  color: #1a355b;
+}
+
+.custom-btn.transparent {
+  background: transparent;
+  color: #fff;
+  border: 2px solid #fff;
+}
+
+.custom-btn.transparent:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.custom-btn.danger {
+  background: #e53935;
+  color: #fff;
+}
+
+.custom-btn.danger:hover {
+  background: #b91c1c;
+}
+
+.custom-btn.small {
+  font-size: 0.9rem;
+  padding: 8px 16px;
+}
+
+.custom-btn.medium {
+  font-size: 1.1rem;
+  padding: 10px 20px;
+}
+
+.custom-btn.large {
+  font-size: 1.3rem;
+  padding: 14px 28px;
+}
+
+.btn-icon {
+  display: inline-flex;
+  align-items: center;
+}
+
+.btn-icon.start {
+  margin-right: 8px;
+}
+
+.btn-icon.end {
+  margin-left: 8px;
+}
+
+.custom-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
