@@ -7,6 +7,7 @@ export function useAppNavigate() {
   return {
     goToLogin: () => navigate(routes.login),
     goToLandingPage: () => navigate(routes.landingPage),
+    goToRegister: () => navigate(routes.register),
     navigate,
   };
 }
