@@ -8,6 +8,8 @@ export function useAppNavigate() {
     goToLogin: () => navigate(routes.login),
     goToLandingPage: () => navigate(routes.landingPage),
     goToRegister: () => navigate(routes.register),
+    goToMarketplace: () => navigate(routes.marketplace),
+    goToProperty: (id: number) => navigate(`/property/${id}`),
     navigate,
   };
 }

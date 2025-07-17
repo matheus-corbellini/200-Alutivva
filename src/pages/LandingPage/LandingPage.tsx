@@ -4,7 +4,7 @@ import { useAppNavigate } from "../../hooks/useAppNavigate";
 import Button from "../../components/Button/Button";
 
 const LandingPage: React.FC = () => {
-  const { goToLogin } = useAppNavigate();
+  const { goToLogin, goToRegister } = useAppNavigate();
   return (
     <div className="landing-container">
       <img src="/log.png" alt="Logo Cota Resort" className="landing-logo" />
@@ -16,7 +16,7 @@ const LandingPage: React.FC = () => {
       <Button variant="primary" size="large" onClick={goToLogin}>
         Entrar
       </Button>
-      <Button variant="transparent" size="large">
+      <Button variant="transparent" size="large" onClick={goToRegister}>
         Cadastre-se
       </Button>
     </div>

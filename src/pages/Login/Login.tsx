@@ -17,7 +17,7 @@ const Login: React.FC = () => {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const { goToLandingPage, goToRegister } = useAppNavigate();
+  const { goToLandingPage, goToRegister, goToMarketplace } = useAppNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,7 +25,7 @@ const Login: React.FC = () => {
     setError("");
     try {
       await loginUser(email, password);
-      goToLandingPage();
+      goToMarketplace();
     } catch (err) {
       setError((err as Error).message || "Erro ao fazer login");
     } finally {
@@ -83,6 +83,7 @@ const Login: React.FC = () => {
           type="submit"
           style={{ marginBottom: "10px" }}
           disabled={loading}
+          onClick={goToMarketplace}
         >
           {loading ? "Entrando..." : "Entrar"}
         </Button>

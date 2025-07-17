@@ -68,6 +68,7 @@
 .btn-icon {
   display: inline-flex;
   align-items: center;
+  font-size: 1.2em;
 }
 
 .btn-icon.start {

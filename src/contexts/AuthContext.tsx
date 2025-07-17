@@ -9,6 +9,7 @@ type AuthContextType = {
   firebaseUser: FirebaseUser | null;
   user: User | null;
   loading: boolean;
+  initialLoading: boolean;
   logout: () => Promise<void>;
 };
 
@@ -18,18 +19,29 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [firebaseUser, setFirebaseUser] = useState<FirebaseUser | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [initialLoading, setInitialLoading] = useState(true);
 
   useEffect(() => {
     const auth = getAuth(app);
     const unsubscribe = onAuthStateChanged(auth, async (fbUser) => {
       setFirebaseUser(fbUser);
       if (fbUser) {
-        const userData = await getUserData(fbUser.uid);
-        setUser(userData as User);
+        try {
+          const userData = await getUserData(fbUser.uid);
+          setUser(userData as User);
+        } catch (error) {
+          console.error("AuthContext - Error getting user data:", error);
+          setUser(null);
+        }
       } else {
         setUser(null);
       }
-      setLoading(false);
+
+      // Pequeno delay para garantir que o estado seja totalmente processado
+      setTimeout(() => {
+        setLoading(false);
+        setInitialLoading(false);
+      }, 100);
     });
     return () => unsubscribe();
   }, []);
@@ -40,7 +52,9 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }
 
   return (
-    <AuthContext.Provider value={{ firebaseUser, user, loading, logout }}>
+    <AuthContext.Provider
+      value={{ firebaseUser, user, loading, initialLoading, logout }}
+    >
       {children}
     </AuthContext.Provider>
   );
