@@ -83,7 +83,7 @@ const Register: React.FC = () => {
       <img src="/log.png" alt="Logo Cota Resort" className="Register-logo" />
       <form className="Register-form" onSubmit={handleSubmit}>
         <div className="Register-input-icon">
-          <MdPerson size={20} color="64748b" />
+          <MdPerson size={20} className="icon-person" color="64748b" />
           <input
             type="text"
             placeholder="Nome"
@@ -92,7 +92,7 @@ const Register: React.FC = () => {
           />
         </div>
         <div className="Register-input-icon">
-          <MdEmail size={20} color="64748b" />
+          <MdEmail size={20} className="icon-email" color="64748b" />
           <input
             type="email"
             placeholder="E-mail"
@@ -101,7 +101,7 @@ const Register: React.FC = () => {
           />
         </div>
         <div className="Register-input-icon">
-          <MdPhone size={20} color="64748b" />
+          <MdPhone size={20} className="icon-phone" color="64748b" />
           <input
             type="input"
             placeholder="Telefone"
@@ -201,7 +201,7 @@ const Register: React.FC = () => {
           </div>
         </div>
         <div className="Register-input-icon">
-          <MdLock size={20} color="64748b" />
+          <MdLock size={20} className="icon-lock" color="64748b" />
           <input
             type={showPassword ? "text" : "password"}
             placeholder="Senha"
@@ -224,7 +224,7 @@ const Register: React.FC = () => {
           </span>
         </div>
         <div className="Register-input-icon">
-          <MdLock size={20} color="64748b" />
+          <MdLock size={20} className="icon-lock" color="64748b" />
           <input
             type={showConfirmPassword ? "text" : "password"}
             placeholder="Confirme a senha"
@@ -258,7 +258,12 @@ const Register: React.FC = () => {
         </Button>
         <div className="Register-footer">
           <span>Já tem uma conta?</span>
-          <Button variant="secondary" size="large" onClick={goToLogin}>
+          <Button
+            variant="secondary"
+            size="large"
+            className="register-button-login"
+            onClick={goToLogin}
+          >
             Entrar
           </Button>
         </div>

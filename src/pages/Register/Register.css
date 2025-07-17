@@ -223,3 +223,14 @@
   display: flex;
   align-items: center;
 }
+
+.register-button-login {
+  margin-top: 10px;
+}
+
+.icon-person,
+.icon-email,
+.icon-phone,
+.icon-lock {
+  margin-right: 8px;
+}

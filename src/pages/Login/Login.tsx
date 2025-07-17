@@ -45,7 +45,7 @@ const Login: React.FC = () => {
       <img src="/log.png" alt="Logo Cota Resort" className="login-logo" />
       <form className="login-form" onSubmit={handleSubmit}>
         <div className="input-icon">
-          <MdEmail size={20} color="64748b" />
+          <MdEmail size={20} className="icon-email" color="64748b" />
           <input
             type="email"
             placeholder="E-mail"
@@ -54,7 +54,7 @@ const Login: React.FC = () => {
           />
         </div>
         <div className="input-icon">
-          <MdLock size={20} color="64748b" />
+          <MdLock size={20} className="icon-lock" color="64748b" />
           <input
             type={showPassword ? "text" : "password"}
             placeholder="Senha"
@@ -91,7 +91,12 @@ const Login: React.FC = () => {
         </a>
         <div className="login-footer">
           <span>Ainda não tem uma conta?</span>
-          <Button variant="secondary" size="large" onClick={goToRegister}>
+          <Button
+            variant="secondary"
+            size="large"
+            className="login-button-register"
+            onClick={goToRegister}
+          >
             Cadastre-se
           </Button>
         </div>

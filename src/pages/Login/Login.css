@@ -136,3 +136,12 @@
   display: flex;
   align-items: center;
 }
+
+.icon-email,
+.icon-lock {
+  margin-right: 8px;
+}
+
+.login-button-register {
+  margin-top: 10px;
+}
