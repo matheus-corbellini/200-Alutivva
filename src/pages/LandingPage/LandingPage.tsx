@@ -13,7 +13,7 @@ const LandingPage: React.FC = () => {
         Uma plataforma que conecta investidores, proprietários de terras e
         gestores de empreendimentos hoteleiros
       </p>
-      <Button variant="primary" size="large" onClick={goToLogin}>
+      <Button variant="primary" size="large" onClick={() => goToLogin()}>
         Entrar
       </Button>
       <Button variant="transparent" size="large" onClick={goToRegister}>

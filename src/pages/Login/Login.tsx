@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useLocation } from "react-router-dom";
 import "./Login.css";
 import Button from "../../components/Button/Button";
 import {
@@ -12,6 +13,7 @@ import { useAppNavigate } from "../../hooks/useAppNavigate";
 import { loginUser } from "../../services/UserServices/Login";
 
 const Login: React.FC = () => {
+  const location = useLocation();
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -34,7 +36,7 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="login-container">
+    <div className="login-container" style={{ position: "relative" }}>
       <button
         onClick={goToLandingPage}
         className="back-button"
@@ -43,6 +45,11 @@ const Login: React.FC = () => {
         <MdArrowBack size={24} />
       </button>
       <img src="/log.png" alt="Logo Cota Resort" className="login-logo" />
+      {location.state && location.state.redirected && (
+        <div className="login-redirect-message">
+          Você precisa estar logado para acessar o marketplace.
+        </div>
+      )}
       <form className="login-form" onSubmit={handleSubmit}>
         <div className="input-icon">
           <MdEmail size={20} className="icon-email" color="64748b" />
@@ -77,16 +84,17 @@ const Login: React.FC = () => {
           </span>
         </div>
         {error && <div style={{ color: "red", marginBottom: 8 }}>{error}</div>}
-        <Button
-          variant="primary"
-          size="large"
-          type="submit"
-          style={{ marginBottom: "10px" }}
-          disabled={loading}
-          onClick={goToMarketplace}
-        >
-          {loading ? "Entrando..." : "Entrar"}
-        </Button>
+        {!loading && (
+          <Button
+            variant="primary"
+            size="large"
+            type="submit"
+            style={{ marginBottom: "10px" }}
+            disabled={loading}
+          >
+            Entrar
+          </Button>
+        )}
         <a href="#" className="login-link">
           Esqueci minha senha
         </a>
@@ -102,6 +110,11 @@ const Login: React.FC = () => {
           </Button>
         </div>
       </form>
+      {loading && (
+        <div className="login-loading-overlay">
+          <div className="login-loading-spinner"></div>
+        </div>
+      )}
     </div>
   );
 };

@@ -41,3 +41,9 @@
 .back-link:hover {
   color: #111827;
 }
+
+@media (min-width: 1024px) {
+  .main-content-with-sidebar .header {
+    margin-left: 0;
+  }
+}

@@ -20,9 +20,9 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [initialLoading, setInitialLoading] = useState(true);
+  const auth = getAuth(app);
 
   useEffect(() => {
-    const auth = getAuth(app);
     const unsubscribe = onAuthStateChanged(auth, async (fbUser) => {
       setFirebaseUser(fbUser);
       if (fbUser) {
@@ -37,11 +37,8 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setUser(null);
       }
 
-      // Pequeno delay para garantir que o estado seja totalmente processado
-      setTimeout(() => {
-        setLoading(false);
-        setInitialLoading(false);
-      }, 100);
+      setLoading(false);
+      setInitialLoading(false);
     });
     return () => unsubscribe();
   }, []);

@@ -3,6 +3,7 @@ import { MapPin, TrendingUp, Clock } from "lucide-react";
 import type { Property } from "../../types/property";
 import { Badge } from "./Badge";
 import { useAppNavigate } from "../../hooks/useAppNavigate";
+import Button from "../Button/Button";
 
 type PropertyCardProps = {
   property: Property;
@@ -79,13 +80,21 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
           </div>
         </div>
         <div className="property-actions">
-          <button
+          <Button
+            variant="primary"
+            size="large"
+            className="btn-full property-action-btn"
             onClick={handleViewDetails}
-            className="btn btn-primary btn-full"
           >
             Ver Detalhes
-          </button>
-          <button className="btn btn-outline btn-full">Reservar Cota</button>
+          </Button>
+          <Button
+            variant="secondary"
+            size="large"
+            className="btn-full property-action-btn"
+          >
+            Reservar Cota
+          </Button>
         </div>
       </div>
     </div>

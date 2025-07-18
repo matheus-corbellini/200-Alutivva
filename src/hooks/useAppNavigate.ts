@@ -5,7 +5,7 @@ export function useAppNavigate() {
   const navigate = useNavigate();
 
   return {
-    goToLogin: () => navigate(routes.login),
+    goToLogin: (state?: object) => navigate(routes.login, { state }),
     goToLandingPage: () => navigate(routes.landingPage),
     goToRegister: () => navigate(routes.register),
     goToMarketplace: () => navigate(routes.marketplace),
