@@ -1,0 +1,63 @@
+.property-documents {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.documents-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.document-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  transition: border-color 0.2s;
+}
+
+.document-item:hover {
+  border-color: #1a355b;
+}
+
+.document-icon {
+  width: 40px;
+  height: 40px;
+  background: #1a355b;
+  color: white;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+}
+
+.document-info {
+  flex: 1;
+}
+
+.document-title {
+  font-weight: 600;
+  color: #1a355b;
+  margin-bottom: 0.25rem;
+}
+
+.document-meta {
+  color: #64748b;
+  font-size: 0.875rem;
+}
+
+.document-download {
+  color: #1a355b;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.document-download:hover {
+  color: #2446a4;
+}

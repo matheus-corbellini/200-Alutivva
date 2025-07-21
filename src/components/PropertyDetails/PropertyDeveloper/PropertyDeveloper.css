@@ -1,0 +1,60 @@
+/* Estilos para PropertyDeveloper */
+
+.property-developer {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.developer-header {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.developer-logo {
+  width: 80px;
+  height: 60px;
+  object-fit: contain;
+}
+
+.developer-info h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1a355b;
+  margin-bottom: 0.5rem;
+}
+
+.developer-stats {
+  display: flex;
+  gap: 2rem;
+  margin-top: 1rem;
+}
+
+.developer-stat {
+  text-align: center;
+}
+
+.developer-stat-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1a355b;
+  display: block;
+}
+
+.developer-stat-label {
+  font-size: 0.875rem;
+  color: #64748b;
+}
+
+@media (max-width: 768px) {
+  .developer-header {
+    flex-direction: column;
+    text-align: center;
+  }
+  .developer-stats {
+    justify-content: center;
+  }
+}

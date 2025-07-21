@@ -5,7 +5,15 @@ export type PropertyRegion = "RJ" | "SP" | "PE";
 export interface Property {
   id: number;
   title: string;
-  location: string;
+  location: {
+    address: string;
+    coordinates: { lat: number; lng: number };
+    nearbyPlaces: {
+      name: string;
+      distance: string;
+      type: string;
+    }[];
+  };
   type: PropertyType;
   roi: number;
   quotaValue: number;

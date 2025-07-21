@@ -1,0 +1,60 @@
+/* Estilos para PropertyRisks */
+
+.property-risks {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.risks-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.risk-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+}
+
+.risk-level {
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.risk-level.baixo {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.risk-level.medio {
+  background: #fef3c7;
+  color: #d97706;
+}
+
+.risk-level.alto {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.risk-content {
+  flex: 1;
+}
+
+.risk-title {
+  font-weight: 600;
+  color: #1a355b;
+  margin-bottom: 0.25rem;
+}
+
+.risk-description {
+  color: #64748b;
+  font-size: 0.875rem;
+}

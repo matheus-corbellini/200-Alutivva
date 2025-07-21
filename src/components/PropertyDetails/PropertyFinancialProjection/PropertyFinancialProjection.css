@@ -1,0 +1,67 @@
+/* Estilos para PropertyFinancialProjection */
+
+.financial-projection {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.projection-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.projection-item {
+  text-align: center;
+  padding: 1.5rem;
+  background: #f8fafc;
+  border-radius: 8px;
+}
+
+.projection-value {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #059669;
+  display: block;
+}
+
+.projection-label {
+  font-size: 0.875rem;
+  color: #64748b;
+  margin-top: 0.5rem;
+}
+
+.timeline-chart {
+  background: #f8fafc;
+  border-radius: 8px;
+  padding: 1.5rem;
+  overflow-x: auto;
+}
+
+.timeline-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 600px;
+}
+
+.timeline-table th,
+.timeline-table td {
+  padding: 0.75rem;
+  text-align: center;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.timeline-table th {
+  background: #1a355b;
+  color: white;
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .projection-summary {
+    grid-template-columns: 1fr;
+  }
+}

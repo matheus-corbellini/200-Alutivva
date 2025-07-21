@@ -4,4 +4,5 @@ export const routes = {
   register: "/register",
   marketplace: "/marketplace",
   property: "/property/:id",
+  propertyDetails: (id: number) => `/property/${id}`,
 };
