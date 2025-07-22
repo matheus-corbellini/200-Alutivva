@@ -1,6 +1,6 @@
 import React from "react";
 import type { Property } from "../../types/property";
-import { PropertyCard } from ".";
+import { PropertyCard } from "./index";
 
 type PropertiesGridProps = {
   properties: Property[];
