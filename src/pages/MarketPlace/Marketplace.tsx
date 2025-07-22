@@ -6,7 +6,7 @@ import {
   ResultsSummary,
   PropertiesGrid,
   EmptyState,
-} from "../../components/Marketplace/index";
+} from "../../components/Marketplace";
 import { Sidebar, SidebarToggle } from "../../components/Sidebar/Sidebar";
 import { useSidebar } from "../../hooks/useSidebar";
 import "../../components/Marketplace/styles/index.css";
