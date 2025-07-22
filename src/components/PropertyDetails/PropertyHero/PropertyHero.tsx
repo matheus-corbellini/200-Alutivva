@@ -25,7 +25,11 @@ const PropertyHero: React.FC<PropertyHeroProps> = ({
           <h1>{property.title}</h1>
           <div className="property-hero-location">
             <MdLocationOn />
-            <span>{property.location.address}</span>
+            <span>
+              {typeof property.location === "string"
+                ? property.location
+                : property.location.address}
+            </span>
             <Badge status={property.status} />
           </div>
           <p className="property-hero-description">{property.description}</p>

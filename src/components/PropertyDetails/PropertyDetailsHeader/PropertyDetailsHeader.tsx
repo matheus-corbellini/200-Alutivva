@@ -10,23 +10,19 @@ const PropertyDetailsHeader: React.FC<PropertyDetailsHeaderProps> = ({
   onBack,
 }) => {
   return (
-    <div className="property-details-header">
-      <div className="container">
-        <nav className="property-details-nav">
-          <a
-            href="#"
-            onClick={(e) => {
-              e.preventDefault();
-              onBack();
-            }}
-            className="back-button"
-          >
-            <MdArrowBack />
-            <span>Voltar ao marketplace</span>
-          </a>
-        </nav>
-      </div>
-    </div>
+    <header className="property-details-header">
+      <nav className="property-details-nav">
+        <button
+          onClick={onBack}
+          className="back-button"
+          type="button"
+          aria-label="Voltar para o marketplace"
+        >
+          <MdArrowBack />
+          <span>Voltar ao Marketplace</span>
+        </button>
+      </nav>
+    </header>
   );
 };
 
