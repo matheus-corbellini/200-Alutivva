@@ -24,7 +24,10 @@ export function usePropertyFilters() {
           prop.title
             .toLowerCase()
             .includes(currentFilters.search.toLowerCase()) ||
-          prop.location
+          prop.description
+            .toLowerCase()
+            .includes(currentFilters.search.toLowerCase()) ||
+          prop.location.address
             .toLowerCase()
             .includes(currentFilters.search.toLowerCase())
       );
@@ -32,7 +35,7 @@ export function usePropertyFilters() {
 
     if (currentFilters.region !== "all") {
       filtered = filtered.filter((prop) =>
-        prop.location
+        prop.location.address
           .toLowerCase()
           .includes(currentFilters.region.toLowerCase())
       );

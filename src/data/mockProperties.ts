@@ -4,7 +4,14 @@ export const mockProperties: Property[] = [
   {
     id: 1,
     title: "Residencial Vista Verde",
-    location: "Barra da Tijuca, RJ",
+    location: {
+      address: "Barra da Tijuca, RJ",
+      coordinates: { lat: -23.0045, lng: -43.3647 },
+      nearbyPlaces: [
+        { name: "Shopping Barra", distance: "500m", type: "shopping" },
+        { name: "Praia da Barra", distance: "800m", type: "beach" },
+      ],
+    },
     type: "Residencial",
     roi: 12.5,
     quotaValue: 50000,
@@ -20,7 +27,14 @@ export const mockProperties: Property[] = [
   {
     id: 2,
     title: "Comercial Business Center",
-    location: "Faria Lima, SP",
+    location: {
+      address: "Faria Lima, SP",
+      coordinates: { lat: -23.5733, lng: -46.6892 },
+      nearbyPlaces: [
+        { name: "Estação Faria Lima", distance: "200m", type: "transport" },
+        { name: "Shopping Iguatemi", distance: "600m", type: "shopping" },
+      ],
+    },
     type: "Comercial",
     roi: 15.2,
     quotaValue: 75000,
@@ -36,7 +50,14 @@ export const mockProperties: Property[] = [
   {
     id: 3,
     title: "Loft Studios Downtown",
-    location: "Centro, RJ",
+    location: {
+      address: "Centro, RJ",
+      coordinates: { lat: -22.9068, lng: -43.1729 },
+      nearbyPlaces: [
+        { name: "Teatro Municipal", distance: "300m", type: "culture" },
+        { name: "Estação Carioca", distance: "400m", type: "transport" },
+      ],
+    },
     type: "Residencial",
     roi: 10.8,
     quotaValue: 35000,
@@ -51,7 +72,18 @@ export const mockProperties: Property[] = [
   {
     id: 4,
     title: "Resort Tropical Paradise",
-    location: "Porto de Galinhas, PE",
+    location: {
+      address: "Porto de Galinhas, PE",
+      coordinates: { lat: -8.5014, lng: -35.0042 },
+      nearbyPlaces: [
+        { name: "Praia de Porto de Galinhas", distance: "100m", type: "beach" },
+        {
+          name: "Centro de Porto de Galinhas",
+          distance: "500m",
+          type: "commerce",
+        },
+      ],
+    },
     type: "Hoteleiro",
     roi: 18.5,
     quotaValue: 100000,
@@ -66,7 +98,18 @@ export const mockProperties: Property[] = [
   {
     id: 5,
     title: "Condomínio Família Feliz",
-    location: "Alphaville, SP",
+    location: {
+      address: "Alphaville, SP",
+      coordinates: { lat: -23.518, lng: -46.845 },
+      nearbyPlaces: [
+        {
+          name: "Shopping Iguatemi Alphaville",
+          distance: "1km",
+          type: "shopping",
+        },
+        { name: "Escola Internacional", distance: "800m", type: "education" },
+      ],
+    },
     type: "Residencial",
     roi: 11.3,
     quotaValue: 60000,
@@ -81,7 +124,14 @@ export const mockProperties: Property[] = [
   {
     id: 6,
     title: "Shopping Mall Premium",
-    location: "Boa Viagem, PE",
+    location: {
+      address: "Boa Viagem, PE",
+      coordinates: { lat: -8.1137, lng: -34.8986 },
+      nearbyPlaces: [
+        { name: "Praia de Boa Viagem", distance: "300m", type: "beach" },
+        { name: "Shopping Recife", distance: "2km", type: "shopping" },
+      ],
+    },
     type: "Comercial",
     roi: 14.7,
     quotaValue: 85000,

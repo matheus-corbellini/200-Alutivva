@@ -31,7 +31,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
         <h3 className="property-title">{property.title}</h3>
         <div className="property-location">
           <MapPin className="icon mr-1" />
-          <span className="text-sm">{property.location}</span>
+          <span className="text-sm">{property.location.address}</span>
         </div>
         <p className="property-description">{property.description}</p>
         <div className="property-details">

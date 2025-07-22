@@ -4,7 +4,6 @@ export const mockPropertyDetails: Record<number, PropertyDetails> = {
   1: {
     id: 1,
     title: "Residencial Vista Verde",
-    location: "Barra da Tijuca, RJ",
     type: "Residencial",
     roi: 12.5,
     quotaValue: 50000,
@@ -199,7 +198,6 @@ export const mockPropertyDetails: Record<number, PropertyDetails> = {
   2: {
     id: 2,
     title: "Comercial Business Center",
-    location: "Faria Lima, SP",
     type: "Comercial",
     roi: 15.2,
     quotaValue: 75000,
