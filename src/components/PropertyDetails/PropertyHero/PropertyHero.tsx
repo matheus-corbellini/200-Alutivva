@@ -2,7 +2,7 @@ import React from "react";
 import "./PropertyHero.css";
 import type { PropertyDetails } from "../../../types/propertyDetails";
 import Button from "../../Button/Button";
-import { Badge } from "../../Marketplace";
+import { Badge } from "../../Marketplace/Badge";
 import { MdLocationOn } from "react-icons/md";
 
 type PropertyHeroProps = {

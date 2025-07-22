@@ -1,12 +1,10 @@
 import { usePropertyFilters } from "../../hooks/usePropertyFilters";
-import {
-  Header,
-  HeroSection,
-  FiltersSection,
-  ResultsSummary,
-  PropertiesGrid,
-  EmptyState,
-} from "../../components/Marketplace";
+import { Header } from "../../components/Marketplace/Header";
+import { HeroSection } from "../../components/Marketplace/HeroSection";
+import { FiltersSection } from "../../components/Marketplace/FiltersSection";
+import { ResultsSummary } from "../../components/Marketplace/ResultsSummary";
+import { PropertiesGrid } from "../../components/Marketplace/PropertiesGrid";
+import { EmptyState } from "../../components/Marketplace/EmptyState";
 import { Sidebar, SidebarToggle } from "../../components/Sidebar/Sidebar";
 import { useSidebar } from "../../hooks/useSidebar";
 import "../../components/Marketplace/styles/index.css";
