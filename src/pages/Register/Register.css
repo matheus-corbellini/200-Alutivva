@@ -33,6 +33,7 @@
   background: #f8fafc;
   padding: 24px;
   position: relative;
+  padding-bottom: 120px; /* Espaço para o footer */
 }
 
 .Register-logo {

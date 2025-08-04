@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useLocation } from "react-router-dom";
 import "./Login.css";
 import Button from "../../components/Button/Button";
+import { Footer } from "borderless";
 import {
   MdEmail,
   MdVisibility,
@@ -115,6 +116,12 @@ const Login: React.FC = () => {
           <div className="login-loading-spinner"></div>
         </div>
       )}
+      <Footer
+        theme="light"
+        useGradient={false}
+        backgroundColor="transparent"
+        logoVariant="light"
+      />
     </div>
   );
 };

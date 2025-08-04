@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./Register.css";
 import Button from "../../components/Button/Button";
+import { Footer } from "borderless";
 import {
   MdEmail,
   MdVisibility,
@@ -268,6 +269,12 @@ const Register: React.FC = () => {
           </Button>
         </div>
       </form>
+      <Footer
+        theme="light"
+        useGradient={false}
+        backgroundColor="transparent"
+        logoVariant="light"
+      />
     </div>
   );
 };
