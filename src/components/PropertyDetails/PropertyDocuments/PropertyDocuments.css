@@ -51,13 +51,70 @@
   font-size: 0.875rem;
 }
 
+.document-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin-top: 0.5rem;
+}
+
+
+
+.document-generate {
+  background: #1a355b;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  font-size: 0.875rem;
+  min-width: 40px;
+}
+
+.document-generate:hover {
+  background: #2446a4;
+  transform: translateY(-1px);
+}
+
+.document-generate:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+  transform: none;
+}
+
 .document-download {
-  color: #1a355b;
-  text-decoration: none;
-  font-weight: 500;
-  transition: color 0.2s;
+  background: #1a355b;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  font-size: 0.875rem;
+  min-width: 40px;
 }
 
 .document-download:hover {
-  color: #2446a4;
+  background: #2446a4;
+  transform: translateY(-1px);
+}
+
+.document-download:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.loading-text {
+  font-size: 0.75rem;
+  white-space: nowrap;
 }

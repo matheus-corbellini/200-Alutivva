@@ -7,16 +7,25 @@
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
-.floor-plans-grid {
+.floor-plan-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 1.5rem;
+  gap: 2rem;
+  margin-top: 1.5rem;
 }
 
 .floor-plan-item {
   border: 1px solid #e2e8f0;
-  border-radius: 8px;
+  border-radius: 12px;
   overflow: hidden;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.floor-plan-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  border-color: #d1d5db;
 }
 
 .floor-plan-item img {
@@ -26,7 +35,7 @@
 }
 
 .floor-plan-info {
-  padding: 1rem;
+  padding: 1.5rem;
 }
 
 .floor-plan-title {
@@ -37,7 +46,25 @@
 
 .floor-plan-details {
   display: flex;
-  gap: 1rem;
+  gap: 1.5rem;
   color: #64748b;
   font-size: 0.875rem;
+  margin-top: 0.75rem;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .floor-plan-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .floor-plan-info {
+    padding: 1.25rem;
+  }
+  
+  .floor-plan-details {
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
 }

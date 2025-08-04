@@ -10,6 +10,7 @@ export function useAppNavigate() {
     goToRegister: () => navigate(routes.register),
     goToMarketplace: () => navigate(routes.marketplace),
     goToProperty: (id: number) => navigate(routes.propertyDetails(id)),
+    goToLandRegistry: () => navigate(routes.landRegistry),
     navigate,
   };
 }

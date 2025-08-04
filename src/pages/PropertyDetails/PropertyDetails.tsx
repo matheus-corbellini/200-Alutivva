@@ -14,6 +14,7 @@ import PropertyFloorPlans from "../../components/PropertyDetails/PropertyFloorPl
 import PropertyHero from "../../components/PropertyDetails/PropertyHero/PropertyHero";
 import PropertyMilestones from "../../components/PropertyDetails/PropertyMilestones/PropertyMilestones";
 import PropertyVideos from "../../components/PropertyDetails/PropertyVideos/PropertyVideos";
+import InvestmentSimulationModal from "../../components/PropertyDetails/InvestmentSimulationModal/InvestmentSimulationModal";
 import Button from "../../components/Button/Button";
 import "./PropertyDetails.css";
 
@@ -22,6 +23,7 @@ export default function PropertyDetails() {
   const { goToMarketplace } = useAppNavigate();
   const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [showSimulationModal, setShowSimulationModal] = useState(false);
 
   const propertyId = Number.parseInt(id || "1");
   const property = mockPropertyDetails[propertyId];
@@ -75,7 +77,7 @@ export default function PropertyDetails() {
   };
 
   const handleSimulate = () => {
-    alert("Em breve você será redirecionado para o simulador de investimento.");
+    setShowSimulationModal(true);
   };
 
   const closeVideoModal = () => {
@@ -132,7 +134,22 @@ export default function PropertyDetails() {
 
         {/* Documents - Only if has documents */}
         {property.documents && property.documents.length > 0 && (
-          <PropertyDocuments documents={property.documents} />
+          <PropertyDocuments
+            documents={property.documents}
+            propertyData={{
+              title: property.title,
+              propertyTitle: property.title,
+              propertyLocation: property.location.address,
+              propertyType: property.type,
+              roi: property.roi,
+              quotaValue: property.quotaValue,
+              totalQuotas: property.totalQuotas,
+              soldQuotas: property.soldQuotas,
+              completionDate: property.completionDate,
+              description: property.description,
+              expectedReturn: property.expectedReturn
+            }}
+          />
         )}
 
         {/* Amenities - Only if has amenities */}
@@ -195,6 +212,14 @@ export default function PropertyDetails() {
           </div>
         </div>
       )}
+
+      {/* Investment Simulation Modal */}
+      <InvestmentSimulationModal
+        isOpen={showSimulationModal}
+        onClose={() => setShowSimulationModal(false)}
+        property={property}
+        formatCurrency={formatCurrency}
+      />
     </div>
   );
 }

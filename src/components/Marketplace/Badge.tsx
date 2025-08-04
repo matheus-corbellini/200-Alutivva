@@ -1,4 +1,5 @@
 import React from "react";
+import { Rocket, Hammer, CheckCircle } from "lucide-react";
 import type { PropertyStatus } from "../../types/property";
 
 type BadgeProps = {
@@ -6,19 +7,42 @@ type BadgeProps = {
   className?: string;
 };
 
-function getStatusClass(status: PropertyStatus) {
+function getStatusConfig(status: PropertyStatus) {
   switch (status) {
     case "Lançamento":
-      return "badge badge-blue";
+      return {
+        class: "badge badge-blue",
+        icon: <Rocket size={12} />,
+        label: "Lançamento"
+      };
     case "Em construção":
-      return "badge badge-yellow";
+      return {
+        class: "badge badge-yellow",
+        icon: <Hammer size={12} />,
+        label: "Em construção"
+      };
     case "Finalizado":
-      return "badge badge-green";
+      return {
+        class: "badge badge-green",
+        icon: <CheckCircle size={12} />,
+        label: "Finalizado"
+      };
     default:
-      return "badge";
+      return {
+        class: "badge",
+        icon: null,
+        label: status
+      };
   }
 }
 
-export const Badge: React.FC<BadgeProps> = ({ status, className }) => (
-  <span className={`${getStatusClass(status)} ${className}`}>{status}</span>
-);
+export const Badge: React.FC<BadgeProps> = ({ status, className }) => {
+  const config = getStatusConfig(status);
+
+  return (
+    <span className={`${config.class} ${className}`}>
+      {config.icon && <span className="badge-icon">{config.icon}</span>}
+      <span className="badge-text">{config.label}</span>
+    </span>
+  );
+};

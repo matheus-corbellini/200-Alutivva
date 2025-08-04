@@ -23,6 +23,10 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
           src={property.image || "/placeholder.svg"}
           alt={property.title}
           className="property-image"
+          onError={(e) => {
+            console.log('Erro ao carregar imagem:', property.image);
+            e.currentTarget.src = "/placeholder.svg";
+          }}
         />
         <Badge status={property.status} className="property-status-badge" />
       </div>
@@ -71,9 +75,8 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
               <div
                 className="progress-bar"
                 style={{
-                  width: `${
-                    (property.soldQuotas / property.totalQuotas) * 100
-                  }%`,
+                  width: `${(property.soldQuotas / property.totalQuotas) * 100
+                    }%`,
                 }}
               ></div>
             </div>

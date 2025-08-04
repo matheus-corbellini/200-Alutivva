@@ -10,6 +10,7 @@ import {
   MdArrowBack,
   MdLock,
 } from "react-icons/md";
+import { User, Sprout, Building2, Settings } from "lucide-react";
 import { useAppNavigate } from "../../hooks/useAppNavigate";
 import { registerUser } from "../../services/UserServices/Register";
 import type { UserRole } from "../../types/users";
@@ -120,25 +121,25 @@ const Register: React.FC = () => {
               <span className="selected-content">
                 {role === "investor" && (
                   <>
-                    <span className="emoji">👤</span>
+                    <User size={16} className="role-icon" />
                     <span>Investidor/Cotista</span>
                   </>
                 )}
                 {role === "landowner" && (
                   <>
-                    <span className="emoji">🌱</span>
+                    <Sprout size={16} className="role-icon" />
                     <span>Proprietário de terreno</span>
                   </>
                 )}
                 {role === "entrepreneur" && (
                   <>
-                    <span className="emoji">🏨</span>
+                    <Building2 size={16} className="role-icon" />
                     <span>Empreendedor/Gestor</span>
                   </>
                 )}
                 {role === "admin" && (
                   <>
-                    <span className="emoji">🛠️</span>
+                    <Settings size={16} className="role-icon" />
                     <span>Administrador da plataforma</span>
                   </>
                 )}
@@ -163,7 +164,7 @@ const Register: React.FC = () => {
                     setIsDropdownOpen(false);
                   }}
                 >
-                  <span className="emoji">👤</span>
+                  <User size={16} className="role-icon" />
                   <span>Investidor/Cotista</span>
                 </div>
                 <div
@@ -173,7 +174,7 @@ const Register: React.FC = () => {
                     setIsDropdownOpen(false);
                   }}
                 >
-                  <span className="emoji">🌱</span>
+                  <Sprout size={16} className="role-icon" />
                   <span>Proprietário de terreno</span>
                 </div>
                 <div
@@ -183,7 +184,7 @@ const Register: React.FC = () => {
                     setIsDropdownOpen(false);
                   }}
                 >
-                  <span className="emoji">🏨</span>
+                  <Building2 size={16} className="role-icon" />
                   <span>Empreendedor/Gestor</span>
                 </div>
                 <div
@@ -193,7 +194,7 @@ const Register: React.FC = () => {
                     setIsDropdownOpen(false);
                   }}
                 >
-                  <span className="emoji">🛠️</span>
+                  <Settings size={16} className="role-icon" />
                   <span>Administrador da plataforma</span>
                 </div>
               </div>

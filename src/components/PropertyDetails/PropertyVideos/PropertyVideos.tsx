@@ -26,6 +26,11 @@ const PropertyVideos: React.FC<PropertyVideosProps> = ({
                 src={video.thumbnail || "/placeholder.svg"}
                 alt={video.title}
               />
+              <div className="video-preview-overlay">
+                <div className="video-preview-text">
+                  Clique para assistir
+                </div>
+              </div>
               <button className="play-button">
                 <MdPlayArrow />
               </button>

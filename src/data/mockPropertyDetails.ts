@@ -28,12 +28,12 @@ export const mockPropertyDetails: Record<number, PropertyDetails> = {
       {
         title: "Tour Virtual do Empreendimento",
         url: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-        thumbnail: "/placeholder.svg?height=200&width=300&text=Tour+Virtual",
+        thumbnail: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400&h=200&fit=crop&crop=center",
       },
       {
         title: "Apresentação do Projeto",
         url: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-        thumbnail: "/placeholder.svg?height=200&width=300&text=Apresentação",
+        thumbnail: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=400&h=200&fit=crop&crop=center",
       },
     ],
 
@@ -221,7 +221,7 @@ export const mockPropertyDetails: Record<number, PropertyDetails> = {
       {
         title: "Localização Privilegiada",
         url: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-        thumbnail: "/placeholder.svg?height=200&width=300&text=Localização",
+        thumbnail: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=400&h=200&fit=crop&crop=center",
       },
     ],
 

@@ -5,4 +5,5 @@ export const routes = {
   marketplace: "/marketplace",
   property: "/property/:id",
   propertyDetails: (id: number) => `/property/${id}`,
+  landRegistry: "/land-registry",
 };

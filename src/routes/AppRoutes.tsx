@@ -4,6 +4,7 @@ import Login from "../pages/Login/Login";
 import Register from "../pages/Register/Register";
 import MarketplacePage from "../pages/MarketPlace/Marketplace";
 import PropertyDetailsPage from "../pages/PropertyDetails/PropertyDetails";
+import LandRegistry from "../pages/LandRegistry/LandRegistry";
 import { ProtectedRoute } from "../components/common/ProtectedRoute";
 import { routes } from "./paths";
 
@@ -27,6 +28,14 @@ const AppRoutes = () => {
           element={
             <ProtectedRoute>
               <PropertyDetailsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path={routes.landRegistry}
+          element={
+            <ProtectedRoute>
+              <LandRegistry />
             </ProtectedRoute>
           }
         />

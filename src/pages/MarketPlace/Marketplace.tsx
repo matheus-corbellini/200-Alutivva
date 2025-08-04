@@ -1,6 +1,6 @@
 import { usePropertyFilters } from "../../hooks/usePropertyFilters";
+import { useState } from "react";
 import {
-  Header,
   HeroSection,
   FiltersSection,
   ResultsSummary,
@@ -9,25 +9,38 @@ import {
 } from "../../components/Marketplace";
 import { Sidebar, SidebarToggle } from "../../components/Sidebar/Sidebar";
 import { useSidebar } from "../../hooks/useSidebar";
+
 import "../../components/Marketplace/styles/index.css";
 
 export default function MarketplacePage() {
   const { filters, filteredProperties, handleFilterChange, clearFilters } =
     usePropertyFilters();
   const { isOpen, isMobile, toggle } = useSidebar();
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+
+  const toggleSidebar = () => {
+    setSidebarCollapsed(!sidebarCollapsed);
+  };
 
   return (
-    <div style={{ display: "flex", minHeight: "100vh" }}>
-      <Sidebar isOpen={isOpen} onToggle={toggle} />
-      <SidebarToggle isOpen={isOpen} onToggle={toggle} />
+    <div style={{ minHeight: "100vh" }}>
+      <Sidebar
+        isOpen={isOpen}
+        onToggle={toggle}
+        isCollapsed={sidebarCollapsed}
+        onToggleCollapse={toggleSidebar}
+      />
+      {isMobile && <SidebarToggle isOpen={isOpen} onToggle={toggle} />}
 
       <div
-        className={`${!isMobile && isOpen ? "main-content-with-sidebar" : ""}`}
-        style={{ flex: 1, minWidth: 0 }}
+        className="main-content-with-sidebar"
+        style={{
+          minHeight: "100vh",
+          marginLeft: sidebarCollapsed ? "70px" : "280px",
+          transition: "margin-left 0.3s ease"
+        }}
       >
-        <Header />
-
-        <div className="container">
+        <div className="container" style={{ marginTop: "32px" }}>
           <HeroSection
             title="Invista em Imóveis com Segurança"
             description="Diversifique seus investimentos com cotas de empreendimentos imobiliários selecionados. Rentabilidade atrativa e transparência total."

@@ -3,7 +3,7 @@
 import type React from "react";
 import { useState, useEffect } from "react";
 import { useAppNavigate } from "../../hooks/useAppNavigate";
-import { useLocation } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 import {
   MdMenu,
   MdClose,
@@ -19,6 +19,8 @@ import "./Sidebar.css";
 type SidebarProps = {
   isOpen: boolean;
   onToggle: () => void;
+  isCollapsed?: boolean;
+  onToggleCollapse?: () => void;
 };
 
 type MenuItem = {
@@ -40,7 +42,7 @@ const menuItems: MenuItem[] = [
     id: "registro-terrenos",
     label: "Registro de terrenos",
     icon: <MdTerrain />,
-    path: "/registro-terrenos",
+    path: "/land-registry",
   },
   {
     id: "gestao-pessoal",
@@ -57,7 +59,7 @@ const menuItems: MenuItem[] = [
   },
 ];
 
-export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle }) => {
+export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle, isCollapsed = false, onToggleCollapse }) => {
   const { user, firebaseUser, logout } = useAuth();
   const { goToLandingPage } = useAppNavigate();
   const location = useLocation();
@@ -122,59 +124,109 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle }) => {
         />
       )}
 
-      <aside className={`sidebar-container ${isOpen ? "open" : ""}`}>
-        <div className="sidebar-header">
-          <img src="/log.png" alt="Alutivva" className="sidebar-logo" />
-          <h2 className="sidebar-title">Alutivva</h2>
-          <p className="sidebar-subtitle">Plataforma de Investimentos</p>
-        </div>
-
-        <div className="sidebar-content">
-          <div className="sidebar-section">
-            <h3 className="sidebar-section-title">Menu Principal</h3>
-            <ul className="sidebar-menu">
-              {menuItems.map((item) => (
-                <li key={item.id} className="sidebar-menu-item">
-                  <a
-                    href={item.path}
-                    className={`sidebar-menu-link ${
-                      isActiveRoute(item.path) ? "active" : ""
-                    }`}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      console.log(`Navegando para: ${item.path}`);
-                      if (isMobile) {
-                        onToggle();
-                      }
-                    }}
-                  >
-                    <span className="sidebar-menu-icon">{item.icon}</span>
-                    <span>{item.label}</span>
-                    {item.badge && (
-                      <span className="sidebar-badge">{item.badge}</span>
-                    )}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-
-        <div className="sidebar-footer">
-          <div className="sidebar-user-info">
-            <div className="sidebar-user-avatar">{getUserInitials()}</div>
-            <div className="sidebar-user-details">
-              <p className="sidebar-user-name">
-                {user?.name || firebaseUser?.email || "Usuário"}
-              </p>
-              <p className="sidebar-user-role">{getRoleLabel()}</p>
-            </div>
-          </div>
-          <button className="sidebar-logout-btn" onClick={handleLogout}>
-            <MdLogout />
-            Sair
+      <aside className={`sidebar-container ${isOpen ? "open" : ""} ${isCollapsed ? "collapsed" : ""}`}>
+        {onToggleCollapse && (
+          <button
+            onClick={onToggleCollapse}
+            className="sidebar-toggle-collapse-btn"
+            title={isCollapsed ? "Expandir sidebar" : "Reduzir sidebar"}
+          >
+            {isCollapsed ? <MdMenu size={16} /> : <MdClose size={16} />}
           </button>
-        </div>
+        )}
+        {!isCollapsed ? (
+          <>
+            <div className="sidebar-header">
+              <img src="/log.png" alt="Alutivva" className="sidebar-logo" />
+              <h2 className="sidebar-title">Alutivva</h2>
+              <p className="sidebar-subtitle">Plataforma de Investimentos</p>
+            </div>
+
+            <div className="sidebar-content">
+              <div className="sidebar-section">
+                <h3 className="sidebar-section-title">Menu Principal</h3>
+                <ul className="sidebar-menu">
+                  {menuItems.map((item) => (
+                    <li key={item.id} className="sidebar-menu-item">
+                      <Link
+                        to={item.path}
+                        className={`sidebar-menu-link ${isActiveRoute(item.path) ? "active" : ""
+                          }`}
+                        onClick={() => {
+                          if (isMobile) {
+                            onToggle();
+                          }
+                        }}
+                      >
+                        <span className="sidebar-menu-icon">{item.icon}</span>
+                        <span>{item.label}</span>
+                        {item.badge && (
+                          <span className="sidebar-badge">{item.badge}</span>
+                        )}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
+            <div className="sidebar-footer">
+              <div className="sidebar-user-info">
+                <div className="sidebar-user-avatar">{getUserInitials()}</div>
+                <div className="sidebar-user-details">
+                  <p className="sidebar-user-name">
+                    {user?.name || firebaseUser?.email || "Usuário"}
+                  </p>
+                  <p className="sidebar-user-role">{getRoleLabel()}</p>
+                </div>
+              </div>
+              <button className="sidebar-logout-btn" onClick={handleLogout}>
+                <MdLogout />
+                Sair
+              </button>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="sidebar-header-collapsed">
+              <img src="/log.png" alt="Alutivva" className="sidebar-logo-collapsed" />
+            </div>
+
+            <div className="sidebar-content-collapsed">
+              <ul className="sidebar-menu-collapsed">
+                {menuItems.map((item) => (
+                  <li key={item.id} className="sidebar-menu-item-collapsed">
+                    <Link
+                      to={item.path}
+                      className={`sidebar-menu-link-collapsed ${isActiveRoute(item.path) ? "active" : ""
+                        }`}
+                      onClick={() => {
+                        if (isMobile) {
+                          onToggle();
+                        }
+                      }}
+                      title={item.label}
+                    >
+                      <span className="sidebar-menu-icon-collapsed">{item.icon}</span>
+                      {item.badge && (
+                        <span className="sidebar-badge-collapsed">{item.badge}</span>
+                      )}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="sidebar-footer-collapsed">
+              <div className="sidebar-user-avatar-collapsed" title={user?.name || firebaseUser?.email || "Usuário"}>
+                {getUserInitials()}
+              </div>
+              <button className="sidebar-logout-btn-collapsed" onClick={handleLogout} title="Sair">
+                <MdLogout />
+              </button>
+            </div>
+          </>
+        )}
       </aside>
     </>
   );
