@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useLocation } from "react-router-dom";
 import "./Login.css";
 import Button from "../../components/Button/Button";
-import { Footer } from "borderless";
+
 import {
   MdEmail,
   MdVisibility,
@@ -20,7 +20,7 @@ const Login: React.FC = () => {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const { goToLandingPage, goToRegister, goToMarketplace } = useAppNavigate();
+  const { goToHome, goToRegister, goToMarketplace } = useAppNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,9 +37,9 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="login-container" style={{ position: "relative" }}>
+    <div className="login-container">
       <button
-        onClick={goToLandingPage}
+        onClick={goToHome}
         className="back-button"
         aria-label="Voltar para página inicial"
       >
@@ -116,12 +116,6 @@ const Login: React.FC = () => {
           <div className="login-loading-spinner"></div>
         </div>
       )}
-      <Footer
-        theme="light"
-        useGradient={false}
-        backgroundColor="transparent"
-        logoVariant="light"
-      />
     </div>
   );
 };

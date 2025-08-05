@@ -1,46 +1,62 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import React from "react";
+import { Routes, Route } from "react-router-dom";
 import LandingPage from "../pages/LandingPage/LandingPage";
 import Login from "../pages/Login/Login";
 import Register from "../pages/Register/Register";
-import MarketplacePage from "../pages/MarketPlace/Marketplace";
-import PropertyDetailsPage from "../pages/PropertyDetails/PropertyDetails";
+import Marketplace from "../pages/MarketPlace/Marketplace";
+import PropertyDetails from "../pages/PropertyDetails/PropertyDetails";
 import LandRegistry from "../pages/LandRegistry/LandRegistry";
+import PersonalManagement from "../pages/PersonalManagement/PersonalManagement";
+import RentalManagement from "../pages/RentalManagement/RentalManagement";
 import { ProtectedRoute } from "../components/common/ProtectedRoute";
-import { routes } from "./paths";
 
-const AppRoutes = () => {
+const AppRoutes: React.FC = () => {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path={routes.landingPage} element={<LandingPage />} />
-        <Route path={routes.login} element={<Login />} />
-        <Route path={routes.register} element={<Register />} />
-        <Route
-          path={routes.marketplace}
-          element={
-            <ProtectedRoute>
-              <MarketplacePage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path={routes.property}
-          element={
-            <ProtectedRoute>
-              <PropertyDetailsPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path={routes.landRegistry}
-          element={
-            <ProtectedRoute>
-              <LandRegistry />
-            </ProtectedRoute>
-          }
-        />
-      </Routes>
-    </BrowserRouter>
+    <Routes>
+      <Route path="/" element={<LandingPage />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+      <Route
+        path="/marketplace"
+        element={
+          <ProtectedRoute>
+            <Marketplace />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/property/:id"
+        element={
+          <ProtectedRoute>
+            <PropertyDetails />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/registro-terrenos"
+        element={
+          <ProtectedRoute>
+            <LandRegistry />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/gestao-pessoal"
+        element={
+          <ProtectedRoute>
+            <PersonalManagement />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/gestao-alugueis"
+        element={
+          <ProtectedRoute>
+            <RentalManagement />
+          </ProtectedRoute>
+        }
+      />
+    </Routes>
   );
 };
 

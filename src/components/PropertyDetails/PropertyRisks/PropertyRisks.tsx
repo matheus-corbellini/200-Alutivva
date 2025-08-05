@@ -3,7 +3,7 @@ import "./PropertyRisks.css";
 
 type RiskProps = {
   risks: {
-    type: "Baixo" | "Médio" | "Alto";
+    level: "baixo" | "médio" | "alto";
     title: string;
     description: string;
   }[];
@@ -16,8 +16,8 @@ const PropertyRisks: React.FC<RiskProps> = ({ risks }) => {
       <div className="risks-grid">
         {risks.map((risk, index) => (
           <div key={index} className="risk-item">
-            <span className={`risk-level ${risk.type.toLowerCase()}`}>
-              {risk.type}
+            <span className={`risk-level ${risk.level}`}>
+              {risk.level.charAt(0).toUpperCase() + risk.level.slice(1)}
             </span>
             <div className="risk-content">
               <div className="risk-title">{risk.title}</div>

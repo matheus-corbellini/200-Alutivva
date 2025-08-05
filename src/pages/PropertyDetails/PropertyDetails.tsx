@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
-import { useAppNavigate } from "../../hooks/useAppNavigate";
 import { mockPropertyDetails } from "../../data/mockPropertyDetails";
 import PropertyDetailsHeader from "../../components/PropertyDetails/PropertyDetailsHeader/PropertyDetailsHeader";
 import PropertyAmenities from "../../components/PropertyDetails/PropertyAmenities/PropertyAmenities";
@@ -17,55 +16,17 @@ import PropertyVideos from "../../components/PropertyDetails/PropertyVideos/Prop
 import InvestmentSimulationModal from "../../components/PropertyDetails/InvestmentSimulationModal/InvestmentSimulationModal";
 import Button from "../../components/Button/Button";
 import "./PropertyDetails.css";
+import { formatCurrency } from "../../utils/currency";
+import { Footer } from "borderless";
 
 export default function PropertyDetails() {
   const { id } = useParams<{ id: string }>();
-  const { goToMarketplace } = useAppNavigate();
   const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [showSimulationModal, setShowSimulationModal] = useState(false);
 
   const propertyId = Number.parseInt(id || "1");
-  const property = mockPropertyDetails[propertyId];
-
-  // 404 Not Found
-  if (!property) {
-    return (
-      <div className="property-details-container">
-        <PropertyDetailsHeader onBack={goToMarketplace} />
-        <div className="property-details-content">
-          <div className="not-found-section">
-            <div className="not-found-content">
-              <h1>Oops! Propriedade não encontrada</h1>
-              <p>
-                A propriedade que você está procurando não existe ou foi
-                removida.
-              </p>
-              <p>
-                Que tal explorar outras oportunidades de investimento no nosso
-                marketplace?
-              </p>
-              <div className="not-found-actions">
-                <Button
-                  variant="primary"
-                  size="large"
-                  onClick={goToMarketplace}
-                >
-                  Explorar Marketplace
-                </Button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  const formatCurrency = (value: number) =>
-    new Intl.NumberFormat("pt-BR", {
-      style: "currency",
-      currency: "BRL",
-    }).format(value);
+  const property = propertyId === 0 ? null : mockPropertyDetails[propertyId];
 
   const handleReserve = () => {
     setIsLoading(true);
@@ -90,135 +51,180 @@ export default function PropertyDetails() {
     }
   };
 
+  // 404 Not Found
+  if (!property && propertyId !== 0) {
+    return (
+      <div className="property-details-container">
+        <PropertyDetailsHeader />
+        <div className="property-details-content">
+          <div className="not-found-section">
+            <div className="not-found-content">
+              <h1>Oops! Propriedade não encontrada</h1>
+              <p>
+                A propriedade que você está procurando não existe ou foi
+                removida.
+              </p>
+              <p>
+                Que tal explorar outras oportunidades de investimento no nosso
+                marketplace?
+              </p>
+              <div className="not-found-actions">
+                <Button
+                  variant="primary"
+                  size="large"
+                  onClick={() => window.location.href = "/marketplace"}
+                >
+                  Explorar Marketplace
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="property-details-container">
-      <PropertyDetailsHeader onBack={goToMarketplace} />
+    <div className="property-details-page-wrapper">
+      <div className="property-details-container">
+        <PropertyDetailsHeader />
 
-      <div className="property-details-content">
-        {/* Hero Section - Always present */}
-        <PropertyHero
-          property={property}
-          formatCurrency={formatCurrency}
-          onReserve={handleReserve}
-          onSimulate={handleSimulate}
-        />
-
-        {/* Gallery - Only if has images */}
-        {property.gallery && property.gallery.length > 0 && (
-          <PropertyGallery gallery={property.gallery} title={property.title} />
-        )}
-
-        {/* Videos - Only if has videos */}
-        {property.videos && property.videos.length > 0 && (
-          <PropertyVideos
-            videos={property.videos}
-            onSelectVideo={setSelectedVideo}
+        <div className="property-details-content">
+          {/* Hero Section - Always present */}
+          <PropertyHero
+            property={property || undefined}
+            formatCurrency={formatCurrency}
+            onReserve={handleReserve}
+            onSimulate={handleSimulate}
           />
+
+          {/* Gallery - Only if has images */}
+          {property?.gallery && property.gallery.length > 0 && (
+            <PropertyGallery gallery={property.gallery} title={property.title} />
+          )}
+
+          {/* Videos - Only if has videos */}
+          {property?.videos && property.videos.length > 0 && (
+            <PropertyVideos
+              videos={property.videos}
+              onSelectVideo={setSelectedVideo}
+            />
+          )}
+
+          {/* Floor Plans - Only if has floor plans */}
+          {property?.floorPlans && property.floorPlans.length > 0 && (
+            <PropertyFloorPlans floorPlans={property.floorPlans} />
+          )}
+
+          {/* Financial Projection - Always present */}
+          {property && (
+            <PropertyFinancialProjection
+              financialProjection={property.financialProjection}
+              formatCurrency={formatCurrency}
+            />
+          )}
+
+          {/* Milestones - Only if has milestones */}
+          {property?.milestones && property.milestones.length > 0 && (
+            <PropertyMilestones milestones={property.milestones} />
+          )}
+
+          {/* Documents - Only if has documents */}
+          {property?.documents && property.documents.length > 0 && (
+            <PropertyDocuments
+              documents={property.documents}
+              propertyData={{
+                title: property.title,
+                propertyTitle: property.title,
+                propertyLocation: property.location.address,
+                propertyType: property.type,
+                roi: property.roi,
+                quotaValue: property.quotaValue,
+                totalQuotas: property.totalQuotas,
+                soldQuotas: property.soldQuotas,
+                completionDate: property.completionDate,
+                description: property.description,
+                expectedReturn: property.expectedReturn
+              }}
+            />
+          )}
+
+          {/* Amenities - Only if has amenities */}
+          {property?.amenities && property.amenities.length > 0 && (
+            <PropertyAmenities amenities={property.amenities} />
+          )}
+
+          {/* Location - Always present */}
+          {property && <PropertyLocation location={property.location} />}
+
+          {/* Developer - Always present */}
+          {property && <PropertyDeveloper developer={property.developer} />}
+
+          {/* Risks - Only if has risks */}
+          {property?.risks && property.risks.length > 0 && (
+            <PropertyRisks risks={property.risks} />
+          )}
+        </div>
+
+        {/* Video Modal */}
+        {selectedVideo && (
+          <div
+            className="video-modal-overlay"
+            onClick={closeVideoModal}
+            onKeyDown={handleVideoModalKeyDown}
+            tabIndex={-1}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Player de vídeo"
+          >
+            <div
+              className="video-modal-content"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                className="video-modal-close"
+                onClick={closeVideoModal}
+                aria-label="Fechar vídeo"
+              >
+                ×
+              </button>
+              <iframe
+                src={selectedVideo}
+                width="100%"
+                height="100%"
+                frameBorder="0"
+                allowFullScreen
+                title="Vídeo da propriedade"
+              />
+            </div>
+          </div>
         )}
 
-        {/* Floor Plans - Only if has floor plans */}
-        {property.floorPlans && property.floorPlans.length > 0 && (
-          <PropertyFloorPlans floorPlans={property.floorPlans} />
+        {/* Loading Overlay */}
+        {isLoading && (
+          <div className="loading-overlay">
+            <div className="loading-spinner">
+              <div className="spinner"></div>
+              <p>Processando sua reserva...</p>
+            </div>
+          </div>
         )}
 
-        {/* Financial Projection - Always present */}
-        <PropertyFinancialProjection
-          financialProjection={property.financialProjection}
-          formatCurrency={formatCurrency}
-        />
-
-        {/* Milestones - Only if has milestones */}
-        {property.milestones && property.milestones.length > 0 && (
-          <PropertyMilestones milestones={property.milestones} />
-        )}
-
-        {/* Documents - Only if has documents */}
-        {property.documents && property.documents.length > 0 && (
-          <PropertyDocuments
-            documents={property.documents}
-            propertyData={{
-              title: property.title,
-              propertyTitle: property.title,
-              propertyLocation: property.location.address,
-              propertyType: property.type,
-              roi: property.roi,
-              quotaValue: property.quotaValue,
-              totalQuotas: property.totalQuotas,
-              soldQuotas: property.soldQuotas,
-              completionDate: property.completionDate,
-              description: property.description,
-              expectedReturn: property.expectedReturn
-            }}
+        {/* Investment Simulation Modal */}
+        {property && (
+          <InvestmentSimulationModal
+            isOpen={showSimulationModal}
+            onClose={() => setShowSimulationModal(false)}
+            property={property}
+            formatCurrency={formatCurrency}
           />
-        )}
-
-        {/* Amenities - Only if has amenities */}
-        {property.amenities && property.amenities.length > 0 && (
-          <PropertyAmenities amenities={property.amenities} />
-        )}
-
-        {/* Location - Always present */}
-        <PropertyLocation location={property.location} />
-
-        {/* Developer - Always present */}
-        <PropertyDeveloper developer={property.developer} />
-
-        {/* Risks - Only if has risks */}
-        {property.risks && property.risks.length > 0 && (
-          <PropertyRisks risks={property.risks} />
         )}
       </div>
-
-      {/* Video Modal */}
-      {selectedVideo && (
-        <div
-          className="video-modal-overlay"
-          onClick={closeVideoModal}
-          onKeyDown={handleVideoModalKeyDown}
-          tabIndex={-1}
-          role="dialog"
-          aria-modal="true"
-          aria-label="Player de vídeo"
-        >
-          <div
-            className="video-modal-content"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button
-              className="video-modal-close"
-              onClick={closeVideoModal}
-              aria-label="Fechar vídeo"
-            >
-              ×
-            </button>
-            <iframe
-              src={selectedVideo}
-              width="100%"
-              height="100%"
-              frameBorder="0"
-              allowFullScreen
-              title="Vídeo da propriedade"
-            />
-          </div>
-        </div>
-      )}
-
-      {/* Loading Overlay */}
-      {isLoading && (
-        <div className="loading-overlay">
-          <div className="loading-spinner">
-            <div className="spinner"></div>
-            <p>Processando sua reserva...</p>
-          </div>
-        </div>
-      )}
-
-      {/* Investment Simulation Modal */}
-      <InvestmentSimulationModal
-        isOpen={showSimulationModal}
-        onClose={() => setShowSimulationModal(false)}
-        property={property}
-        formatCurrency={formatCurrency}
+      <Footer
+        theme="light"
+        useGradient={false}
+        backgroundColor="transparent"
+        logoVariant="light"
       />
     </div>
   );

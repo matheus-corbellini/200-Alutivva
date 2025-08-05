@@ -9,7 +9,7 @@ import {
   MdClose,
   MdShoppingCart,
   MdTerrain,
-  MdPerson,
+  MdSettings,
   MdLogout,
   MdAttachMoney,
 } from "react-icons/md";
@@ -21,6 +21,7 @@ type SidebarProps = {
   onToggle: () => void;
   isCollapsed?: boolean;
   onToggleCollapse?: () => void;
+  rentalCount?: number;
 };
 
 type MenuItem = {
@@ -31,39 +32,43 @@ type MenuItem = {
   badge?: number;
 };
 
-const menuItems: MenuItem[] = [
-  {
-    id: "marketplace",
-    label: "Marketplace",
-    icon: <MdShoppingCart />,
-    path: "/marketplace",
-  },
-  {
-    id: "registro-terrenos",
-    label: "Registro de terrenos",
-    icon: <MdTerrain />,
-    path: "/land-registry",
-  },
-  {
-    id: "gestao-pessoal",
-    label: "Gestão Pessoal",
-    icon: <MdPerson />,
-    path: "/gestao-pessoal",
-  },
-  {
-    id: "gestao-alugueis",
-    label: "Gestão de alugueis",
-    icon: <MdAttachMoney />,
-    path: "/gestao-alugueis",
-    badge: 3,
-  },
-];
+const createMenuItems = (rentalCount: number = 0): MenuItem[] => {
+  return [
+    {
+      id: "marketplace",
+      label: "Marketplace",
+      icon: <MdShoppingCart />,
+      path: "/marketplace",
+    },
+    {
+      id: "registro-terrenos",
+      label: "Registro de terrenos",
+      icon: <MdTerrain />,
+      path: "/registro-terrenos",
+    },
+    {
+      id: "gestao-alugueis",
+      label: "Gestão de alugueis",
+      icon: <MdAttachMoney />,
+      path: "/gestao-alugueis",
+      badge: rentalCount > 0 ? rentalCount : undefined,
+    },
+  ];
+};
 
-export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle, isCollapsed = false, onToggleCollapse }) => {
+export const Sidebar: React.FC<SidebarProps> = ({
+  isOpen,
+  onToggle,
+  isCollapsed = false,
+  onToggleCollapse,
+  rentalCount = 0
+}) => {
   const { user, firebaseUser, logout } = useAuth();
-  const { goToLandingPage } = useAppNavigate();
+  const { goToPersonalManagement, goToHome } = useAppNavigate();
   const location = useLocation();
   const [isMobile, setIsMobile] = useState(false);
+
+  const menuItems = createMenuItems(rentalCount);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -77,7 +82,14 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle, isCollapsed 
 
   const handleLogout = async () => {
     await logout();
-    goToLandingPage();
+    goToHome();
+  };
+
+  const handleSettingsClick = () => {
+    goToPersonalManagement();
+    if (isMobile) {
+      onToggle();
+    }
   };
 
   const getUserInitials = () => {
@@ -179,6 +191,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle, isCollapsed 
                   </p>
                   <p className="sidebar-user-role">{getRoleLabel()}</p>
                 </div>
+                <button
+                  className="sidebar-settings-btn"
+                  onClick={handleSettingsClick}
+                  title="Configurações"
+                >
+                  <MdSettings size={18} />
+                </button>
               </div>
               <button className="sidebar-logout-btn" onClick={handleLogout}>
                 <MdLogout />
@@ -221,6 +240,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle, isCollapsed 
               <div className="sidebar-user-avatar-collapsed" title={user?.name || firebaseUser?.email || "Usuário"}>
                 {getUserInitials()}
               </div>
+              <button
+                className="sidebar-settings-btn-collapsed"
+                onClick={handleSettingsClick}
+                title="Configurações"
+              >
+                <MdSettings size={16} />
+              </button>
               <button className="sidebar-logout-btn-collapsed" onClick={handleLogout} title="Sair">
                 <MdLogout />
               </button>

@@ -58,7 +58,7 @@ export interface PropertyDetails extends Property {
     rating: number;
   };
   risks: {
-    type: "Baixo" | "Médio" | "Alto";
+    level: "baixo" | "médio" | "alto";
     title: string;
     description: string;
   }[];

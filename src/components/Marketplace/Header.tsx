@@ -1,37 +1,23 @@
 import React from "react";
-import Button from "../Button/Button";
-import { useAuth } from "../../hooks/useAuth";
 import { useAppNavigate } from "../../hooks/useAppNavigate";
+import "./styles/Header.css";
 
 export const Header: React.FC = () => {
-  const { user, firebaseUser, logout } = useAuth();
-  const { goToLandingPage } = useAppNavigate();
-
-  const handleLogout = async () => {
-    await logout();
-    goToLandingPage();
-  };
+  const { goToHome } = useAppNavigate();
 
   return (
-    <header className="header">
-      <div className="container">
-        <div className="header-content">
-          <h1 className="header-title">Alutivva</h1>
-          <div className="header-actions">
-            {firebaseUser && (
-              <span className="user-welcome">
-                Olá, {user?.name || firebaseUser.email}
-              </span>
-            )}
-            <Button
-              onClick={handleLogout}
-              className="btn btn-outline"
-              variant="secondary"
-              size="medium"
-            >
-              Sair
-            </Button>
-          </div>
+    <header className="marketplace-header">
+      <div className="header-content">
+        <div className="header-left">
+          <button className="back-button" onClick={goToHome}>
+            ← Voltar
+          </button>
+        </div>
+        <div className="header-center">
+          <h1>Marketplace</h1>
+        </div>
+        <div className="header-right">
+          {/* Espaço para futuros elementos */}
         </div>
       </div>
     </header>

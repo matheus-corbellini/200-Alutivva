@@ -1,16 +1,26 @@
 import { useNavigate } from "react-router-dom";
-import { routes } from "../routes/paths";
+import { paths } from "../routes/paths";
 
-export function useAppNavigate() {
+export const useAppNavigate = () => {
   const navigate = useNavigate();
 
+  const goToHome = () => navigate(paths.home);
+  const goToLogin = () => navigate(paths.login);
+  const goToRegister = () => navigate(paths.register);
+  const goToMarketplace = () => navigate(paths.marketplace);
+  const goToPropertyDetails = (id: number) => navigate(paths.propertyDetails.replace(":id", id.toString()));
+  const goToLandRegistry = () => navigate(paths.landRegistry);
+  const goToPersonalManagement = () => navigate(paths.personalManagement);
+  const goToRentalManagement = () => navigate(paths.rentalManagement);
+
   return {
-    goToLogin: (state?: object) => navigate(routes.login, { state }),
-    goToLandingPage: () => navigate(routes.landingPage),
-    goToRegister: () => navigate(routes.register),
-    goToMarketplace: () => navigate(routes.marketplace),
-    goToProperty: (id: number) => navigate(routes.propertyDetails(id)),
-    goToLandRegistry: () => navigate(routes.landRegistry),
-    navigate,
+    goToHome,
+    goToLogin,
+    goToRegister,
+    goToMarketplace,
+    goToPropertyDetails,
+    goToLandRegistry,
+    goToPersonalManagement,
+    goToRentalManagement
   };
-}
+};

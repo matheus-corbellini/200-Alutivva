@@ -3,7 +3,7 @@ import "./Button.css";
 
 type ButtonProps = {
   children: React.ReactNode;
-  variant?: "primary" | "secondary" | "transparent";
+  variant?: "primary" | "secondary" | "transparent" | "danger";
   size?: "small" | "medium" | "large";
   onClick?: () => void;
   type?: "button" | "submit" | "reset";
@@ -29,9 +29,8 @@ const Button: React.FC<ButtonProps> = ({
 }) => {
   return (
     <button
-      className={`custom-btn ${variant} ${size} ${
-        className ? className : ""
-      }`.trim()}
+      className={`custom-btn ${variant} ${size} ${className ? className : ""
+        }`.trim()}
       onClick={onClick}
       type={type}
       style={style}

@@ -1,0 +1,184 @@
+/* Modal de Novo Empreendimento */
+.new-property-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.new-property-modal-content {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  max-width: 700px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+.new-property-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.new-property-modal-header h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1a355b;
+  margin: 0;
+}
+
+.new-property-modal-close {
+  background: none;
+  border: none;
+  color: #64748b;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+}
+
+.new-property-modal-close:hover {
+  background: #f1f5f9;
+  color: #1a355b;
+}
+
+.new-property-modal-body {
+  padding: 2rem;
+}
+
+.new-property-description {
+  color: #64748b;
+  font-size: 1rem;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+.new-property-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.new-property-form .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.new-property-form .form-group label {
+  font-weight: 600;
+  color: #1a355b;
+  font-size: 0.875rem;
+}
+
+.new-property-form .form-group input,
+.new-property-form .form-group textarea,
+.new-property-form .form-group select {
+  padding: 0.75rem;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  background: #f8fafc;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.new-property-form .form-group input:focus,
+.new-property-form .form-group textarea:focus,
+.new-property-form .form-group select:focus {
+  outline: none;
+  border-color: #1a355b;
+  background: white;
+  box-shadow: 0 0 0 3px rgba(26, 53, 91, 0.1);
+}
+
+.new-property-form .form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.new-property-form .form-group textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.new-property-modal-footer {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  padding: 1.5rem 2rem;
+  border-top: 1px solid #e2e8f0;
+  background: #f8fafc;
+  border-radius: 0 0 12px 12px;
+}
+
+.new-property-modal-footer .btn {
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.new-property-modal-footer .btn-secondary {
+  background: white;
+  color: #1a355b;
+  border: 1.5px solid #e2e8f0;
+}
+
+.new-property-modal-footer .btn-secondary:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+.new-property-modal-footer .btn-primary {
+  background: #1a355b;
+  color: white;
+}
+
+.new-property-modal-footer .btn-primary:hover {
+  background: #2446a4;
+}
+
+@media (max-width: 768px) {
+  .new-property-modal-content {
+    margin: 1rem;
+    max-height: calc(100vh - 2rem);
+  }
+  
+  .new-property-modal-header,
+  .new-property-modal-body,
+  .new-property-modal-footer {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+  
+  .new-property-form .form-row {
+    grid-template-columns: 1fr;
+  }
+  
+  .new-property-modal-footer {
+    flex-direction: column;
+  }
+} 

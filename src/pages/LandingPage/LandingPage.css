@@ -1,5 +1,11 @@
-.landing-container {
+.landing-page-wrapper {
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.landing-container {
+  flex: 1;
   width: 100vw;
   display: flex;
   flex-direction: column;

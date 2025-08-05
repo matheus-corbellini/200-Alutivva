@@ -3,13 +3,14 @@ import "./PropertyHero.css";
 import type { PropertyDetails } from "../../../types/propertyDetails";
 import Button from "../../Button/Button";
 import { Badge } from "../../Marketplace";
-import { MdLocationOn } from "react-icons/md";
+import { MdLocationOn, MdAdd } from "react-icons/md";
 
 type PropertyHeroProps = {
-  property: PropertyDetails;
+  property?: PropertyDetails;
   formatCurrency: (value: number) => string;
-  onReserve: () => void;
-  onSimulate: () => void;
+  onReserve?: () => void;
+  onSimulate?: () => void;
+  onCreateNewProperty?: () => void;
 };
 
 const PropertyHero: React.FC<PropertyHeroProps> = ({
@@ -17,7 +18,35 @@ const PropertyHero: React.FC<PropertyHeroProps> = ({
   formatCurrency,
   onReserve,
   onSimulate,
+  onCreateNewProperty,
 }) => {
+  // Se não há propriedade, mostrar formulário de novo empreendimento
+  if (!property) {
+    return (
+      <section className="property-hero">
+        <div className="property-hero-content">
+          <div className="property-hero-info">
+            <h1>Adicionar Novo Empreendimento</h1>
+            <p className="property-hero-description">
+              Crie um novo empreendimento para adicionar ao marketplace e começar a receber investimentos.
+            </p>
+
+            <div className="cta-buttons">
+              <Button
+                variant="primary"
+                size="large"
+                onClick={onCreateNewProperty}
+              >
+                <MdAdd size={20} />
+                Criar Novo Empreendimento
+              </Button>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="property-hero">
       <div className="property-hero-content">

@@ -1,9 +1,10 @@
-export const routes = {
-  landingPage: "/",
+export const paths = {
+  home: "/",
   login: "/login",
   register: "/register",
   marketplace: "/marketplace",
-  property: "/property/:id",
-  propertyDetails: (id: number) => `/property/${id}`,
-  landRegistry: "/land-registry",
-};
+  propertyDetails: "/property/:id",
+  landRegistry: "/registro-terrenos",
+  personalManagement: "/gestao-pessoal",
+  rentalManagement: "/gestao-alugueis"
+} as const;

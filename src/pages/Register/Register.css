@@ -24,16 +24,21 @@
   outline-offset: 2px;
 }
 
-.Register-container {
+.Register-page-wrapper {
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #f8fafc;
+}
+
+.Register-container {
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #f8fafc;
   padding: 24px;
   position: relative;
-  padding-bottom: 120px; /* Espaço para o footer */
 }
 
 .Register-logo {

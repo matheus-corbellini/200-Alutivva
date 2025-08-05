@@ -119,9 +119,15 @@
 .sidebar-user-info {
   display: flex;
   align-items: center;
-  margin-bottom: 16px;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: #f8fafc;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  position: relative;
 }
 
+/* Avatar do usuário */
 .sidebar-user-avatar {
   width: 40px;
   height: 40px;
@@ -132,7 +138,8 @@
   align-items: center;
   justify-content: center;
   font-weight: 600;
-  margin-right: 12px;
+  font-size: 0.875rem;
+  flex-shrink: 0;
 }
 
 .sidebar-user-details {
@@ -416,9 +423,10 @@
   gap: 10px;
 }
 
+/* Avatar do usuário */
 .sidebar-user-avatar-collapsed {
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   background: #1a355b;
   color: white;
@@ -426,8 +434,8 @@
   align-items: center;
   justify-content: center;
   font-weight: 600;
-  cursor: pointer;
-  font-size: 0.9rem;
+  font-size: 0.75rem;
+  flex-shrink: 0;
 }
 
 .sidebar-logout-btn-collapsed {
@@ -491,4 +499,43 @@
   padding: 6px;
   width: 24px;
   height: 24px;
+}
+
+/* Botão de Configurações */
+.sidebar-settings-btn {
+  background: none;
+  border: none;
+  color: #64748b;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+}
+
+.sidebar-settings-btn:hover {
+  background: #f1f5f9;
+  color: #1a355b;
+}
+
+.sidebar-settings-btn-collapsed {
+  background: none;
+  border: none;
+  color: #64748b;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.5rem;
+}
+
+.sidebar-settings-btn-collapsed:hover {
+  background: #f1f5f9;
+  color: #1a355b;
 }

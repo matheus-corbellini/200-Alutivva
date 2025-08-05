@@ -10,10 +10,10 @@ type PropertyCardProps = {
 };
 
 export const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
-  const { goToProperty } = useAppNavigate();
+  const { goToPropertyDetails } = useAppNavigate();
 
   const handleViewDetails = () => {
-    goToProperty(property.id);
+    goToPropertyDetails(property.id);
   };
 
   return (
