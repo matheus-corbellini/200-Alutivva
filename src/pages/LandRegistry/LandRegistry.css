@@ -8,8 +8,9 @@
 .land-registry-container {
   flex: 1;
   padding: 2rem;
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
+  width: 100%;
 }
 
 .land-registry-header {
@@ -81,7 +82,8 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1.5rem;
-  max-width: 100%;
+  width: 100%;
+  margin: 0;
 }
 
 .land-card {
@@ -588,6 +590,7 @@
 @media (max-width: 1200px) {
   .lands-grid {
     grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
   }
 }
 

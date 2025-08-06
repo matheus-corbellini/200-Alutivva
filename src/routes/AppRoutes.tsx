@@ -8,6 +8,9 @@ import PropertyDetails from "../pages/PropertyDetails/PropertyDetails";
 import LandRegistry from "../pages/LandRegistry/LandRegistry";
 import PersonalManagement from "../pages/PersonalManagement/PersonalManagement";
 import RentalManagement from "../pages/RentalManagement/RentalManagement";
+import MyLands from "../pages/MyLands/MyLands";
+import MyInvestments from "../pages/MyInvestments/MyInvestments";
+import ReturnsHistory from "../pages/ReturnsHistory/ReturnsHistory";
 import { ProtectedRoute } from "../components/common/ProtectedRoute";
 
 const AppRoutes: React.FC = () => {
@@ -35,7 +38,7 @@ const AppRoutes: React.FC = () => {
       <Route
         path="/registro-terrenos"
         element={
-          <ProtectedRoute>
+          <ProtectedRoute requiredRole="landowner">
             <LandRegistry />
           </ProtectedRoute>
         }
@@ -51,8 +54,32 @@ const AppRoutes: React.FC = () => {
       <Route
         path="/gestao-alugueis"
         element={
-          <ProtectedRoute>
+          <ProtectedRoute requiredRole="entrepreneur">
             <RentalManagement />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/meus-terrenos"
+        element={
+          <ProtectedRoute requiredRole="landowner">
+            <MyLands />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/meus-investimentos"
+        element={
+          <ProtectedRoute requiredRole="investor">
+            <MyInvestments />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/historico-rendimentos"
+        element={
+          <ProtectedRoute requiredRole="investor">
+            <ReturnsHistory />
           </ProtectedRoute>
         }
       />

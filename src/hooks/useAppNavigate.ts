@@ -12,6 +12,9 @@ export const useAppNavigate = () => {
   const goToLandRegistry = () => navigate(paths.landRegistry);
   const goToPersonalManagement = () => navigate(paths.personalManagement);
   const goToRentalManagement = () => navigate(paths.rentalManagement);
+  const goToMyLands = () => navigate(paths.myLands);
+  const goToMyInvestments = () => navigate(paths.myInvestments);
+  const goToReturnsHistory = () => navigate(paths.returnsHistory);
 
   return {
     goToHome,
@@ -21,6 +24,9 @@ export const useAppNavigate = () => {
     goToPropertyDetails,
     goToLandRegistry,
     goToPersonalManagement,
-    goToRentalManagement
+    goToRentalManagement,
+    goToMyLands,
+    goToMyInvestments,
+    goToReturnsHistory
   };
 };

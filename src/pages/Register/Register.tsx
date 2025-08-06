@@ -11,7 +11,7 @@ import {
   MdArrowBack,
   MdLock,
 } from "react-icons/md";
-import { User, Sprout, Building2, Settings } from "lucide-react";
+import { User, Sprout, Building2 } from "lucide-react";
 import { useAppNavigate } from "../../hooks/useAppNavigate";
 import { registerUser } from "../../services/UserServices/Register";
 import type { UserRole } from "../../types/users";
@@ -139,12 +139,6 @@ const Register: React.FC = () => {
                       <span>Empreendedor/Gestor</span>
                     </>
                   )}
-                  {role === "admin" && (
-                    <>
-                      <Settings size={16} className="role-icon" />
-                      <span>Administrador da plataforma</span>
-                    </>
-                  )}
                   {!role && (
                     <span className="placeholder">
                       Selecione o tipo de usuário
@@ -188,16 +182,6 @@ const Register: React.FC = () => {
                   >
                     <Building2 size={16} className="role-icon" />
                     <span>Empreendedor/Gestor</span>
-                  </div>
-                  <div
-                    className="dropdown-option"
-                    onClick={() => {
-                      setRole("admin");
-                      setIsDropdownOpen(false);
-                    }}
-                  >
-                    <Settings size={16} className="role-icon" />
-                    <span>Administrador da plataforma</span>
                   </div>
                 </div>
               )}

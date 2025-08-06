@@ -12,6 +12,8 @@ import {
   MdSettings,
   MdLogout,
   MdAttachMoney,
+  MdTrendingUp,
+  MdHistory,
 } from "react-icons/md";
 import { useAuth } from "../../hooks/useAuth";
 import "./Sidebar.css";
@@ -32,28 +34,108 @@ type MenuItem = {
   badge?: number;
 };
 
-const createMenuItems = (rentalCount: number = 0): MenuItem[] => {
-  return [
+const createMenuItems = (userRole: string, rentalCount: number = 0): MenuItem[] => {
+  const baseItems = [
     {
       id: "marketplace",
       label: "Marketplace",
       icon: <MdShoppingCart />,
       path: "/marketplace",
     },
-    {
-      id: "registro-terrenos",
-      label: "Registro de terrenos",
-      icon: <MdTerrain />,
-      path: "/registro-terrenos",
-    },
-    {
-      id: "gestao-alugueis",
-      label: "Gestão de alugueis",
-      icon: <MdAttachMoney />,
-      path: "/gestao-alugueis",
-      badge: rentalCount > 0 ? rentalCount : undefined,
-    },
   ];
+
+  // Menu específico para Proprietário de Terreno
+  if (userRole === "landowner") {
+    return [
+      ...baseItems,
+      {
+        id: "registro-terrenos",
+        label: "Cadastrar Terreno",
+        icon: <MdTerrain />,
+        path: "/registro-terrenos",
+      },
+      {
+        id: "meus-terrenos",
+        label: "Meus Terrenos",
+        icon: <MdTerrain />,
+        path: "/meus-terrenos",
+      },
+    ];
+  }
+
+  // Menu específico para Investidor
+  if (userRole === "investor") {
+    return [
+      ...baseItems,
+      {
+        id: "meus-investimentos",
+        label: "Meus Investimentos",
+        icon: <MdTrendingUp />,
+        path: "/meus-investimentos",
+      },
+      {
+        id: "historico-rendimentos",
+        label: "Histórico de Rendimentos",
+        icon: <MdHistory />,
+        path: "/historico-rendimentos",
+      },
+    ];
+  }
+
+  // Menu para Empreendedor/Gestor
+  if (userRole === "entrepreneur") {
+    return [
+      ...baseItems,
+      {
+        id: "gestao-alugueis",
+        label: "Gestão de alugueis",
+        icon: <MdAttachMoney />,
+        path: "/gestao-alugueis",
+        badge: rentalCount > 0 ? rentalCount : undefined,
+      },
+    ];
+  }
+
+  // Menu para Admin (acesso total)
+  if (userRole === "admin") {
+    return [
+      ...baseItems,
+      {
+        id: "registro-terrenos",
+        label: "Registro de terrenos",
+        icon: <MdTerrain />,
+        path: "/registro-terrenos",
+      },
+      {
+        id: "meus-terrenos",
+        label: "Meus Terrenos",
+        icon: <MdTerrain />,
+        path: "/meus-terrenos",
+      },
+      {
+        id: "meus-investimentos",
+        label: "Meus Investimentos",
+        icon: <MdTrendingUp />,
+        path: "/meus-investimentos",
+      },
+      {
+        id: "historico-rendimentos",
+        label: "Histórico de Rendimentos",
+        icon: <MdHistory />,
+        path: "/historico-rendimentos",
+      },
+      {
+        id: "gestao-alugueis",
+        label: "Gestão de alugueis",
+        icon: <MdAttachMoney />,
+        path: "/gestao-alugueis",
+        badge: rentalCount > 0 ? rentalCount : undefined,
+      },
+    ];
+  }
+
+  // Menu padrão para usuários sem role definido (apenas marketplace)
+  return baseItems;
 };
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -68,7 +150,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const location = useLocation();
   const [isMobile, setIsMobile] = useState(false);
 
-  const menuItems = createMenuItems(rentalCount);
+  const menuItems = createMenuItems(user?.role || "", rentalCount);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -178,6 +260,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                       </Link>
                     </li>
                   ))}
+
                 </ul>
               </div>
             </div>
@@ -233,6 +316,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     </Link>
                   </li>
                 ))}
+
               </ul>
             </div>
 

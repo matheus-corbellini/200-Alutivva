@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { 
-  MdAdd, 
-  MdClose, 
-  MdVisibility, 
-  MdEdit, 
-  MdDelete, 
-  MdCheckCircle, 
-  MdPending, 
-  MdWarning, 
+import {
+  MdAdd,
+  MdClose,
+  MdVisibility,
+  MdEdit,
+  MdDelete,
+  MdCheckCircle,
+  MdPending,
+  MdWarning,
   MdCancel,
   MdHome,
   MdLocationOn,
@@ -204,7 +204,7 @@ const RentalManagement: React.FC = () => {
       </div>
 
       <div className="rental-management-content">
-        <div className="filters-section">
+        <div className="rental-filters-section">
           <div className="filter-group">
             <label>Status</label>
             <select

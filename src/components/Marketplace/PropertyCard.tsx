@@ -7,9 +7,10 @@ import Button from "../Button/Button";
 
 type PropertyCardProps = {
   property: Property;
+  onReserveQuota?: (property: Property) => void;
 };
 
-export const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
+export const PropertyCard: React.FC<PropertyCardProps> = ({ property, onReserveQuota }) => {
   const { goToPropertyDetails } = useAppNavigate();
 
   const handleViewDetails = () => {
@@ -95,6 +96,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
             variant="secondary"
             size="large"
             className="btn-full property-action-btn"
+            onClick={() => onReserveQuota?.(property)}
           >
             Reservar Cota
           </Button>

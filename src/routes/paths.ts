@@ -6,5 +6,8 @@ export const paths = {
   propertyDetails: "/property/:id",
   landRegistry: "/registro-terrenos",
   personalManagement: "/gestao-pessoal",
-  rentalManagement: "/gestao-alugueis"
+  rentalManagement: "/gestao-alugueis",
+  myLands: "/meus-terrenos",
+  myInvestments: "/meus-investimentos",
+  returnsHistory: "/historico-rendimentos"
 } as const;

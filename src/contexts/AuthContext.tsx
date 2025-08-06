@@ -28,6 +28,8 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       if (fbUser) {
         try {
           const userData = await getUserData(fbUser.uid);
+          console.log("AuthContext - User data loaded:", userData);
+          console.log("AuthContext - User role:", userData?.role);
           setUser(userData as User);
         } catch (error) {
           console.error("AuthContext - Error getting user data:", error);
