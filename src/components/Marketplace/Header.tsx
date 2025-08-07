@@ -14,7 +14,7 @@ export const Header: React.FC = () => {
           </button>
         </div>
         <div className="header-center">
-          <h1>Marketplace</h1>
+          <h1>Empreendimentos</h1>
         </div>
         <div className="header-right">
           {/* Espaço para futuros elementos */}

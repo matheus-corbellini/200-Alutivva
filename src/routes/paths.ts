@@ -3,6 +3,7 @@ export const paths = {
   login: "/login",
   register: "/register",
   marketplace: "/marketplace",
+  hospedagem: "/hospedagem",
   propertyDetails: "/property/:id",
   landRegistry: "/registro-terrenos",
   personalManagement: "/gestao-pessoal",

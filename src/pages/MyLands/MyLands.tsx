@@ -22,10 +22,10 @@ const MyLands: React.FC = () => {
       partnershipType: "venda",
       status: "ativo",
       photos: ["/background.jpg"],
-      createdAt: "2024-01-15"
+      createdAt: "2024-01-14"
     },
     {
-      id: "2", 
+      id: "2",
       name: "Terreno Comercial - Centro Empresarial",
       location: "São Paulo, SP",
       area: 1200,
@@ -46,8 +46,11 @@ const MyLands: React.FC = () => {
   };
 
   const getStatusLabel = (status: string) => {
-    return status === "ativo" ? "Ativo" : "Inativo";
+    return status === "ativo" ? "ATIVO" : "INATIVO";
   };
+
+  const activeLands = lands.filter(land => land.status === "ativo");
+  const forSaleLands = lands.filter(land => land.partnershipType === "venda");
 
   return (
     <div className="my-lands-container">
@@ -62,53 +65,54 @@ const MyLands: React.FC = () => {
           <p>Total de Terrenos</p>
         </div>
         <div className="stat-card">
-          <h3>{lands.filter(land => land.status === "ativo").length}</h3>
+          <h3>{activeLands.length}</h3>
           <p>Terrenos Ativos</p>
         </div>
-        <div className="stat-card">
-          <h3>{lands.filter(land => land.partnershipType === "venda").length}</h3>
+        <div className="stat-card stat-card-wide">
+          <h3>{forSaleLands.length}</h3>
           <p>Para Venda</p>
         </div>
       </div>
 
-      <div className="lands-grid">
-        {lands.map((land) => (
-          <div key={land.id} className="land-card">
-            <div className="land-image">
-              <img src={land.photos[0]} alt={land.name} />
-              <div className="land-status">
-                <span className={`status-badge ${land.status}`}>
-                  {getStatusLabel(land.status)}
-                </span>
-              </div>
-            </div>
-            
-            <div className="land-info">
-              <h3>{land.name}</h3>
-              <p className="land-location">{land.location}</p>
-              
-              <div className="land-details">
-                <div className="detail-item">
-                  <span className="label">Área:</span>
-                  <span className="value">{land.area} m²</span>
-                </div>
-                <div className="detail-item">
-                  <span className="label">Tipo de Parceria:</span>
-                  <span className="value">{getPartnershipTypeLabel(land.partnershipType)}</span>
-                </div>
-                <div className="detail-item">
-                  <span className="label">Cadastrado em:</span>
-                  <span className="value">{new Date(land.createdAt).toLocaleDateString('pt-BR')}</span>
+      <div className="lands-content">
+        <div className="lands-sidebar left"></div>
+
+        <div className="lands-main">
+          {lands.map((land) => (
+            <div key={land.id} className="land-card">
+              <div className="land-image">
+                <img src={land.photos[0]} alt={land.name} />
+                <div className="land-status">
+                  <span className={`status-badge ${land.status}`}>
+                    {getStatusLabel(land.status)}
+                  </span>
                 </div>
               </div>
 
-              <div className="land-actions">
-                <button className="btn-edit">Editar</button>
-                <button className="btn-view">Visualizar</button>
+              <div className="land-info">
+                <h3>{land.name}</h3>
+                <p className="land-location">{land.location}</p>
+
+                <div className="land-details">
+                  <div className="detail-item">
+                    <span className="label">Área:</span>
+                    <span className="value">{land.area} m²</span>
+                  </div>
+                  <div className="detail-item">
+                    <span className="label">Tipo de Parceria:</span>
+                    <span className="value">{getPartnershipTypeLabel(land.partnershipType)}</span>
+                  </div>
+                  <div className="detail-item">
+                    <span className="label">Cadastrado em:</span>
+                    <span className="value">{new Date(land.createdAt).toLocaleDateString('pt-BR')}</span>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
+
+        <div className="lands-sidebar right"></div>
       </div>
 
       {lands.length === 0 && (

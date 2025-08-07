@@ -1,12 +1,11 @@
-import { createContext } from 'react';
-import type { Rental } from '../types/rental';
+import { createContext } from "react";
+import type { Rental } from "../types/rental";
 
 interface RentalContextType {
-  rentalCount: number;
-  setRentalCount: (count: number) => void;
-  updateRentalCount: () => void;
   rentals: Rental[];
-  setRentals: (rentals: Rental[]) => void;
+  addRental: (rental: Rental) => void;
+  updateRental: (id: string, updates: Partial<Rental>) => void;
+  deleteRental: (id: string) => void;
 }
 
 export const RentalContext = createContext<RentalContextType | undefined>(undefined); 

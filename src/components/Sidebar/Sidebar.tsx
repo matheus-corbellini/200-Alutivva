@@ -14,8 +14,10 @@ import {
   MdAttachMoney,
   MdTrendingUp,
   MdHistory,
+  MdHome,
 } from "react-icons/md";
 import { useAuth } from "../../hooks/useAuth";
+import { useRental } from "../../hooks/useRental";
 import "./Sidebar.css";
 
 type SidebarProps = {
@@ -23,7 +25,6 @@ type SidebarProps = {
   onToggle: () => void;
   isCollapsed?: boolean;
   onToggleCollapse?: () => void;
-  rentalCount?: number;
 };
 
 type MenuItem = {
@@ -38,9 +39,15 @@ const createMenuItems = (userRole: string, rentalCount: number = 0): MenuItem[] 
   const baseItems = [
     {
       id: "marketplace",
-      label: "Marketplace",
+      label: "Empreendimentos",
       icon: <MdShoppingCart />,
       path: "/marketplace",
+    },
+    {
+      id: "hospedagem",
+      label: "Hospedagem",
+      icon: <MdHome />,
+      path: "/hospedagem",
     },
   ];
 
@@ -59,6 +66,13 @@ const createMenuItems = (userRole: string, rentalCount: number = 0): MenuItem[] 
         label: "Meus Terrenos",
         icon: <MdTerrain />,
         path: "/meus-terrenos",
+      },
+      {
+        id: "gestao-alugueis",
+        label: "Gestão de Hospedagem",
+        icon: <MdAttachMoney />,
+        path: "/gestao-alugueis",
+        badge: rentalCount > 0 ? rentalCount : undefined,
       },
     ];
   }
@@ -88,7 +102,7 @@ const createMenuItems = (userRole: string, rentalCount: number = 0): MenuItem[] 
       ...baseItems,
       {
         id: "gestao-alugueis",
-        label: "Gestão de alugueis",
+        label: "Gestão de Hospedagem",
         icon: <MdAttachMoney />,
         path: "/gestao-alugueis",
         badge: rentalCount > 0 ? rentalCount : undefined,
@@ -126,7 +140,7 @@ const createMenuItems = (userRole: string, rentalCount: number = 0): MenuItem[] 
       },
       {
         id: "gestao-alugueis",
-        label: "Gestão de alugueis",
+        label: "Gestão de Hospedagem",
         icon: <MdAttachMoney />,
         path: "/gestao-alugueis",
         badge: rentalCount > 0 ? rentalCount : undefined,
@@ -143,14 +157,17 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onToggle,
   isCollapsed = false,
   onToggleCollapse,
-  rentalCount = 0
 }) => {
   const { user, firebaseUser, logout } = useAuth();
   const { goToPersonalManagement, goToHome } = useAppNavigate();
   const location = useLocation();
   const [isMobile, setIsMobile] = useState(false);
+  const { rentals } = useRental();
 
-  const menuItems = createMenuItems(user?.role || "", rentalCount);
+  // Contar apenas propriedades ativas para o badge
+  const activeRentalsCount = rentals.filter(rental => rental.status === "active").length;
+
+  const menuItems = createMenuItems(user?.role || "", activeRentalsCount);
 
   useEffect(() => {
     const checkMobile = () => {

@@ -128,7 +128,7 @@ const PersonalManagement: React.FC = () => {
           <button
             onClick={goToMarketplace}
             className="back-button"
-            aria-label="Voltar para marketplace"
+            aria-label="Voltar para empreendimentos"
           >
             <MdArrowBack size={24} />
           </button>

@@ -1,6 +1,6 @@
 .my-lands-container {
   padding: 2rem;
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
 }
 
@@ -12,7 +12,7 @@
 .my-lands-header h1 {
   font-size: 2.5rem;
   font-weight: 700;
-  color: #1a365d;
+  color: #1c4f52;
   margin-bottom: 0.5rem;
 }
 
@@ -23,9 +23,12 @@
 
 .my-lands-stats {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 1.5rem;
   margin-bottom: 3rem;
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .stat-card {
@@ -37,10 +40,17 @@
   border: 1px solid #e2e8f0;
 }
 
+.stat-card-wide {
+  grid-column: auto;
+  grid-row: auto;
+  max-width: none;
+  margin: 0;
+}
+
 .stat-card h3 {
   font-size: 2rem;
   font-weight: 700;
-  color: #1a365d;
+  color: #1c4f52;
   margin-bottom: 0.5rem;
 }
 
@@ -50,10 +60,23 @@
   font-weight: 500;
 }
 
-.lands-grid {
+.lands-content {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  grid-template-columns: 1fr;
   gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.lands-sidebar {
+  display: none;
+}
+
+.lands-main {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  max-width: 100%;
 }
 
 .land-card {
@@ -63,6 +86,8 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
   border: 1px solid #e2e8f0;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  max-width: none;
+  margin: 0;
 }
 
 .land-card:hover {
@@ -72,7 +97,7 @@
 
 .land-image {
   position: relative;
-  height: 200px;
+  height: 250px;
   overflow: hidden;
 }
 
@@ -113,7 +138,7 @@
 .land-info h3 {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #1a365d;
+  color: #1c4f52;
   margin-bottom: 0.5rem;
 }
 
@@ -124,7 +149,7 @@
 }
 
 .land-details {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 .detail-item {
@@ -145,7 +170,7 @@
 }
 
 .detail-item .value {
-  color: #1a365d;
+  color: #1c4f52;
   font-weight: 500;
   font-size: 0.9rem;
 }
@@ -178,12 +203,12 @@
 }
 
 .btn-view {
-  background: #1a365d;
+  background: #1c4f52;
   color: white;
 }
 
 .btn-view:hover {
-  background: #0f2027;
+  background: #0f2d2f;
 }
 
 .empty-state {
@@ -199,7 +224,7 @@
 .empty-state h3 {
   font-size: 1.5rem;
   font-weight: 600;
-  color: #1a365d;
+  color: #1c4f52;
   margin-bottom: 0.5rem;
 }
 
@@ -209,7 +234,7 @@
 }
 
 .btn-primary {
-  background: #1a365d;
+  background: #1c4f52;
   color: white;
   padding: 0.75rem 2rem;
   border-radius: 8px;
@@ -220,10 +245,17 @@
 }
 
 .btn-primary:hover {
-  background: #0f2027;
+  background: #0f2d2f;
 }
 
 /* Responsividade */
+@media (max-width: 1024px) {
+  .lands-main {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+}
+
 @media (max-width: 768px) {
   .my-lands-container {
     padding: 1rem;
@@ -233,11 +265,13 @@
     font-size: 2rem;
   }
 
-  .lands-grid {
+  .my-lands-stats {
     grid-template-columns: 1fr;
+    gap: 1rem;
   }
 
-  .land-actions {
-    flex-direction: column;
+  .lands-main {
+    grid-template-columns: 1fr;
+    gap: 1rem;
   }
 } 

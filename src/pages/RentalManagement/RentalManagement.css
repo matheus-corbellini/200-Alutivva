@@ -14,18 +14,19 @@
   border-bottom: 1px solid #e2e8f0;
 }
 
-
-
 .rental-management-header h1 {
   font-size: 2.5rem;
   font-weight: 700;
-  color: #1a355b;
+  color: #1c4f52;
   margin: 0;
-  flex: 1;
+}
+
+.rental-management-header p {
+  display: none;
 }
 
 .add-rental-button {
-  background: linear-gradient(135deg, #1a355b, #2446a4);
+  background: linear-gradient(135deg, #1c4f52, #0f2d2f);
   color: white;
   border: none;
   border-radius: 8px;
@@ -37,15 +38,15 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  box-shadow: 0 2px 8px rgba(26, 53, 91, 0.2);
+  box-shadow: 0 2px 8px rgba(28, 79, 82, 0.2);
   width: auto;
   min-width: 180px;
 }
 
 .add-rental-button:hover {
-  background: linear-gradient(135deg, #2446a4, #1a355b);
+  background: linear-gradient(135deg, #0f2d2f, #1c4f52);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(26, 53, 91, 0.3);
+  box-shadow: 0 4px 12px rgba(28, 79, 82, 0.3);
 }
 
 .rental-management-content {
@@ -62,6 +63,12 @@
   border: 1px solid #e2e8f0;
 }
 
+.filters-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
 .filter-group {
   display: flex;
   flex-direction: column;
@@ -70,7 +77,7 @@
 
 .filter-group label {
   font-weight: 600;
-  color: #1a355b;
+  color: #1c4f52;
   font-size: 0.875rem;
 }
 
@@ -86,8 +93,8 @@
 
 .filter-group select:focus {
   outline: none;
-  border-color: #1a355b;
-  box-shadow: 0 0 0 3px rgba(26, 53, 91, 0.1);
+  border-color: #1c4f52;
+  box-shadow: 0 0 0 3px rgba(28, 79, 82, 0.1);
 }
 
 /* Grid de alugueis */
@@ -378,7 +385,7 @@
 .modal-header h2 {
   font-size: 1.5rem;
   font-weight: 600;
-  color: #1a355b;
+  color: #1c4f52;
   margin: 0;
 }
 
@@ -546,7 +553,7 @@
 
 .form-group label {
   font-weight: 600;
-  color: #1a355b;
+  color: #1c4f52;
   font-size: 0.875rem;
 }
 
@@ -566,8 +573,8 @@
 .form-group select:focus,
 .form-group textarea:focus {
   outline: none;
-  border-color: #1a355b;
-  box-shadow: 0 0 0 3px rgba(26, 53, 91, 0.1);
+  border-color: #1c4f52;
+  box-shadow: 0 0 0 3px rgba(28, 79, 82, 0.1);
 }
 
 .form-group textarea {
@@ -611,35 +618,40 @@
   .rental-management-header {
     flex-direction: column;
     gap: 1rem;
-    align-items: flex-start;
+    text-align: center;
   }
 
   .rental-management-header h1 {
     font-size: 2rem;
   }
 
-  .rentals-grid {
+  .add-rental-button {
+    width: 100%;
+    max-width: 300px;
+  }
+
+  .filters-row {
     grid-template-columns: 1fr;
     gap: 1rem;
   }
 
-  .rental-details,
-  .property-details {
+  .rentals-grid {
     grid-template-columns: 1fr;
   }
 
+  .rental-details,
   .rental-actions {
-    flex-direction: row; /* Mantém os botões na mesma linha mesmo no mobile */
+    flex-direction: column;
   }
 
   .modal-content {
-    margin: 0;
-    max-height: 100vh;
-    border-radius: 0;
+    margin: 1rem;
+    max-height: 90vh;
   }
 
   .modal-footer {
     flex-direction: column;
+    gap: 0.5rem;
   }
 
   .modal-footer button {

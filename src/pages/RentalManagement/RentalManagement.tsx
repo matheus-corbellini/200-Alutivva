@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   MdAdd,
   MdClose,
@@ -10,66 +10,42 @@ import {
   MdWarning,
   MdCancel,
   MdHome,
-  MdLocationOn,
-  MdPerson,
-  MdPhone,
-  MdEmail
+  MdLocationOn
 } from "react-icons/md";
 import Button from "../../components/Button/Button";
 import { useRental } from "../../hooks/useRental";
+import type { Rental } from "../../types/rental";
 import "./RentalManagement.css";
 
-interface Rental {
-  id: number;
-  title: string;
-  address: string;
-  tenant: string;
-  tenantPhone: string;
-  tenantEmail: string;
-  monthlyRent: number;
-  deposit: number;
-  startDate: string;
-  endDate: string;
-  status: "active" | "pending" | "expired" | "cancelled";
-  propertyType: string;
-  area: string;
-  bedrooms: number;
-  bathrooms: number;
-  description: string;
-  documents: string[];
-}
-
 const RentalManagement: React.FC = () => {
-  const { rentals, setRentals, updateRentalCount } = useRental();
+  const { rentals, addRental, updateRental, deleteRental } = useRental();
 
   const [showModal, setShowModal] = useState(false);
   const [editingRental, setEditingRental] = useState<Rental | null>(null);
   const [selectedRental, setSelectedRental] = useState<Rental | null>(null);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [statusFilter, setStatusFilter] = useState<string>("all");
-
-  // Atualizar a quantidade de alugueis sempre que a lista mudar
-  useEffect(() => {
-    updateRentalCount();
-  }, [rentals, updateRentalCount]);
+  const [businessTypeFilter, setBusinessTypeFilter] = useState<string>("all");
 
   const [formData, setFormData] = useState<Partial<Rental>>({
     title: "",
     address: "",
-    tenant: "",
-    tenantPhone: "",
-    tenantEmail: "",
     monthlyRent: 0,
     deposit: 0,
-    startDate: "",
-    endDate: "",
     status: "pending",
-    propertyType: "",
-    area: "",
     bedrooms: 1,
     bathrooms: 1,
     description: "",
-    documents: []
+    businessType: "daily_rent",
+    dailyRate: 0,
+    salePrice: 0,
+    amenities: [],
+    maxGuests: 2,
+    checkInTime: "14:00",
+    checkOutTime: "11:00",
+    instantBooking: false,
+    cleaningFee: 0,
+    serviceFee: 0
   });
 
   const formatCurrency = (value: number) =>
@@ -78,9 +54,7 @@ const RentalManagement: React.FC = () => {
       currency: "BRL",
     }).format(value);
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("pt-BR");
-  };
+
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -131,20 +105,22 @@ const RentalManagement: React.FC = () => {
     setFormData({
       title: "",
       address: "",
-      tenant: "",
-      tenantPhone: "",
-      tenantEmail: "",
       monthlyRent: 0,
       deposit: 0,
-      startDate: "",
-      endDate: "",
       status: "pending",
-      propertyType: "",
-      area: "",
       bedrooms: 1,
       bathrooms: 1,
       description: "",
-      documents: []
+      businessType: "daily_rent",
+      dailyRate: 0,
+      salePrice: 0,
+      amenities: [],
+      maxGuests: 2,
+      checkInTime: "14:00",
+      checkOutTime: "11:00",
+      instantBooking: false,
+      cleaningFee: 0,
+      serviceFee: 0
     });
     setEditingRental(null);
     setShowModal(true);
@@ -161,62 +137,73 @@ const RentalManagement: React.FC = () => {
     setShowModal(true);
   };
 
-  const handleDeleteRental = (rentalId: number) => {
-    setRentals(rentals.filter(rental => rental.id !== rentalId));
+  const handleDeleteRental = (rentalId: string) => {
+    deleteRental(rentalId);
   };
 
   const handleSaveRental = () => {
     if (editingRental) {
-      setRentals(rentals.map(rental =>
-        rental.id === editingRental.id
-          ? { ...formData, id: rental.id } as Rental
-          : rental
-      ));
+      updateRental(editingRental.id, formData);
     } else {
       const newRental: Rental = {
         ...formData,
-        id: Math.max(...rentals.map(r => r.id)) + 1
+        id: Date.now().toString()
       } as Rental;
-      setRentals([...rentals, newRental]);
+      addRental(newRental);
     }
     setShowModal(false);
     setEditingRental(null);
   };
 
-  const filteredRentals = statusFilter === "all"
-    ? rentals
-    : rentals.filter(rental => rental.status === statusFilter as "active" | "pending" | "expired" | "cancelled");
+  const filteredRentals = rentals.filter(rental => {
+    const statusMatch = statusFilter === "all" || rental.status === statusFilter as "active" | "pending" | "expired" | "cancelled";
+    const businessTypeMatch = businessTypeFilter === "all" || rental.businessType === businessTypeFilter as "daily_rent" | "sale";
+    return statusMatch && businessTypeMatch;
+  });
 
 
 
   return (
     <div className="rental-management-container">
       <div className="rental-management-header">
-        <h1>Gestão de Alugueis</h1>
+        <h1>Gestão de Hospedagem</h1>
         <Button
           variant="primary"
           onClick={handleAddRental}
           className="add-rental-button"
         >
           <MdAdd size={20} />
-          Adicionar Aluguel
+          Adicionar Propriedade
         </Button>
       </div>
 
       <div className="rental-management-content">
         <div className="rental-filters-section">
-          <div className="filter-group">
-            <label>Status</label>
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-            >
-              <option value="all">Todos os status</option>
-              <option value="active">Ativo</option>
-              <option value="pending">Pendente</option>
-              <option value="expired">Expirado</option>
-              <option value="cancelled">Cancelado</option>
-            </select>
+          <div className="filters-row">
+            <div className="filter-group">
+              <label>Status</label>
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+              >
+                <option value="all">Todos os status</option>
+                <option value="active">Ativo</option>
+                <option value="pending">Pendente</option>
+                <option value="expired">Expirado</option>
+                <option value="cancelled">Cancelado</option>
+              </select>
+            </div>
+            <div className="filter-group">
+              <label>Tipo de Negócio</label>
+              <select
+                value={businessTypeFilter}
+                onChange={(e) => setBusinessTypeFilter(e.target.value)}
+              >
+                <option value="all">Todos os tipos</option>
+                <option value="daily_rent">Hospedagem</option>
+                <option value="sale">Venda</option>
+              </select>
+            </div>
           </div>
         </div>
 
@@ -242,29 +229,25 @@ const RentalManagement: React.FC = () => {
                   <span>{rental.address}</span>
                 </div>
 
-                <div className="info-row">
-                  <MdPerson size={16} />
-                  <span>{rental.tenant}</span>
-                </div>
 
-                <div className="info-row">
-                  <MdPhone size={16} />
-                  <span>{rental.tenantPhone}</span>
-                </div>
-
-                <div className="info-row">
-                  <MdEmail size={16} />
-                  <span>{rental.tenantEmail}</span>
-                </div>
 
                 <div className="rental-summary">
                   <div className="summary-item">
-                    <strong>Aluguel:</strong>
-                    <span className="price">{formatCurrency(rental.monthlyRent)}</span>
+                    <strong>Tipo:</strong>
+                    <span>{rental.businessType === "daily_rent" ? "Hospedagem" : "Venda"}</span>
                   </div>
                   <div className="summary-item">
-                    <strong>Período:</strong>
-                    <span>{formatDate(rental.startDate)} - {formatDate(rental.endDate)}</span>
+                    <strong>Valor:</strong>
+                    <span className="price">
+                      {rental.businessType === "daily_rent"
+                        ? formatCurrency(rental.dailyRate) + "/noite"
+                        : formatCurrency(rental.salePrice || 0)
+                      }
+                    </span>
+                  </div>
+                  <div className="summary-item">
+                    <strong>Hóspedes:</strong>
+                    <span>Até {rental.maxGuests} pessoas</span>
                   </div>
                 </div>
               </div>
@@ -301,10 +284,10 @@ const RentalManagement: React.FC = () => {
 
         {filteredRentals.length === 0 && (
           <div className="empty-state">
-            <h2>Nenhum aluguel encontrado</h2>
-            <p>Comece adicionando seu primeiro aluguel para gerenciar suas propriedades.</p>
+            <h2>Nenhuma propriedade encontrada</h2>
+            <p>Comece adicionando sua primeira propriedade para hospedagem ou venda.</p>
             <Button variant="primary" onClick={handleAddRental}>
-              Adicionar Primeiro Aluguel
+              Adicionar Primeira Propriedade
             </Button>
           </div>
         )}
@@ -314,7 +297,7 @@ const RentalManagement: React.FC = () => {
           <div className="modal-overlay" onClick={() => setShowModal(false)}>
             <div className="modal-content" onClick={(e) => e.stopPropagation()}>
               <div className="modal-header">
-                <h2>{editingRental ? "Editar Aluguel" : "Adicionar Aluguel"}</h2>
+                <h2>{editingRental ? "Editar Propriedade" : "Adicionar Propriedade"}</h2>
                 <button
                   className="modal-close"
                   onClick={() => setShowModal(false)}
@@ -345,43 +328,38 @@ const RentalManagement: React.FC = () => {
                     />
                   </div>
 
+
+
                   <div className="form-group">
-                    <label>Inquilino *</label>
-                    <input
-                      type="text"
-                      value={formData.tenant}
-                      onChange={(e) => setFormData({ ...formData, tenant: e.target.value })}
-                      placeholder="Nome do inquilino"
-                    />
+                    <label>Tipo de Negócio *</label>
+                    <select
+                      value={formData.businessType}
+                      onChange={(e) => setFormData({ ...formData, businessType: e.target.value as "daily_rent" | "sale" })}
+                    >
+                      <option value="daily_rent">Hospedagem</option>
+                      <option value="sale">Venda</option>
+                    </select>
                   </div>
 
                   <div className="form-group">
-                    <label>Telefone do Inquilino</label>
-                    <input
-                      type="tel"
-                      value={formData.tenantPhone}
-                      onChange={(e) => setFormData({ ...formData, tenantPhone: e.target.value })}
-                      placeholder="Telefone"
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <label>E-mail do Inquilino</label>
-                    <input
-                      type="email"
-                      value={formData.tenantEmail}
-                      onChange={(e) => setFormData({ ...formData, tenantEmail: e.target.value })}
-                      placeholder="E-mail"
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <label>Aluguel Mensal (R$) *</label>
+                    <label>Aluguel Mensal (R$)</label>
                     <input
                       type="number"
                       value={formData.monthlyRent}
                       onChange={(e) => setFormData({ ...formData, monthlyRent: Number(e.target.value) })}
                       placeholder="0"
+                      disabled={formData.businessType === "sale"}
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label>Preço de Venda (R$)</label>
+                    <input
+                      type="number"
+                      value={formData.salePrice}
+                      onChange={(e) => setFormData({ ...formData, salePrice: Number(e.target.value) })}
+                      placeholder="0"
+                      disabled={formData.businessType === "daily_rent"}
                     />
                   </div>
 
@@ -395,23 +373,7 @@ const RentalManagement: React.FC = () => {
                     />
                   </div>
 
-                  <div className="form-group">
-                    <label>Data de Início *</label>
-                    <input
-                      type="date"
-                      value={formData.startDate}
-                      onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
-                    />
-                  </div>
 
-                  <div className="form-group">
-                    <label>Data de Fim *</label>
-                    <input
-                      type="date"
-                      value={formData.endDate}
-                      onChange={(e) => setFormData({ ...formData, endDate: e.target.value })}
-                    />
-                  </div>
 
                   <div className="form-group">
                     <label>Status</label>
@@ -426,25 +388,7 @@ const RentalManagement: React.FC = () => {
                     </select>
                   </div>
 
-                  <div className="form-group">
-                    <label>Tipo de Propriedade</label>
-                    <input
-                      type="text"
-                      value={formData.propertyType}
-                      onChange={(e) => setFormData({ ...formData, propertyType: e.target.value })}
-                      placeholder="Ex: Apartamento, Casa, Studio"
-                    />
-                  </div>
 
-                  <div className="form-group">
-                    <label>Área</label>
-                    <input
-                      type="text"
-                      value={formData.area}
-                      onChange={(e) => setFormData({ ...formData, area: e.target.value })}
-                      placeholder="Ex: 65m²"
-                    />
-                  </div>
 
                   <div className="form-group">
                     <label>Quartos</label>
@@ -464,6 +408,82 @@ const RentalManagement: React.FC = () => {
                       onChange={(e) => setFormData({ ...formData, bathrooms: Number(e.target.value) })}
                       min="0"
                     />
+                  </div>
+
+                  <div className="form-group">
+                    <label>Diária (R$)</label>
+                    <input
+                      type="number"
+                      value={formData.dailyRate}
+                      onChange={(e) => setFormData({ ...formData, dailyRate: Number(e.target.value) })}
+                      placeholder="0"
+                      disabled={formData.businessType === "sale"}
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label>Taxa de Limpeza (R$)</label>
+                    <input
+                      type="number"
+                      value={formData.cleaningFee}
+                      onChange={(e) => setFormData({ ...formData, cleaningFee: Number(e.target.value) })}
+                      placeholder="0"
+                      disabled={formData.businessType === "sale"}
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label>Taxa de Serviço (R$)</label>
+                    <input
+                      type="number"
+                      value={formData.serviceFee}
+                      onChange={(e) => setFormData({ ...formData, serviceFee: Number(e.target.value) })}
+                      placeholder="0"
+                      disabled={formData.businessType === "sale"}
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label>Máximo de Hóspedes</label>
+                    <input
+                      type="number"
+                      value={formData.maxGuests}
+                      onChange={(e) => setFormData({ ...formData, maxGuests: Number(e.target.value) })}
+                      min="1"
+                      disabled={formData.businessType === "sale"}
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label>Check-in</label>
+                    <input
+                      type="time"
+                      value={formData.checkInTime}
+                      onChange={(e) => setFormData({ ...formData, checkInTime: e.target.value })}
+                      disabled={formData.businessType === "sale"}
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label>Check-out</label>
+                    <input
+                      type="time"
+                      value={formData.checkOutTime}
+                      onChange={(e) => setFormData({ ...formData, checkOutTime: e.target.value })}
+                      disabled={formData.businessType === "sale"}
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label>Reserva Instantânea</label>
+                    <select
+                      value={formData.instantBooking ? "true" : "false"}
+                      onChange={(e) => setFormData({ ...formData, instantBooking: e.target.value === "true" })}
+                      disabled={formData.businessType === "sale"}
+                    >
+                      <option value="true">Sim</option>
+                      <option value="false">Não</option>
+                    </select>
                   </div>
                 </div>
 
@@ -489,7 +509,7 @@ const RentalManagement: React.FC = () => {
                   variant="primary"
                   onClick={handleSaveRental}
                 >
-                  {editingRental ? "Salvar" : "Adicionar"}
+                  {editingRental ? "Salvar" : "Adicionar Propriedade"}
                 </Button>
               </div>
             </div>
@@ -501,7 +521,7 @@ const RentalManagement: React.FC = () => {
           <div className="modal-overlay" onClick={() => setShowDetailsModal(false)}>
             <div className="modal-content" onClick={(e) => e.stopPropagation()}>
               <div className="modal-header">
-                <h2>Detalhes do Aluguel</h2>
+                <h2>Detalhes da Propriedade</h2>
                 <button
                   className="modal-close"
                   onClick={() => setShowDetailsModal(false)}
@@ -522,14 +542,7 @@ const RentalManagement: React.FC = () => {
                       <strong>Endereço:</strong>
                       <span>{selectedRental.address}</span>
                     </div>
-                    <div className="detail-item">
-                      <strong>Tipo:</strong>
-                      <span>{selectedRental.propertyType}</span>
-                    </div>
-                    <div className="detail-item">
-                      <strong>Área:</strong>
-                      <span>{selectedRental.area}</span>
-                    </div>
+
                     <div className="detail-item">
                       <strong>Quartos:</strong>
                       <span>{selectedRental.bedrooms}</span>
@@ -540,35 +553,38 @@ const RentalManagement: React.FC = () => {
                     </div>
                   </div>
 
-                  <div className="detail-section">
-                    <h3>Informações do Inquilino</h3>
-                    <div className="detail-item">
-                      <strong>Nome:</strong>
-                      <span>{selectedRental.tenant}</span>
-                    </div>
-                    <div className="detail-item">
-                      <strong>Telefone:</strong>
-                      <span>{selectedRental.tenantPhone}</span>
-                    </div>
-                    <div className="detail-item">
-                      <strong>E-mail:</strong>
-                      <span>{selectedRental.tenantEmail}</span>
-                    </div>
-                  </div>
+
 
                   <div className="detail-section">
                     <h3>Informações Financeiras</h3>
                     <div className="detail-item">
-                      <strong>Aluguel Mensal:</strong>
-                      <span className="price">{formatCurrency(selectedRental.monthlyRent)}</span>
+                      <strong>Tipo de Negócio:</strong>
+                      <span>{selectedRental.businessType === "daily_rent" ? "Hospedagem" : "Venda"}</span>
                     </div>
+                    {selectedRental.businessType === "daily_rent" ? (
+                      <>
+                        <div className="detail-item">
+                          <strong>Diária:</strong>
+                          <span className="price">{formatCurrency(selectedRental.dailyRate)}</span>
+                        </div>
+                        <div className="detail-item">
+                          <strong>Taxa de Limpeza:</strong>
+                          <span>{formatCurrency(selectedRental.cleaningFee)}</span>
+                        </div>
+                        <div className="detail-item">
+                          <strong>Taxa de Serviço:</strong>
+                          <span>{formatCurrency(selectedRental.serviceFee)}</span>
+                        </div>
+                      </>
+                    ) : (
+                      <div className="detail-item">
+                        <strong>Preço de Venda:</strong>
+                        <span className="price">{formatCurrency(selectedRental.salePrice || 0)}</span>
+                      </div>
+                    )}
                     <div className="detail-item">
-                      <strong>Caução:</strong>
-                      <span>{formatCurrency(selectedRental.deposit)}</span>
-                    </div>
-                    <div className="detail-item">
-                      <strong>Período:</strong>
-                      <span>{formatDate(selectedRental.startDate)} - {formatDate(selectedRental.endDate)}</span>
+                      <strong>Máximo de Hóspedes:</strong>
+                      <span>{selectedRental.maxGuests} pessoas</span>
                     </div>
                     <div className="detail-item">
                       <strong>Status:</strong>

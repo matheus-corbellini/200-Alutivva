@@ -28,7 +28,7 @@ const PropertyHero: React.FC<PropertyHeroProps> = ({
           <div className="property-hero-info">
             <h1>Adicionar Novo Empreendimento</h1>
             <p className="property-hero-description">
-              Crie um novo empreendimento para adicionar ao marketplace e começar a receber investimentos.
+              Crie um novo empreendimento para adicionar aos empreendimentos e começar a receber investimentos.
             </p>
 
             <div className="cta-buttons">

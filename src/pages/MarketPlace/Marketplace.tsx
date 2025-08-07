@@ -1,19 +1,19 @@
-import { usePropertyFilters } from "../../hooks/usePropertyFilters";
-import { useState } from "react";
-import { useAuth } from "../../hooks/useAuth";
-import { useNotification } from "../../hooks/useNotification";
+import React, { useState } from "react";
 import {
+  Header,
   HeroSection,
   FiltersSection,
-  ResultsSummary,
   PropertiesGrid,
+  ResultsSummary,
   EmptyState,
 } from "../../components/Marketplace";
+import { usePropertyFilters } from "../../hooks/usePropertyFilters";
+import { useAuth } from "../../hooks/useAuth";
+import { useNotification } from "../../hooks/useNotification";
 import { Footer } from "borderless";
 import { MdClose } from "react-icons/md";
 import type { Property } from "../../types/property";
 import { Notification } from "../../components/common/Notification";
-
 import "../../components/Marketplace/styles/index.css";
 import "./Marketplace.css";
 

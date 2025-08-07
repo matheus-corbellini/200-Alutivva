@@ -1,19 +1,21 @@
 export interface Rental {
-  id: number;
+  id: string;
   title: string;
   address: string;
-  tenant: string;
-  tenantPhone: string;
-  tenantEmail: string;
-  monthlyRent: number;
-  deposit: number;
-  startDate: string;
-  endDate: string;
-  status: "active" | "pending" | "expired" | "cancelled";
-  propertyType: string;
-  area: string;
+  description: string;
   bedrooms: number;
   bathrooms: number;
-  description: string;
-  documents: string[];
+  monthlyRent: number;
+  deposit: number;
+  businessType: "daily_rent" | "sale";
+  status: "active" | "pending" | "expired" | "cancelled";
+  dailyRate: number;
+  salePrice?: number;
+  amenities: string[];
+  maxGuests: number;
+  checkInTime: string;
+  checkOutTime: string;
+  instantBooking: boolean;
+  cleaningFee: number;
+  serviceFee: number;
 } 

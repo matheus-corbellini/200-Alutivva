@@ -65,8 +65,8 @@ export default function PropertyDetails() {
                 removida.
               </p>
               <p>
-                Que tal explorar outras oportunidades de investimento no nosso
-                marketplace?
+                Que tal explorar outras oportunidades de investimento nos nossos
+                empreendimentos?
               </p>
               <div className="not-found-actions">
                 <Button
@@ -74,7 +74,7 @@ export default function PropertyDetails() {
                   size="large"
                   onClick={() => window.location.href = "/marketplace"}
                 >
-                  Explorar Marketplace
+                  Explorar Empreendimentos
                 </Button>
               </div>
             </div>

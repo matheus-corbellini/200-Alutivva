@@ -4,6 +4,7 @@ import LandingPage from "../pages/LandingPage/LandingPage";
 import Login from "../pages/Login/Login";
 import Register from "../pages/Register/Register";
 import Marketplace from "../pages/MarketPlace/Marketplace";
+import Hospedagem from "../pages/MarketPlace/Hospedagem";
 import PropertyDetails from "../pages/PropertyDetails/PropertyDetails";
 import LandRegistry from "../pages/LandRegistry/LandRegistry";
 import PersonalManagement from "../pages/PersonalManagement/PersonalManagement";
@@ -24,6 +25,14 @@ const AppRoutes: React.FC = () => {
         element={
           <ProtectedRoute>
             <Marketplace />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/hospedagem"
+        element={
+          <ProtectedRoute>
+            <Hospedagem />
           </ProtectedRoute>
         }
       />
@@ -54,7 +63,7 @@ const AppRoutes: React.FC = () => {
       <Route
         path="/gestao-alugueis"
         element={
-          <ProtectedRoute requiredRole="entrepreneur">
+          <ProtectedRoute requiredRole={["entrepreneur", "landowner"]}>
             <RentalManagement />
           </ProtectedRoute>
         }

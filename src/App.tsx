@@ -2,7 +2,6 @@ import "./App.css";
 import AppRoutes from "./routes/AppRoutes";
 import { AuthProvider } from "./contexts/AuthContext";
 import { RentalProvider } from "./contexts/RentalContext";
-import { useRental } from "./hooks/useRental";
 import { BrowserRouter, useLocation } from "react-router-dom";
 import { Sidebar, SidebarToggle } from "./components/Sidebar/Sidebar";
 import { useSidebar } from "./hooks/useSidebar";
@@ -11,7 +10,6 @@ import { useState } from "react";
 function AppContent() {
   const { isOpen, isMobile, toggle } = useSidebar();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const { rentalCount } = useRental();
   const location = useLocation();
   
   // Não mostrar sidebar na página inicial, login e registro
@@ -32,7 +30,6 @@ function AppContent() {
           onToggle={toggle}
           isCollapsed={sidebarCollapsed}
           onToggleCollapse={toggleSidebar}
-          rentalCount={rentalCount}
         />
       )}
       {!shouldHideSidebar && isMobile && <SidebarToggle isOpen={isOpen} onToggle={toggle} />}

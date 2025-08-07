@@ -48,7 +48,7 @@ const Login: React.FC = () => {
       <img src="/log.png" alt="Logo Cota Resort" className="login-logo" />
       {location.state && location.state.redirected && (
         <div className="login-redirect-message">
-          Você precisa estar logado para acessar o marketplace.
+          Você precisa estar logado para acessar os empreendimentos.
         </div>
       )}
       <form className="login-form" onSubmit={handleSubmit}>

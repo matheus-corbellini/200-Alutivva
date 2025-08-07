@@ -9,26 +9,28 @@ type HeroSectionProps = {
 };
 
 export const HeroSection: React.FC<HeroSectionProps> = ({
-  title,
-  description,
+  title = "Invista em Imóveis com Segurança",
+  description = "Diversifique seus investimentos com cotas de empreendimentos imobiliários selecionados. Rentabilidade atrativa e transparência total.",
   onAddProperty,
-}) => (
-  <div className="hero-section">
-    <div className="hero-content">
-      <div className="hero-text">
-        <h2 className="hero-title">{title}</h2>
-        <p className="hero-description">{description}</p>
+}) => {
+  return (
+    <div className="hero-section">
+      <div className="hero-content">
+        <div className="hero-text">
+          <h2 className="hero-title">{title}</h2>
+          <p className="hero-description">{description}</p>
+        </div>
+        {onAddProperty && (
+          <Button
+            variant="primary"
+            onClick={onAddProperty}
+            className="add-property-button"
+          >
+            <MdAdd size={20} />
+            Adicionar Empreendimento
+          </Button>
+        )}
       </div>
-      {onAddProperty && (
-        <Button
-          variant="primary"
-          onClick={onAddProperty}
-          className="add-property-button"
-        >
-          <MdAdd size={20} />
-          Adicionar Empreendimento
-        </Button>
-      )}
     </div>
-  </div>
-);
+  );
+};
