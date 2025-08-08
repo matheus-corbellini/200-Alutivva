@@ -1,4 +1,4 @@
-import { useAuth } from "../../hooks/useAuth";
+import { useAuth } from "../../contexts/AuthContext";
 import "./ProtectedRoute.css";
 
 type ProtectedRouteProps = {
@@ -25,12 +25,14 @@ export const ProtectedRoute = ({ children, requiredRole }: ProtectedRouteProps) 
   }
 
   // Se há role requerido, verifica se o usuário tem permissão
-  console.log("ProtectedRoute - User role:", user?.role);
-  console.log("ProtectedRoute - Required role:", requiredRole);
-  console.log("ProtectedRoute - User object:", user);
 
   // Verificação mais robusta do role
   const userRole = user?.role?.toLowerCase?.() || user?.role;
+  
+  // Admin tem acesso a todas as páginas
+  if (userRole === "admin") {
+    return <>{children}</>;
+  }
   
   // Verifica se o requiredRole é um array ou string
   if (Array.isArray(requiredRole)) {
@@ -54,8 +56,10 @@ export const ProtectedRoute = ({ children, requiredRole }: ProtectedRouteProps) 
     <div className="protected-route-loading-container">
       <h2>Acesso Negado</h2>
       <p>Você não tem permissão para acessar esta página.</p>
-      <p>Seu role: {user?.role}</p>
+      <p>Seu role: {user?.role || "Não definido"}</p>
       <p>Role necessário: {Array.isArray(requiredRole) ? requiredRole.join(", ") : requiredRole}</p>
+      <p>User ID: {user?.id || "Não disponível"}</p>
+      <p>Email: {user?.email || "Não disponível"}</p>
     </div>
   );
 };

@@ -8,26 +8,30 @@
   font-size: 1.1rem;
   cursor: pointer;
   transition: background-color 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
 .custom-btn.primary {
-  background: #1a355b;
+  background: #1b4f52;
   color: #fff;
 }
 
 .custom-btn.primary:hover {
-  background: #2446a4;
+  background: #134a4d;
 }
 
 .custom-btn.secondary {
   background: #fff;
-  color: #1a355b;
-  border: 2px solid #1a355b;
+  color: #1b4f52;
+  border: 2px solid #1b4f52;
 }
 
 .custom-btn.secondary:hover {
   background: #f1f5f9;
-  color: #1a355b;
+  color: #1b4f52;
 }
 
 .custom-btn.transparent {
@@ -82,15 +86,17 @@
 .btn-icon {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   font-size: 1.2em;
+  flex-shrink: 0;
 }
 
 .btn-icon.start {
-  margin-right: 8px;
+  margin-right: 0;
 }
 
 .btn-icon.end {
-  margin-left: 8px;
+  margin-left: 0;
 }
 
 .custom-btn:disabled {

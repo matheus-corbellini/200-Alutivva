@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { RentalContext } from '../contexts/RentalContextValue';
+import { RentalContext } from '../contexts/RentalContext';
 
 export const useRental = () => {
   const context = useContext(RentalContext);

@@ -1,11 +1,29 @@
-import { createContext } from "react";
-import type { Rental } from "../types/rental";
+import React, { createContext, useState } from 'react';
+import type { ReactNode } from 'react';
 
-interface RentalContextType {
-  rentals: Rental[];
-  addRental: (rental: Rental) => void;
-  updateRental: (id: string, updates: Partial<Rental>) => void;
-  deleteRental: (id: string) => void;
+interface Rental {
+    id: string;
+    status: 'active' | 'inactive';
+    // Add other rental properties as needed
 }
 
-export const RentalContext = createContext<RentalContextType | undefined>(undefined); 
+interface RentalContextType {
+    rentals: Rental[];
+    setRentals: React.Dispatch<React.SetStateAction<Rental[]>>;
+}
+
+export const RentalContext = createContext<RentalContextType | undefined>(undefined);
+
+interface RentalProviderProps {
+    children: ReactNode;
+}
+
+export const RentalProvider: React.FC<RentalProviderProps> = ({ children }) => {
+    const [rentals, setRentals] = useState<Rental[]>([]);
+
+    return (
+        <RentalContext.Provider value={{ rentals, setRentals }}>
+            {children}
+        </RentalContext.Provider>
+    );
+};

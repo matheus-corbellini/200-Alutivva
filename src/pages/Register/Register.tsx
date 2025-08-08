@@ -83,7 +83,7 @@ const Register: React.FC = () => {
         >
           <MdArrowBack size={24} />
         </button>
-        <img src="/log.png" alt="Logo Cota Resort" className="Register-logo" />
+        <img src="/logo.png" alt="Alutivva" className="Register-logo" />
         <form className="Register-form" onSubmit={handleSubmit}>
           <div className="Register-input-icon">
             <MdPerson size={20} className="icon-person" color="64748b" />

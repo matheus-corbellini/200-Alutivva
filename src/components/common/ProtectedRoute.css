@@ -93,22 +93,22 @@
 }
 
 .protected-route-auth-actions .custom-btn.primary {
-  background: #1a355b;
+  background: #1b4f52;
   color: white;
-  border: 2px solid #1a355b;
+  border: 2px solid #1b4f52;
 }
 
 .protected-route-auth-actions .custom-btn.primary:hover {
-  background: #2446a4;
-  border-color: #2446a4;
+  background: #134a4d;
+  border-color: #134a4d;
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(26, 53, 91, 0.3);
+  box-shadow: 0 4px 12px rgba(27, 79, 82, 0.3);
 }
 
 .protected-route-auth-actions .custom-btn.secondary {
   background: white;
-  color: #1a355b;
-  border: 2px solid #1a355b;
+  color: #1b4f52;
+  border: 2px solid #1b4f52;
 }
 
 .protected-route-auth-actions .custom-btn.secondary:hover {

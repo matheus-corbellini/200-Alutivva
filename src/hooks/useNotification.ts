@@ -1,61 +1,43 @@
-import { useState, useCallback } from 'react';
-import type { NotificationType } from '../components/common/Notification';
+import { useState, useCallback, useEffect } from 'react';
+
+export type NotificationType = 'success' | 'error' | 'warning' | 'info';
 
 interface NotificationState {
-  isVisible: boolean;
-  type: NotificationType;
-  title: string;
-  message: string;
+    isVisible: boolean;
+    type: NotificationType;
+    title: string;
+    message: string;
 }
 
 export const useNotification = () => {
-  const [notification, setNotification] = useState<NotificationState>({
-    isVisible: false,
-    type: 'success',
-    title: '',
-    message: ''
-  });
-
-  const showNotification = useCallback((
-    type: NotificationType,
-    title: string,
-    message: string
-  ) => {
-    setNotification({
-      isVisible: true,
-      type,
-      title,
-      message
+    const [notification, setNotification] = useState<NotificationState>({
+        isVisible: false,
+        type: 'success',
+        title: '',
+        message: ''
     });
-  }, []);
 
-  const hideNotification = useCallback(() => {
-    setNotification(prev => ({ ...prev, isVisible: false }));
-  }, []);
+    const showNotification = useCallback((type: NotificationType, title: string, message: string) => {
+        if (!title || !message) {
+            console.warn("Tentativa de mostrar notificação com dados inválidos:", { type, title, message });
+            return;
+        }
+        setNotification({ isVisible: true, type, title, message });
+    }, []);
 
-  const showSuccess = useCallback((title: string, message: string) => {
-    showNotification('success', title, message);
-  }, [showNotification]);
+    const hideNotification = useCallback(() => {
+        setNotification(prev => ({ ...prev, isVisible: false, title: '', message: '' }));
+    }, []);
 
-  const showError = useCallback((title: string, message: string) => {
-    showNotification('error', title, message);
-  }, [showNotification]);
+    useEffect(() => {
+        if (notification.isVisible && (!notification.title || !notification.message)) {
+            setNotification({ isVisible: false, type: 'success', title: '', message: '' });
+        }
+    }, [notification]);
 
-  const showWarning = useCallback((title: string, message: string) => {
-    showNotification('warning', title, message);
-  }, [showNotification]);
-
-  const showInfo = useCallback((title: string, message: string) => {
-    showNotification('info', title, message);
-  }, [showNotification]);
-
-  return {
-    notification,
-    showNotification,
-    hideNotification,
-    showSuccess,
-    showError,
-    showWarning,
-    showInfo
-  };
-}; 
+    return {
+        notification,
+        showNotification,
+        hideNotification
+    };
+};

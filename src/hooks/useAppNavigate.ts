@@ -15,6 +15,7 @@ export const useAppNavigate = () => {
   const goToMyLands = () => navigate(paths.myLands);
   const goToMyInvestments = () => navigate(paths.myInvestments);
   const goToReturnsHistory = () => navigate(paths.returnsHistory);
+  const goToAdmin = () => navigate(paths.admin);
 
   return {
     goToHome,
@@ -27,6 +28,7 @@ export const useAppNavigate = () => {
     goToRentalManagement,
     goToMyLands,
     goToMyInvestments,
-    goToReturnsHistory
+    goToReturnsHistory,
+    goToAdmin
   };
 };

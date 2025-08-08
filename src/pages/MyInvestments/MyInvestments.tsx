@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 import "./MyInvestments.css";
-import { useAuth } from "../../hooks/useAuth";
+// import { useAuth } from "../../hooks/useAuth"; // Removido pois não está sendo usado
 import { MdRocketLaunch, MdTrendingUp, MdClose, MdFilterList } from "react-icons/md";
 
 interface Investment {
@@ -17,9 +17,9 @@ interface Investment {
 }
 
 const MyInvestments: React.FC = () => {
-  const { user } = useAuth();
+  // const { user } = useAuth(); // Removido pois não está sendo usado
 
-  const [investments, setInvestments] = useState<Investment[]>([
+  const [investments] = useState<Investment[]>([
     {
       id: "1",
       propertyName: "Resort Tropical Paradise",

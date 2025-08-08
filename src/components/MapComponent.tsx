@@ -15,19 +15,17 @@ L.Icon.Default.mergeOptions({
 interface MapComponentProps {
   properties: Rental[];
   onPropertyClick?: (property: Rental) => void;
-  selectedProperty?: Rental | null;
 }
 
 const MapComponent: React.FC<MapComponentProps> = ({
   properties,
-  onPropertyClick,
-  selectedProperty
+  onPropertyClick
 }) => {
   // Coordenadas padrão do Brasil
   const defaultCenter: [number, number] = [-15.7801, -47.9292]; // Brasília
 
   // Gerar coordenadas aleatórias para as propriedades se não tiverem
-  const propertiesWithCoords = properties.map((property, index) => {
+  const propertiesWithCoords = properties.map((property) => {
     // Gerar coordenadas aleatórias no Brasil
     const lat = -15.7801 + (Math.random() - 0.5) * 10; // Entre -10 e -20
     const lng = -47.9292 + (Math.random() - 0.5) * 20; // Entre -37 e -57

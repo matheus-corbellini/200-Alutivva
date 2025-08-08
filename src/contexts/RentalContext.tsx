@@ -1,6 +1,14 @@
-import React, { useState } from "react";
+import React, { createContext, useState } from "react";
 import type { Rental } from "../types/rental";
-import { RentalContext } from "./RentalContextValue";
+
+interface RentalContextType {
+  rentals: Rental[];
+  addRental: (rental: Rental) => void;
+  updateRental: (id: string, updates: Partial<Rental>) => void;
+  deleteRental: (id: string) => void;
+}
+
+export const RentalContext = createContext<RentalContextType | undefined>(undefined);
 
 export const RentalProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [rentals, setRentals] = useState<Rental[]>([

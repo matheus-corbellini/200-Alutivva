@@ -55,7 +55,12 @@ export default function PropertyDetails() {
   if (!property && propertyId !== 0) {
     return (
       <div className="property-details-container">
-        <PropertyDetailsHeader />
+        <PropertyDetailsHeader
+          title={"Propriedade não encontrada"}
+          location={""}
+          price={0}
+          status={"Indisponível"}
+        />
         <div className="property-details-content">
           <div className="not-found-section">
             <div className="not-found-content">
@@ -87,7 +92,12 @@ export default function PropertyDetails() {
   return (
     <div className="property-details-page-wrapper">
       <div className="property-details-container">
-        <PropertyDetailsHeader />
+        <PropertyDetailsHeader
+          title={property?.title || ""}
+          location={property?.location?.address || ""}
+          price={property?.quotaValue || 0}
+          status={property?.status || ""}
+        />
 
         <div className="property-details-content">
           {/* Hero Section - Always present */}

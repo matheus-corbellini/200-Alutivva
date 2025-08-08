@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
-  Header,
   HeroSection,
   FiltersSection,
   PropertiesGrid,
@@ -8,7 +7,7 @@ import {
   EmptyState,
 } from "../../components/Marketplace";
 import { usePropertyFilters } from "../../hooks/usePropertyFilters";
-import { useAuth } from "../../hooks/useAuth";
+import { useAuth } from "../../contexts/AuthContext";
 import { useNotification } from "../../hooks/useNotification";
 import { Footer } from "borderless";
 import { MdClose } from "react-icons/md";
@@ -21,7 +20,7 @@ export default function MarketplacePage() {
   const { filters, filteredProperties, handleFilterChange, clearFilters } =
     usePropertyFilters();
   const { user } = useAuth();
-  const { notification, showSuccess, showError, hideNotification } = useNotification();
+  const { notification, showNotification, hideNotification } = useNotification();
   const [showNewPropertyModal, setShowNewPropertyModal] = useState(false);
   const [showReserveModal, setShowReserveModal] = useState(false);
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
@@ -67,13 +66,15 @@ export default function MarketplacePage() {
 
       if (isSuccess) {
         // Mostrar notificação de sucesso
-        showSuccess(
+        showNotification(
+          'success',
           'Reserva Confirmada!',
           `Sua reserva de ${formatCurrency(reserveAmount)} para "${selectedProperty?.title}" foi realizada com sucesso.`
         );
       } else {
         // Mostrar notificação de erro
-        showError(
+        showNotification(
+          'error',
           'Erro na Reserva',
           'Não foi possível processar sua reserva. Tente novamente em alguns instantes.'
         );

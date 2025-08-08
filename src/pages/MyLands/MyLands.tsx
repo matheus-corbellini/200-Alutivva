@@ -13,7 +13,7 @@ interface Land {
 }
 
 const MyLands: React.FC = () => {
-  const [lands, setLands] = useState<Land[]>([
+  const [lands] = useState<Land[]>([
     {
       id: "1",
       name: "Terreno Residencial - Jardim Botânico",

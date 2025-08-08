@@ -13,6 +13,7 @@ import {
 import { useAppNavigate } from "../../hooks/useAppNavigate";
 import { loginUser } from "../../services/UserServices/Login";
 
+
 const Login: React.FC = () => {
   const location = useLocation();
   const [showPassword, setShowPassword] = useState(false);
@@ -45,7 +46,7 @@ const Login: React.FC = () => {
       >
         <MdArrowBack size={24} />
       </button>
-      <img src="/log.png" alt="Logo Cota Resort" className="login-logo" />
+      <img src="/logo.png" alt="Alutivva" className="login-logo" />
       {location.state && location.state.redirected && (
         <div className="login-redirect-message">
           Você precisa estar logado para acessar os empreendimentos.
@@ -116,6 +117,7 @@ const Login: React.FC = () => {
           <div className="login-loading-spinner"></div>
         </div>
       )}
+
     </div>
   );
 };

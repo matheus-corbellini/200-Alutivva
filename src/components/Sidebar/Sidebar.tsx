@@ -15,8 +15,9 @@ import {
   MdTrendingUp,
   MdHistory,
   MdHome,
+  MdDashboard,
 } from "react-icons/md";
-import { useAuth } from "../../hooks/useAuth";
+import { useAuth } from "../../contexts/AuthContext";
 import { useRental } from "../../hooks/useRental";
 import "./Sidebar.css";
 
@@ -114,6 +115,12 @@ const createMenuItems = (userRole: string, rentalCount: number = 0): MenuItem[] 
   if (userRole === "admin") {
     return [
       ...baseItems,
+      {
+        id: "admin",
+        label: "Painel Admin",
+        icon: <MdDashboard />,
+        path: "/admin",
+      },
       {
         id: "registro-terrenos",
         label: "Registro de terrenos",
@@ -248,14 +255,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
         {!isCollapsed ? (
           <>
             <div className="sidebar-header">
-              <img src="/log.png" alt="Alutivva" className="sidebar-logo" />
-              <h2 className="sidebar-title">Alutivva</h2>
+              <img src="/logo.png" alt="Alutivva" className="sidebar-logo" />
               <p className="sidebar-subtitle">Plataforma de Investimentos</p>
             </div>
 
             <div className="sidebar-content">
               <div className="sidebar-section">
-                <h3 className="sidebar-section-title">Menu Principal</h3>
+                <h3 className="sidebar-section-title"> </h3>
                 <ul className="sidebar-menu">
                   {menuItems.map((item) => (
                     <li key={item.id} className="sidebar-menu-item">
@@ -308,7 +314,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         ) : (
           <>
             <div className="sidebar-header-collapsed">
-              <img src="/log.png" alt="Alutivva" className="sidebar-logo-collapsed" />
+              <img src="/logo.png" alt="Alutivva" className="sidebar-logo-collapsed" />
             </div>
 
             <div className="sidebar-content-collapsed">

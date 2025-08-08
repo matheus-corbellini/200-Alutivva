@@ -1,0 +1,490 @@
+.admin-quota-manager {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  position: relative;
+}
+
+/* Garantir que não há elementos sendo exibidos incorretamente */
+.admin-quota-manager::before,
+.admin-quota-manager::after {
+  display: none !important;
+  content: none !important;
+}
+
+/* Ocultar qualquer elemento que possa estar sendo exibido incorretamente */
+.admin-quota-manager .status-badge:not(.quotas-table .status-badge),
+.admin-quota-manager [class*="badge"]:not(.quotas-table [class*="badge"]) {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
+
+/* Regra específica para elementos que podem estar sendo renderizados automaticamente */
+.admin-quota-manager [class*="blocked"],
+.admin-quota-manager [class*="red"]:not(.quotas-table [class*="red"]) {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
+
+.quota-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  position: relative;
+}
+
+/* Garantir que não há elementos sendo exibidos incorretamente no header */
+.quota-header .status-badge,
+.quota-header [class*="badge"],
+.quota-header [class*="status"],
+.quota-header [class*="blocked"],
+.quota-header [class*="red"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
+
+/* Ocultar qualquer elemento que possa estar sendo renderizado automaticamente */
+.quota-header *[class*="badge"],
+.quota-header *[class*="status"],
+.quota-header *[class*="blocked"],
+.quota-header *[class*="red"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
+
+.quota-title h3 {
+  margin: 0 0 4px 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.quota-title p {
+  margin: 0;
+  font-size: 14px;
+  color: #64748b;
+}
+
+/* Garantir que o botão Adicionar Cota não tenha elementos indesejados */
+.quota-header .custom-btn,
+.quota-header button {
+  position: relative;
+}
+
+.quota-header .custom-btn::before,
+.quota-header .custom-btn::after,
+.quota-header button::before,
+.quota-header button::after {
+  display: none !important;
+  content: none !important;
+}
+
+/* Ocultar qualquer elemento próximo ao botão */
+.quota-header .custom-btn + *,
+.quota-header button + * {
+  display: none !important;
+}
+
+/* Stats */
+.quota-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.stat-card:hover {
+  background: #f1f5f9;
+  transform: translateY(-1px);
+}
+
+.stat-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: #1e293b;
+  color: white;
+  border-radius: 8px;
+}
+
+.stat-icon.available {
+  background: #059669;
+  color: white;
+}
+
+.stat-icon.reserved {
+  background: #d97706;
+  color: white;
+}
+
+.stat-icon.sold {
+  background: #2563eb;
+  color: white;
+}
+
+.stat-icon.blocked {
+  background: #dc2626;
+  color: white;
+}
+
+.stat-info h4 {
+  margin: 0 0 4px 0;
+  font-size: 12px;
+  font-weight: 500;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stat-info p {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+/* Filters */
+.quota-filters {
+  margin-bottom: 24px;
+}
+
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.filter-group label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+}
+
+.filter-group select {
+  padding: 8px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #1e293b;
+  background: white;
+  cursor: pointer;
+}
+
+/* Table */
+.quotas-table {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.quotas-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.quotas-table thead {
+  background: #f8fafc;
+}
+
+.quotas-table th {
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 11px;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.quotas-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 13px;
+  color: #1e293b;
+}
+
+.quotas-table tr:hover {
+  background: #f8fafc;
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+/* Garantir que badges só apareçam dentro da tabela */
+.quotas-table .status-badge {
+  display: inline-flex !important;
+}
+
+/* Ocultar badges fora da tabela */
+.admin-quota-manager .status-badge:not(.quotas-table .status-badge) {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
+
+.status-badge svg {
+  flex-shrink: 0;
+  width: 10px;
+  height: 10px;
+}
+
+.status-badge.green {
+  background: #d1fae5;
+  color: #059669;
+}
+
+.status-badge.orange {
+  background: #fef3c7;
+  color: #d97706;
+}
+
+.status-badge.blue {
+  background: #dbeafe;
+  color: #2563eb;
+}
+
+.status-badge.red {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.status-badge.gray {
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+.action-buttons {
+  display: flex;
+  flex-direction: row;
+  gap: 4px;
+  align-items: center;
+  flex-wrap: nowrap;
+  min-width: 160px;
+  max-width: 180px;
+}
+
+.action-buttons .custom-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-width: 24px;
+  width: 24px;
+  height: 24px;
+  margin-bottom: 0;
+  padding: 0;
+  border-radius: 4px;
+  font-size: 11px;
+  flex-shrink: 0;
+}
+
+.action-buttons .custom-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.status-select {
+  padding: 4px 6px;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  font-size: 11px;
+  color: #1e293b;
+  background: white;
+  cursor: pointer;
+  min-width: 70px;
+  margin-top: 0;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.status-select:hover {
+  border-color: #1e293b;
+}
+
+.status-select:focus {
+  outline: none;
+  border-color: #1e293b;
+  box-shadow: 0 0 0 2px rgba(30, 41, 59, 0.1);
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 40px;
+  color: #64748b;
+}
+
+.empty-state p {
+  margin: 0;
+  font-size: 14px;
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 12px;
+  max-width: 500px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.modal-header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #64748b;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.modal-close:hover {
+  background: #f1f5f9;
+  color: #1e293b;
+}
+
+.modal-body {
+  padding: 24px;
+}
+
+.modal-body p {
+  margin: 0;
+  color: #64748b;
+  line-height: 1.5;
+}
+
+.modal-footer {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  padding: 20px 24px;
+  border-top: 1px solid #e2e8f0;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .quota-stats {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-quota-manager {
+    padding: 16px;
+  }
+
+  .quota-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+
+  .quota-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .quotas-table {
+    overflow-x: auto;
+  }
+
+  .quotas-table table {
+    min-width: 800px;
+  }
+
+  .action-buttons {
+    flex-direction: row;
+    gap: 4px;
+    flex-wrap: nowrap;
+    min-width: auto;
+    max-width: none;
+  }
+
+  .action-buttons .custom-btn {
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+  }
+
+  .status-select {
+    min-width: 70px;
+    margin-top: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .quota-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .stat-card {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .filter-group {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

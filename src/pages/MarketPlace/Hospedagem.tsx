@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useRental } from "../../hooks/useRental";
 import { MdLocationOn, MdPeople, MdBed, MdShower, MdAttachMoney, MdWifi, MdAir, MdKitchen, MdLocalFireDepartment, MdPool, MdVisibility, MdFlashOn, MdSecurity, MdSupport } from "react-icons/md";
 import { FaClipboardList, FaHouseUser } from "react-icons/fa";
@@ -192,7 +192,7 @@ export default function HospedagemPage() {
           <MapComponent
             properties={availableProperties}
             onPropertyClick={handleMapPropertyClick}
-            selectedProperty={selectedProperty}
+            // selectedProperty={selectedProperty} // Removido pois não existe mais na interface
           />
         </div>
       )}

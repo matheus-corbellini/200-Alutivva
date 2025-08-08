@@ -15,5 +15,6 @@ export type User = {
   email: string;
   phone: string;
   role: UserRole;
+  status?: "pending" | "active" | "blocked";
   createdAt: Timestamp | FieldValue;
 };

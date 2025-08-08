@@ -178,17 +178,17 @@ export const mockPropertyDetails: Record<number, PropertyDetails> = {
 
     risks: [
       {
-        type: "Baixo",
+        level: "baixo",
         title: "Risco de Mercado",
         description: "Localização privilegiada com alta demanda histórica",
       },
       {
-        type: "Médio",
+        level: "médio",
         title: "Risco de Construção",
         description: "Construtora experiente com histórico sólido",
       },
       {
-        type: "Baixo",
+        level: "baixo",
         title: "Risco Regulatório",
         description: "Todas as licenças aprovadas e documentação em dia",
       },
@@ -335,12 +335,12 @@ export const mockPropertyDetails: Record<number, PropertyDetails> = {
 
     risks: [
       {
-        type: "Baixo",
+        level: "baixo",
         title: "Risco de Localização",
         description: "Região de alta valorização e demanda constante",
       },
       {
-        type: "Baixo",
+        level: "baixo",
         title: "Risco de Ocupação",
         description: "Alta demanda por espaços comerciais na região",
       },
@@ -439,12 +439,14 @@ export const mockPropertyDetails: Record<number, PropertyDetails> = {
         type: "pdf",
         size: "1.2 MB",
         url: "#",
+        category: "legal",
       },
       {
         title: "Registro de Imóveis",
         type: "pdf",
         size: "0.8 MB",
         url: "#",
+        category: "legal",
       },
     ],
 
@@ -468,11 +470,10 @@ export const mockPropertyDetails: Record<number, PropertyDetails> = {
 
     developer: {
       name: "Downtown Developments",
-      cnpj: "11.222.333/0001-44",
-      phone: "+55 (21) 77777-6666",
-      email: "contato@downtown.com.br",
-      website: "www.downtown.com.br",
+      logo: "/placeholder.svg?height=100&width=100&text=DD",
       description: "Especialista em revitalização urbana",
+      projects: 25,
+      rating: 4.7,
     },
 
     risks: [
@@ -584,12 +585,14 @@ export const mockPropertyDetails: Record<number, PropertyDetails> = {
         type: "pdf",
         size: "4.2 MB",
         url: "#",
+        category: "legal",
       },
       {
         title: "Projeto Arquitetônico",
         type: "pdf",
         size: "5.1 MB",
         url: "#",
+        category: "projeto",
       },
     ],
 
@@ -614,11 +617,10 @@ export const mockPropertyDetails: Record<number, PropertyDetails> = {
 
     developer: {
       name: "Tropical Resorts Group",
-      cnpj: "33.444.555/0001-66",
-      phone: "+55 (81) 66666-5555",
-      email: "contato@tropicalresorts.com.br",
-      website: "www.tropicalresorts.com.br",
+      logo: "/placeholder.svg?height=100&width=100&text=TRG",
       description: "Especialista em resorts de luxo",
+      projects: 15,
+      rating: 4.9,
     },
 
     risks: [
@@ -735,12 +737,14 @@ export const mockPropertyDetails: Record<number, PropertyDetails> = {
         type: "pdf",
         size: "2.8 MB",
         url: "#",
+        category: "projeto",
       },
       {
         title: "Laudo Técnico",
         type: "pdf",
         size: "1.9 MB",
         url: "#",
+        category: "legal",
       },
     ],
 
@@ -765,11 +769,10 @@ export const mockPropertyDetails: Record<number, PropertyDetails> = {
 
     developer: {
       name: "Família Feliz Construtora",
-      cnpj: "55.666.777/0001-88",
-      phone: "+55 (11) 55555-4444",
-      email: "contato@familiafeliz.com.br",
-      website: "www.familiafeliz.com.br",
+      logo: "/placeholder.svg?height=100&width=100&text=FFC",
       description: "Especialista em condomínios familiares",
+      projects: 35,
+      rating: 4.6,
     },
 
     risks: [
@@ -886,12 +889,14 @@ export const mockPropertyDetails: Record<number, PropertyDetails> = {
         type: "pdf",
         size: "4.5 MB",
         url: "#",
+        category: "projeto",
       },
       {
         title: "Estudo de Viabilidade",
         type: "pdf",
         size: "3.2 MB",
         url: "#",
+        category: "financeiro",
       },
     ],
 
@@ -916,11 +921,10 @@ export const mockPropertyDetails: Record<number, PropertyDetails> = {
 
     developer: {
       name: "Premium Shopping Group",
-      cnpj: "77.888.999/0001-00",
-      phone: "+55 (81) 44444-3333",
-      email: "contato@premiumshopping.com.br",
-      website: "www.premiumshopping.com.br",
+      logo: "/placeholder.svg?height=100&width=100&text=PSG",
       description: "Especialista em shopping centers premium",
+      projects: 20,
+      rating: 4.8,
     },
 
     risks: [

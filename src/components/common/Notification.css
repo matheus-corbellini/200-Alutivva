@@ -24,6 +24,16 @@
 .notification.hide {
   transform: translateX(100%);
   opacity: 0;
+  pointer-events: none;
+}
+
+/* Forçar ocultação se necessário */
+.notification[style*="display: none"],
+.notification:not(.show) {
+  display: none !important;
+  transform: translateX(100%) !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
 }
 
 .notification-icon {

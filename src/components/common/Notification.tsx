@@ -31,7 +31,8 @@ export const Notification: React.FC<NotificationProps> = ({
     }
   }, [isVisible, duration, onClose]);
 
-  if (!isVisible) return null;
+  // Garantir que a notificação só seja renderizada quando realmente visível
+  if (!isVisible || !title || !message) return null;
 
   const getIcon = () => {
     switch (type) {

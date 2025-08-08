@@ -10,5 +10,6 @@ export const paths = {
   rentalManagement: "/gestao-alugueis",
   myLands: "/meus-terrenos",
   myInvestments: "/meus-investimentos",
-  returnsHistory: "/historico-rendimentos"
+  returnsHistory: "/historico-rendimentos",
+  admin: "/admin"
 } as const;

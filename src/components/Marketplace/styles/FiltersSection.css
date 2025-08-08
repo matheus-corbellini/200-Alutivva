@@ -103,12 +103,12 @@
   gap: 1rem;
 }
 
-.search-input-container {
+.filters-section .search-input-container {
   position: relative;
   width: 100%;
 }
 
-.search-icon {
+.filters-section .search-icon {
   position: absolute;
   left: 0.75rem;
   top: 50%;
@@ -116,13 +116,12 @@
   color: #9ca3af;
   width: 1.25rem;
   height: 1.25rem;
-  z-index: 1;
+  pointer-events: none;
 }
 
-.search-input {
-  padding-left: 2.5rem;
+.filters-section .search-input {
   width: 100%;
-  padding: 0.75rem 0.75rem 0.75rem 2.5rem;
+  padding: 0.75rem 0.75rem 0.75rem 3rem;
   border: 1px solid #d1d5db;
   border-radius: 0.375rem;
   font-size: 0.875rem;

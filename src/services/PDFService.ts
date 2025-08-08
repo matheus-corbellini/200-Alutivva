@@ -250,4 +250,329 @@ export class PDFService {
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
   }
+
+  // Relatórios Administrativos
+  static async generateSalesReport(): Promise<Blob> {
+    const pdf = new jsPDF('p', 'mm', 'a4');
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const margin = 20;
+    let yPosition = margin;
+
+    // Cabeçalho
+    pdf.setFontSize(24);
+    pdf.setFont('helvetica', 'bold');
+    pdf.setTextColor(26, 53, 91);
+    pdf.text('RELATÓRIO DE VENDAS', pageWidth / 2, yPosition, { align: 'center' });
+    yPosition += 15;
+
+    // Data do relatório
+    pdf.setFontSize(12);
+    pdf.setFont('helvetica', 'normal');
+    pdf.setTextColor(100, 100, 100);
+    pdf.text(`Gerado em: ${new Date().toLocaleDateString('pt-BR')}`, pageWidth / 2, yPosition, { align: 'center' });
+    yPosition += 20;
+
+    // Linha separadora
+    pdf.setDrawColor(26, 53, 91);
+    pdf.setLineWidth(0.5);
+    pdf.line(margin, yPosition, pageWidth - margin, yPosition);
+    yPosition += 20;
+
+    // Dados simulados de vendas
+    const salesData = [
+      ['Janeiro', 'R$ 125.000', '15', 'R$ 8.333'],
+      ['Fevereiro', 'R$ 180.000', '22', 'R$ 8.182'],
+      ['Março', 'R$ 210.000', '28', 'R$ 7.500'],
+      ['Abril', 'R$ 195.000', '25', 'R$ 7.800'],
+      ['Maio', 'R$ 240.000', '30', 'R$ 8.000'],
+      ['Junho', 'R$ 275.000', '35', 'R$ 7.857']
+    ];
+
+    // Título da tabela
+    pdf.setFontSize(16);
+    pdf.setFont('helvetica', 'bold');
+    pdf.setTextColor(0, 0, 0);
+    pdf.text('Vendas Mensais - 2024', margin, yPosition);
+    yPosition += 15;
+
+    // Cabeçalho da tabela
+    pdf.setFontSize(12);
+    pdf.setFont('helvetica', 'bold');
+    pdf.setTextColor(255, 255, 255);
+    pdf.setFillColor(26, 53, 91);
+    pdf.rect(margin, yPosition - 8, pageWidth - (margin * 2), 10, 'F');
+    pdf.text('Mês', margin + 5, yPosition);
+    pdf.text('Vendas', margin + 50, yPosition);
+    pdf.text('Cotas', margin + 100, yPosition);
+    pdf.text('Ticket Médio', margin + 140, yPosition);
+    yPosition += 15;
+
+    // Dados da tabela
+    pdf.setFontSize(10);
+    pdf.setFont('helvetica', 'normal');
+    pdf.setTextColor(0, 0, 0);
+    pdf.setFillColor(245, 245, 245);
+
+    salesData.forEach((row, index) => {
+      if (index % 2 === 0) {
+        pdf.rect(margin, yPosition - 8, pageWidth - (margin * 2), 10, 'F');
+      }
+      pdf.text(row[0], margin + 5, yPosition);
+      pdf.text(row[1], margin + 50, yPosition);
+      pdf.text(row[2], margin + 100, yPosition);
+      pdf.text(row[3], margin + 140, yPosition);
+      yPosition += 12;
+    });
+
+    // Resumo
+    yPosition += 15;
+    pdf.setFontSize(14);
+    pdf.setFont('helvetica', 'bold');
+    pdf.setTextColor(26, 53, 91);
+    pdf.text('RESUMO', margin, yPosition);
+    yPosition += 15;
+
+    const summaryData = [
+      ['Total de Vendas', 'R$ 1.225.000'],
+      ['Total de Cotas', '155'],
+      ['Ticket Médio', 'R$ 7.903'],
+      ['Crescimento Mensal', '+12.5%']
+    ];
+
+    pdf.setFontSize(12);
+    pdf.setFont('helvetica', 'normal');
+    summaryData.forEach(row => {
+      pdf.text(`${row[0]}: ${row[1]}`, margin, yPosition);
+      yPosition += 8;
+    });
+
+    return pdf.output('blob');
+  }
+
+  static async generateUserReport(): Promise<Blob> {
+    const pdf = new jsPDF('p', 'mm', 'a4');
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const margin = 20;
+    let yPosition = margin;
+
+    // Cabeçalho
+    pdf.setFontSize(24);
+    pdf.setFont('helvetica', 'bold');
+    pdf.setTextColor(26, 53, 91);
+    pdf.text('RELATÓRIO DE USUÁRIOS', pageWidth / 2, yPosition, { align: 'center' });
+    yPosition += 15;
+
+    // Data do relatório
+    pdf.setFontSize(12);
+    pdf.setFont('helvetica', 'normal');
+    pdf.setTextColor(100, 100, 100);
+    pdf.text(`Gerado em: ${new Date().toLocaleDateString('pt-BR')}`, pageWidth / 2, yPosition, { align: 'center' });
+    yPosition += 20;
+
+    // Linha separadora
+    pdf.setDrawColor(26, 53, 91);
+    pdf.setLineWidth(0.5);
+    pdf.line(margin, yPosition, pageWidth - margin, yPosition);
+    yPosition += 20;
+
+    // Estatísticas de usuários
+    const userStats = [
+      ['Total de Usuários', '1.247'],
+      ['Usuários Ativos', '892'],
+      ['Novos Usuários (Mês)', '156'],
+      ['Taxa de Retenção', '78.5%'],
+      ['Usuários Pendentes', '23'],
+      ['Usuários Bloqueados', '12']
+    ];
+
+    pdf.setFontSize(16);
+    pdf.setFont('helvetica', 'bold');
+    pdf.setTextColor(0, 0, 0);
+    pdf.text('Estatísticas Gerais', margin, yPosition);
+    yPosition += 15;
+
+    pdf.setFontSize(12);
+    pdf.setFont('helvetica', 'normal');
+    userStats.forEach(row => {
+      pdf.text(`${row[0]}: ${row[1]}`, margin, yPosition);
+      yPosition += 8;
+    });
+
+    // Distribuição por tipo
+    yPosition += 15;
+    pdf.setFontSize(16);
+    pdf.setFont('helvetica', 'bold');
+    pdf.setTextColor(26, 53, 91);
+    pdf.text('Distribuição por Tipo de Usuário', margin, yPosition);
+    yPosition += 15;
+
+    const userTypes = [
+      ['Investidores', '45%', '561'],
+      ['Proprietários', '30%', '374'],
+      ['Empreendedores', '20%', '249'],
+      ['Administradores', '5%', '63']
+    ];
+
+    pdf.setFontSize(12);
+    pdf.setFont('helvetica', 'normal');
+    userTypes.forEach(row => {
+      pdf.text(`${row[0]}: ${row[1]} (${row[2]} usuários)`, margin, yPosition);
+      yPosition += 8;
+    });
+
+    return pdf.output('blob');
+  }
+
+  static async generateFinancialReport(): Promise<Blob> {
+    const pdf = new jsPDF('p', 'mm', 'a4');
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const margin = 20;
+    let yPosition = margin;
+
+    // Cabeçalho
+    pdf.setFontSize(24);
+    pdf.setFont('helvetica', 'bold');
+    pdf.setTextColor(26, 53, 91);
+    pdf.text('RELATÓRIO FINANCEIRO', pageWidth / 2, yPosition, { align: 'center' });
+    yPosition += 15;
+
+    // Data do relatório
+    pdf.setFontSize(12);
+    pdf.setFont('helvetica', 'normal');
+    pdf.setTextColor(100, 100, 100);
+    pdf.text(`Gerado em: ${new Date().toLocaleDateString('pt-BR')}`, pageWidth / 2, yPosition, { align: 'center' });
+    yPosition += 20;
+
+    // Linha separadora
+    pdf.setDrawColor(26, 53, 91);
+    pdf.setLineWidth(0.5);
+    pdf.line(margin, yPosition, pageWidth - margin, yPosition);
+    yPosition += 20;
+
+    // Receita
+    pdf.setFontSize(16);
+    pdf.setFont('helvetica', 'bold');
+    pdf.setTextColor(0, 0, 0);
+    pdf.text('RECEITA', margin, yPosition);
+    yPosition += 15;
+
+    const revenueData = [
+      ['Receita Bruta', 'R$ 2.450.000'],
+      ['Comissões (5%)', 'R$ 122.500'],
+      ['Taxas de Serviço', 'R$ 98.000'],
+      ['Receita Líquida', 'R$ 2.229.500']
+    ];
+
+    pdf.setFontSize(12);
+    pdf.setFont('helvetica', 'normal');
+    revenueData.forEach(row => {
+      pdf.text(`${row[0]}: ${row[1]}`, margin, yPosition);
+      yPosition += 8;
+    });
+
+    // Custos
+    yPosition += 15;
+    pdf.setFontSize(16);
+    pdf.setFont('helvetica', 'bold');
+    pdf.setTextColor(26, 53, 91);
+    pdf.text('CUSTOS OPERACIONAIS', margin, yPosition);
+    yPosition += 15;
+
+    const costData = [
+      ['Infraestrutura', 'R$ 45.000'],
+      ['Marketing', 'R$ 85.000'],
+      ['Equipe', 'R$ 320.000'],
+      ['Outros', 'R$ 28.000'],
+      ['Total de Custos', 'R$ 478.000']
+    ];
+
+    pdf.setFontSize(12);
+    pdf.setFont('helvetica', 'normal');
+    costData.forEach(row => {
+      pdf.text(`${row[0]}: ${row[1]}`, margin, yPosition);
+      yPosition += 8;
+    });
+
+    // Lucro
+    yPosition += 15;
+    pdf.setFontSize(16);
+    pdf.setFont('helvetica', 'bold');
+    pdf.setTextColor(0, 128, 0);
+    pdf.text('LUCRO LÍQUIDO: R$ 1.751.500', margin, yPosition);
+
+    return pdf.output('blob');
+  }
+
+  static async generateProjectReport(): Promise<Blob> {
+    const pdf = new jsPDF('p', 'mm', 'a4');
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const margin = 20;
+    let yPosition = margin;
+
+    // Cabeçalho
+    pdf.setFontSize(24);
+    pdf.setFont('helvetica', 'bold');
+    pdf.setTextColor(26, 53, 91);
+    pdf.text('RELATÓRIO DE PROJETOS', pageWidth / 2, yPosition, { align: 'center' });
+    yPosition += 15;
+
+    // Data do relatório
+    pdf.setFontSize(12);
+    pdf.setFont('helvetica', 'normal');
+    pdf.setTextColor(100, 100, 100);
+    pdf.text(`Gerado em: ${new Date().toLocaleDateString('pt-BR')}`, pageWidth / 2, yPosition, { align: 'center' });
+    yPosition += 20;
+
+    // Linha separadora
+    pdf.setDrawColor(26, 53, 91);
+    pdf.setLineWidth(0.5);
+    pdf.line(margin, yPosition, pageWidth - margin, yPosition);
+    yPosition += 20;
+
+    // Estatísticas de projetos
+    const projectStats = [
+      ['Total de Projetos', '45'],
+      ['Projetos Aprovados', '32'],
+      ['Projetos Pendentes', '8'],
+      ['Projetos Rejeitados', '5'],
+      ['Taxa de Aprovação', '71.1%']
+    ];
+
+    pdf.setFontSize(16);
+    pdf.setFont('helvetica', 'bold');
+    pdf.setTextColor(0, 0, 0);
+    pdf.text('Estatísticas Gerais', margin, yPosition);
+    yPosition += 15;
+
+    pdf.setFontSize(12);
+    pdf.setFont('helvetica', 'normal');
+    projectStats.forEach(row => {
+      pdf.text(`${row[0]}: ${row[1]}`, margin, yPosition);
+      yPosition += 8;
+    });
+
+    // Performance por categoria
+    yPosition += 15;
+    pdf.setFontSize(16);
+    pdf.setFont('helvetica', 'bold');
+    pdf.setTextColor(26, 53, 91);
+    pdf.text('Performance por Categoria', margin, yPosition);
+    yPosition += 15;
+
+    const categoryData = [
+      ['Residencial', '18 projetos', '85% aprovados'],
+      ['Comercial', '12 projetos', '75% aprovados'],
+      ['Misto', '8 projetos', '62% aprovados'],
+      ['Industrial', '7 projetos', '71% aprovados']
+    ];
+
+    pdf.setFontSize(12);
+    pdf.setFont('helvetica', 'normal');
+    categoryData.forEach(row => {
+      pdf.text(`${row[0]}: ${row[1]} (${row[2]})`, margin, yPosition);
+      yPosition += 8;
+    });
+
+    return pdf.output('blob');
+  }
 } 

@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 import "./ReturnsHistory.css";
-import { useAuth } from "../../hooks/useAuth";
-import { MdTrendingUp, MdTrendingDown, MdRemove } from "react-icons/md";
+// import { useAuth } from "../../hooks/useAuth"; // Removido pois não está sendo usado
+import { MdTrendingUp, MdTrendingDown, MdRemove, MdFilterList } from "react-icons/md";
 
 interface ReturnRecord {
   id: string;
@@ -16,9 +16,9 @@ interface ReturnRecord {
 }
 
 const ReturnsHistory: React.FC = () => {
-  const { user } = useAuth();
+  // const { user } = useAuth(); // Removido pois não está sendo usado
 
-  const [returnsHistory, setReturnsHistory] = useState<ReturnRecord[]>([
+  const [returnsHistory] = useState<ReturnRecord[]>([
     {
       id: "1",
       propertyName: "Resort Tropical Paradise",
@@ -67,6 +67,7 @@ const ReturnsHistory: React.FC = () => {
 
   const [filterPeriod, setFilterPeriod] = useState<string>("all");
   const [filterStatus, setFilterStatus] = useState<string>("all");
+  const [showFilters, setShowFilters] = useState(false);
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('pt-BR', {
@@ -140,33 +141,52 @@ const ReturnsHistory: React.FC = () => {
       </div>
 
       <div className="returns-filters-section">
-        <div className="filter-group">
-          <label>Período:</label>
-          <select
-            value={filterPeriod}
-            onChange={(e) => setFilterPeriod(e.target.value)}
-            className="filter-select"
+        <div className="filters-toggle">
+          <button
+            className="filters-toggle-btn"
+            onClick={() => setShowFilters(!showFilters)}
           >
-            <option value="all">Todos os períodos</option>
-            <option value="1 mês">1 mês</option>
-            <option value="2 meses">2 meses</option>
-            <option value="3 meses">3 meses</option>
-            <option value="4 meses">4 meses</option>
-          </select>
+            <span className="filters-toggle-text">
+              <MdFilterList size={18} style={{ marginRight: '0.5rem' }} />
+              Filtros de Busca
+            </span>
+            <span className={`toggle-icon ${showFilters ? 'open' : 'closed'}`}>
+              {showFilters ? '−' : '+'}
+            </span>
+          </button>
         </div>
-        <div className="filter-group">
-          <label>Status:</label>
-          <select
-            value={filterStatus}
-            onChange={(e) => setFilterStatus(e.target.value)}
-            className="filter-select"
-          >
-            <option value="all">Todos os status</option>
-            <option value="positive">Positivo</option>
-            <option value="negative">Negativo</option>
-            <option value="neutral">Neutro</option>
-          </select>
-        </div>
+
+        {showFilters && (
+          <div className="filters-content">
+            <div className="filter-group">
+              <label>Período:</label>
+              <select
+                value={filterPeriod}
+                onChange={(e) => setFilterPeriod(e.target.value)}
+                className="filter-select"
+              >
+                <option value="all">Todos os períodos</option>
+                <option value="1 mês">1 mês</option>
+                <option value="2 meses">2 meses</option>
+                <option value="3 meses">3 meses</option>
+                <option value="4 meses">4 meses</option>
+              </select>
+            </div>
+            <div className="filter-group">
+              <label>Status:</label>
+              <select
+                value={filterStatus}
+                onChange={(e) => setFilterStatus(e.target.value)}
+                className="filter-select"
+              >
+                <option value="all">Todos os status</option>
+                <option value="positive">Positivo</option>
+                <option value="negative">Negativo</option>
+                <option value="neutral">Neutro</option>
+              </select>
+            </div>
+          </div>
+        )}
       </div>
 
       <div className="returns-table">

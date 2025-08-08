@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useAuth } from "../../hooks/useAuth";
+import { useAuth } from "../../contexts/AuthContext";
 import { useAppNavigate } from "../../hooks/useAppNavigate";
 import Button from "../../components/Button/Button";
 import { Footer } from "borderless";

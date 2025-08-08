@@ -9,7 +9,7 @@ const LandingPage: React.FC = () => {
   return (
     <div className="landing-page-wrapper">
       <div className="landing-container">
-        <img src="/log.png" alt="Logo Cota Resort" className="landing-logo" />
+        <img src="/logo-inicio.png" alt="Alutivva" className="landing-logo" />
         <h1 className="landing-title">Invista em resort e hotéis</h1>
         <p className="landing-description">
           Uma plataforma que conecta investidores, proprietários de terras e

@@ -10,7 +10,8 @@ import {
   MdWarning,
   MdCancel,
   MdHome,
-  MdLocationOn
+  MdLocationOn,
+  MdFilterList
 } from "react-icons/md";
 import Button from "../../components/Button/Button";
 import { useRental } from "../../hooks/useRental";
@@ -26,6 +27,7 @@ const RentalManagement: React.FC = () => {
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [businessTypeFilter, setBusinessTypeFilter] = useState<string>("all");
+  const [showFilters, setShowFilters] = useState(false);
 
   const [formData, setFormData] = useState<Partial<Rental>>({
     title: "",
@@ -179,32 +181,51 @@ const RentalManagement: React.FC = () => {
 
       <div className="rental-management-content">
         <div className="rental-filters-section">
-          <div className="filters-row">
-            <div className="filter-group">
-              <label>Status</label>
-              <select
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-              >
-                <option value="all">Todos os status</option>
-                <option value="active">Ativo</option>
-                <option value="pending">Pendente</option>
-                <option value="expired">Expirado</option>
-                <option value="cancelled">Cancelado</option>
-              </select>
-            </div>
-            <div className="filter-group">
-              <label>Tipo de Negócio</label>
-              <select
-                value={businessTypeFilter}
-                onChange={(e) => setBusinessTypeFilter(e.target.value)}
-              >
-                <option value="all">Todos os tipos</option>
-                <option value="daily_rent">Hospedagem</option>
-                <option value="sale">Venda</option>
-              </select>
-            </div>
+          <div className="filters-toggle">
+            <button
+              className="filters-toggle-btn"
+              onClick={() => setShowFilters(!showFilters)}
+            >
+              <span className="filters-toggle-text">
+                <MdFilterList size={18} style={{ marginRight: '0.5rem' }} />
+                Filtros de Busca
+              </span>
+              <span className={`toggle-icon ${showFilters ? 'open' : 'closed'}`}>
+                {showFilters ? '−' : '+'}
+              </span>
+            </button>
           </div>
+
+          {showFilters && (
+            <div className="filters-content">
+              <div className="filters-row">
+                <div className="filter-group">
+                  <label>Status</label>
+                  <select
+                    value={statusFilter}
+                    onChange={(e) => setStatusFilter(e.target.value)}
+                  >
+                    <option value="all">Todos os status</option>
+                    <option value="active">Ativo</option>
+                    <option value="pending">Pendente</option>
+                    <option value="expired">Expirado</option>
+                    <option value="cancelled">Cancelado</option>
+                  </select>
+                </div>
+                <div className="filter-group">
+                  <label>Tipo de Negócio</label>
+                  <select
+                    value={businessTypeFilter}
+                    onChange={(e) => setBusinessTypeFilter(e.target.value)}
+                  >
+                    <option value="all">Todos os tipos</option>
+                    <option value="daily_rent">Hospedagem</option>
+                    <option value="sale">Venda</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="rentals-grid">

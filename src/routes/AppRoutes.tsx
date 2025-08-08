@@ -12,6 +12,7 @@ import RentalManagement from "../pages/RentalManagement/RentalManagement";
 import MyLands from "../pages/MyLands/MyLands";
 import MyInvestments from "../pages/MyInvestments/MyInvestments";
 import ReturnsHistory from "../pages/ReturnsHistory/ReturnsHistory";
+import AdminDashboard from "../pages/AdminDashboard/AdminDashboard";
 import { ProtectedRoute } from "../components/common/ProtectedRoute";
 
 const AppRoutes: React.FC = () => {
@@ -89,6 +90,14 @@ const AppRoutes: React.FC = () => {
         element={
           <ProtectedRoute requiredRole="investor">
             <ReturnsHistory />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin"
+        element={
+          <ProtectedRoute requiredRole="admin">
+            <AdminDashboard />
           </ProtectedRoute>
         }
       />

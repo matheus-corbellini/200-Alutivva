@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import type { User as FirebaseUser } from "firebase/auth";
 import app from "../lib/firebaseConfig";
@@ -25,11 +25,10 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (fbUser) => {
       setFirebaseUser(fbUser);
+      
       if (fbUser) {
         try {
           const userData = await getUserData(fbUser.uid);
-          console.log("AuthContext - User data loaded:", userData);
-          console.log("AuthContext - User role:", userData?.role);
           setUser(userData as User);
         } catch (error) {
           console.error("AuthContext - Error getting user data:", error);
@@ -60,4 +59,13 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 };
 
 export { AuthProvider };
+
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+};
+
 export default AuthContext;
