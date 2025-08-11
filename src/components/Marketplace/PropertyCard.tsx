@@ -21,12 +21,13 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, onReserveQ
     <div className="card property-card">
       <div className="property-image-container">
         <img
-          src={property.image || "/placeholder.svg"}
+          src={property.image || "/logo.png"}
           alt={property.title}
           className="property-image"
           onError={(e) => {
-            console.log('Erro ao carregar imagem:', property.image);
-            e.currentTarget.src = "/placeholder.svg";
+            // evita loop infinito de onError quando o fallback também não existe
+            (e.currentTarget as HTMLImageElement).onerror = null;
+            e.currentTarget.src = "/logo.png";
           }}
         />
         <Badge status={property.status} className="property-status-badge" />

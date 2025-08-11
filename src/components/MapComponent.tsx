@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
@@ -13,28 +13,82 @@ L.Icon.Default.mergeOptions({
 });
 
 interface MapComponentProps {
-  properties: Rental[];
+  properties: (Rental & { coordinates?: [number, number] })[];
   onPropertyClick?: (property: Rental) => void;
+  onReserve?: (property: Rental) => void;
 }
 
 const MapComponent: React.FC<MapComponentProps> = ({
   properties,
-  onPropertyClick
+  onPropertyClick,
+  onReserve
 }) => {
   // Coordenadas padrão do Brasil
   const defaultCenter: [number, number] = [-15.7801, -47.9292]; // Brasília
 
-  // Gerar coordenadas aleatórias para as propriedades se não tiverem
-  const propertiesWithCoords = properties.map((property) => {
-    // Gerar coordenadas aleatórias no Brasil
-    const lat = -15.7801 + (Math.random() - 0.5) * 10; // Entre -10 e -20
-    const lng = -47.9292 + (Math.random() - 0.5) * 20; // Entre -37 e -57
+  // Geocoding cache (mem + localStorage)
+  const [addressToCoords, setAddressToCoords] = useState<Record<string, [number, number]>>({});
 
-    return {
-      ...property,
-      coordinates: [lat, lng] as [number, number]
+  const getCached = (addr: string): [number, number] | null => {
+    if (addressToCoords[addr]) return addressToCoords[addr];
+    try {
+      const raw = localStorage.getItem(`geocode:${addr}`);
+      if (raw) return JSON.parse(raw) as [number, number];
+    } catch { }
+    return null;
+  };
+
+  const setCached = (addr: string, coords: [number, number]) => {
+    setAddressToCoords(prev => ({ ...prev, [addr]: coords }));
+    try { localStorage.setItem(`geocode:${addr}`, JSON.stringify(coords)); } catch { }
+  };
+
+  const geocodeAddress = async (addr: string): Promise<[number, number] | null> => {
+    const cached = getCached(addr);
+    if (cached) return cached;
+    try {
+      const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(addr)}&format=json&limit=1`;
+      const res = await fetch(url, { headers: { 'Accept-Language': 'pt-BR' } });
+      if (!res.ok) return null;
+      const data = await res.json();
+      if (Array.isArray(data) && data.length > 0) {
+        const lat = parseFloat(data[0].lat);
+        const lon = parseFloat(data[0].lon);
+        if (Number.isFinite(lat) && Number.isFinite(lon)) {
+          const coords: [number, number] = [lat, lon];
+          setCached(addr, coords);
+          return coords;
+        }
+      }
+    } catch { }
+    return null;
+  };
+
+  useEffect(() => {
+    // Geocodifica endereços faltantes (em paralelo, mas leve)
+    const run = async () => {
+      const missing = properties
+        .filter(p => !p.coordinates || !Array.isArray(p.coordinates))
+        .map(p => p.address)
+        .filter(Boolean);
+      await Promise.all(missing.map(addr => geocodeAddress(addr)));
     };
-  });
+    run();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [properties.map(p => p.address).join('|')]);
+
+  const propertiesWithCoords = useMemo(() => {
+    return properties.map((property) => {
+      if (property.coordinates && Array.isArray(property.coordinates)) {
+        return property as Rental & { coordinates: [number, number] };
+      }
+      const fromCache = getCached(property.address);
+      if (fromCache) return { ...(property as any), coordinates: fromCache } as Rental & { coordinates: [number, number] };
+      // Sem geocode ainda: não plotar até resolver
+      return { ...(property as any), coordinates: undefined } as any;
+    }).filter((p: any) => Array.isArray(p.coordinates));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [properties, addressToCoords, properties.map(p => p.address).join('|')]);
 
   const formatCurrency = (value: number) =>
     new Intl.NumberFormat("pt-BR", {
@@ -73,7 +127,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
                 <div className="popup-amenities">
                   <strong>Comodidades:</strong>
                   <div className="amenities-list">
-                    {property.amenities.slice(0, 3).map((amenity, index) => (
+                    {property.amenities.slice(0, 3).map((amenity: string, index: number) => (
                       <span key={index} className="amenity-tag">{amenity}</span>
                     ))}
                     {property.amenities.length > 3 && (
@@ -81,6 +135,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
                     )}
                   </div>
                 </div>
+                <button className="popup-reserve-btn" onClick={() => onReserve?.(property)}>Reservar</button>
               </div>
             </Popup>
           </Marker>

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import {
   HeroSection,
   FiltersSection,
@@ -15,17 +15,20 @@ import type { Property } from "../../types/property";
 import { Notification } from "../../components/common/Notification";
 import "../../components/Marketplace/styles/index.css";
 import "./Marketplace.css";
+import { createProperty } from "../../services/PropertiesService";
+import { uploadImage } from "../../services/StorageService";
 
 export default function MarketplacePage() {
-  const { filters, filteredProperties, handleFilterChange, clearFilters } =
+  const { filters, filteredProperties, handleFilterChange, clearFilters, reload } =
     usePropertyFilters();
   const { user } = useAuth();
-  const { notification, showNotification, hideNotification } = useNotification();
+  const { notification, hideNotification } = useNotification();
   const [showNewPropertyModal, setShowNewPropertyModal] = useState(false);
+  const formRef = useRef<HTMLDivElement | null>(null);
   const [showReserveModal, setShowReserveModal] = useState(false);
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
   const [reserveAmount, setReserveAmount] = useState<number>(0);
-  const [isProcessingReserve, setIsProcessingReserve] = useState(false);
+  const [isProcessingReserve] = useState(false);
 
   const handleAddProperty = () => {
     // Investidores não podem adicionar empreendimentos
@@ -52,34 +55,8 @@ export default function MarketplacePage() {
   };
 
   const handleConfirmReserve = () => {
-    // Aqui você implementaria a lógica de reserva
-    console.log('Reservando cota:', selectedProperty?.title, 'Valor:', reserveAmount);
-
-    setIsProcessingReserve(true);
-
-    // Simular processamento da reserva com possibilidade de erro
-    const isSuccess = Math.random() > 0.1; // 90% de chance de sucesso
-
-    setTimeout(() => {
-      setIsProcessingReserve(false);
-      closeReserveModal();
-
-      if (isSuccess) {
-        // Mostrar notificação de sucesso
-        showNotification(
-          'success',
-          'Reserva Confirmada!',
-          `Sua reserva de ${formatCurrency(reserveAmount)} para "${selectedProperty?.title}" foi realizada com sucesso.`
-        );
-      } else {
-        // Mostrar notificação de erro
-        showNotification(
-          'error',
-          'Erro na Reserva',
-          'Não foi possível processar sua reserva. Tente novamente em alguns instantes.'
-        );
-      }
-    }, 2000);
+    // A criação real da reserva acontece na página de detalhes; aqui apenas fechamos o modal
+    closeReserveModal();
   };
 
   const formatCurrency = (value: number) => {
@@ -135,47 +112,66 @@ export default function MarketplacePage() {
                 Preencha os dados do novo empreendimento para adicioná-lo ao marketplace.
               </p>
 
-              <div className="new-property-form">
+              <div className="new-property-form" ref={formRef}>
                 <div className="form-row">
                   <div className="form-group">
                     <label>Nome do Empreendimento *</label>
-                    <input type="text" placeholder="Ex: Residencial Vista Mar" />
+                    <input name="title" type="text" placeholder="Ex: Residencial Vista Mar" />
                   </div>
                   <div className="form-group">
                     <label>Localização *</label>
-                    <input type="text" placeholder="Ex: Barra da Tijuca, RJ" />
+                    <input name="address" type="text" placeholder="Ex: Barra da Tijuca, RJ" />
+                  </div>
+                </div>
+
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>CEP</label>
+                    <input name="postalCode" type="text" placeholder="Ex: 22640-102" />
                   </div>
                 </div>
 
                 <div className="form-group">
                   <label>Descrição *</label>
-                  <textarea placeholder="Descreva o empreendimento..." rows={3} />
+                  <textarea name="description" placeholder="Descreva o empreendimento..." rows={3} />
                 </div>
 
                 <div className="form-row">
                   <div className="form-group">
                     <label>Valor da Cota (R$) *</label>
-                    <input type="number" placeholder="50000" />
+                    <input name="quotaValue" type="number" placeholder="50000" />
                   </div>
                   <div className="form-group">
                     <label>ROI Estimado (% a.a.) *</label>
-                    <input type="number" placeholder="12.5" step="0.1" />
+                    <input name="roi" type="number" placeholder="12.5" step="0.1" />
+                  </div>
+                </div>
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>Quantidade de Cotas (total) *</label>
+                    <input name="totalQuotas" type="number" placeholder="100" min="1" />
                   </div>
                 </div>
 
                 <div className="form-row">
                   <div className="form-group">
                     <label>Status *</label>
-                    <select>
+                    <select name="status">
                       <option value="">Selecione...</option>
-                      <option value="em-construcao">Em Construção</option>
-                      <option value="lancamento">Lançamento</option>
-                      <option value="finalizado">Finalizado</option>
+                      <option value="Em construção">Em Construção</option>
+                      <option value="Lançamento">Lançamento</option>
+                      <option value="Finalizado">Finalizado</option>
                     </select>
                   </div>
                   <div className="form-group">
                     <label>Data de Conclusão</label>
-                    <input type="date" />
+                    <input name="completionDate" type="date" />
+                  </div>
+                </div>
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>Imagem (arquivo)</label>
+                    <input name="imageFile" type="file" accept="image/*" />
                   </div>
                 </div>
               </div>
@@ -185,7 +181,47 @@ export default function MarketplacePage() {
               <button className="btn btn-secondary" onClick={closeNewPropertyModal}>
                 Cancelar
               </button>
-              <button className="btn btn-primary">
+              <button className="btn btn-primary" id="create-property-btn" onClick={async () => {
+                if (!formRef.current) return;
+                const root = formRef.current;
+                const q = (sel: string) => (root.querySelector(sel) as HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement)?.value || "";
+                const title = q('input[name="title"]');
+                const address = q('input[name="address"]');
+                const description = q('textarea[name="description"]');
+                const quotaValue = Number(q('input[name="quotaValue"]')) || 0;
+                const roi = Number(q('input[name="roi"]')) || 0;
+                const status = q('select[name="status"]') as any;
+                const totalQuotas = Number(q('input[name="totalQuotas"]')) || 0;
+                const completionDate = q('input[name="completionDate"]');
+                const postalCode = q('input[name="postalCode"]').replace(/\D/g, "");
+                const imageInput = root.querySelector('input[name="imageFile"]') as HTMLInputElement | null;
+                const imageFile = imageInput?.files?.[0] || null;
+                if (!title || !address || !description || !quotaValue || !roi || !status || !totalQuotas) return;
+                try {
+                  let image = "";
+                  if (imageFile) {
+                    try { image = await uploadImage(imageFile, "properties"); } catch { }
+                  }
+                  await createProperty({
+                    title,
+                    description,
+                    type: "Hoteleiro",
+                    roi,
+                    quotaValue,
+                    totalQuotas,
+                    soldQuotas: 0,
+                    status,
+                    completionDate,
+                    image,
+                    expectedReturn: "",
+                    // Salvar endereço + CEP
+                    location: { address, postalCode, nearbyPlaces: [] } as any,
+                    id: undefined as any,
+                  });
+                  closeNewPropertyModal();
+                  await reload();
+                } catch (e) { }
+              }}>
                 Criar Empreendimento
               </button>
             </div>

@@ -1,17 +1,23 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRental } from "../../hooks/useRental";
-import { MdLocationOn, MdPeople, MdBed, MdShower, MdAttachMoney, MdWifi, MdAir, MdKitchen, MdLocalFireDepartment, MdPool, MdVisibility, MdFlashOn, MdSecurity, MdSupport } from "react-icons/md";
+import { MdLocationOn, MdPeople, MdBed, MdShower, MdAttachMoney, MdWifi, MdAir, MdKitchen, MdLocalFireDepartment, MdPool, MdVisibility, MdFlashOn, MdSecurity, MdSupport, MdMap } from "react-icons/md";
 import { FaClipboardList, FaHouseUser } from "react-icons/fa";
 import type { Rental } from "../../types/rental";
 import MapComponent from "../../components/MapComponent";
 import "./Hospedagem.css";
+import { listRentals } from "../../services/RentalsService";
+import { useSidebarCollapse } from "../../contexts/SidebarCollapseContext";
 
 export default function HospedagemPage() {
-  const { rentals } = useRental();
+  // eslint-disable-next-line no-empty-pattern, @typescript-eslint/no-explicit-any
+  const { /* rentals */ } = useRental() as any;
+  const { setIsCollapsed } = useSidebarCollapse();
   const [selectedProperty, setSelectedProperty] = useState<Rental | null>(null);
   const [showBookingModal, setShowBookingModal] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [showMap, setShowMap] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [items, setItems] = useState<Rental[]>([]);
   const [searchFilters, setSearchFilters] = useState({
     location: "",
     checkIn: "",
@@ -21,8 +27,20 @@ export default function HospedagemPage() {
     amenities: [] as string[],
   });
 
+  useEffect(() => {
+    (async () => {
+      setLoading(true);
+      try {
+        const data = await listRentals();
+        setItems(data);
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, []);
+
   // Filtrar apenas propriedades de hospedagem ativas
-  const availableProperties = rentals.filter(rental =>
+  const availableProperties = items.filter(rental =>
     rental.businessType === "daily_rent" && rental.status === "active"
   );
 
@@ -32,8 +50,8 @@ export default function HospedagemPage() {
   };
 
   const handleMapPropertyClick = (property: Rental) => {
+    // Apenas exibir o popup do mapa; não abrir o modal de reserva
     setSelectedProperty(property);
-    setShowBookingModal(true);
   };
 
   const handleBooking = (property: Rental, bookingData: Record<string, unknown>) => {
@@ -60,9 +78,14 @@ export default function HospedagemPage() {
             <div className="header-actions">
               <button
                 className={`map-toggle-btn ${showMap ? 'active' : ''}`}
-                onClick={() => setShowMap(!showMap)}
+                onClick={() => {
+                  const next = !showMap;
+                  setShowMap(next);
+                  // Minimiza a sidebar quando abrir o mapa e restaura quando fechar
+                  setIsCollapsed(next);
+                }}
               >
-                <span className="map-icon">🗺️</span>
+                <MdMap className="map-icon" size={18} />
                 <span className="map-text">{showMap ? 'Ocultar Mapa' : 'Mostrar Mapa'}</span>
               </button>
             </div>
@@ -75,9 +98,7 @@ export default function HospedagemPage() {
               className="filters-toggle-btn"
               onClick={() => setShowFilters(!showFilters)}
             >
-              <span className="filters-toggle-text">
-                🔍 Filtros de Busca
-              </span>
+              <span className="filters-toggle-text">Filtros de Busca</span>
               <span className={`toggle-icon ${showFilters ? 'open' : 'closed'}`}>
                 {showFilters ? '−' : '+'}
               </span>
@@ -129,6 +150,7 @@ export default function HospedagemPage() {
         </div>
 
         <div className="properties-grid">
+          {loading && (<div className="empty-state"><p>Carregando...</p></div>)}
           {availableProperties.map((property) => (
             <div key={property.id} className="property-card" onClick={() => handlePropertyClick(property)}>
               <div className="property-image">
@@ -138,7 +160,7 @@ export default function HospedagemPage() {
               <div className="property-info">
                 <h3>{property.title}</h3>
                 <div className="property-location">
-                  <span className="location-icon">📍</span>
+                  <span className="location-icon">•</span>
                   <span>{property.address}</span>
                 </div>
                 <p className="property-description">{property.description}</p>
@@ -192,7 +214,10 @@ export default function HospedagemPage() {
           <MapComponent
             properties={availableProperties}
             onPropertyClick={handleMapPropertyClick}
-            // selectedProperty={selectedProperty} // Removido pois não existe mais na interface
+            onReserve={(property) => {
+              setSelectedProperty(property);
+              setShowBookingModal(true);
+            }}
           />
         </div>
       )}
@@ -207,7 +232,7 @@ export default function HospedagemPage() {
                 className="hospedagem-modal-close"
                 onClick={() => setShowBookingModal(false)}
               >
-                ✕
+                x
               </button>
             </div>
             <div className="hospedagem-modal-body">
@@ -303,7 +328,7 @@ export default function HospedagemPage() {
               </div>
 
               <div className="booking-form">
-                <h4>📅 Detalhes da Reserva</h4>
+                <h4>Detalhes da Reserva</h4>
                 <div className="form-row">
                   <div className="form-group">
                     <label>Check-in</label>
@@ -320,7 +345,7 @@ export default function HospedagemPage() {
                 </div>
 
                 <div className="booking-summary">
-                  <h4>💰 Resumo da reserva</h4>
+                  <h4>Resumo da reserva</h4>
                   <div className="summary-item">
                     <span>Diária:</span>
                     <span>{formatCurrency(selectedProperty.dailyRate)}</span>

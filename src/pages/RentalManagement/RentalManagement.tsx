@@ -15,11 +15,29 @@ import {
 } from "react-icons/md";
 import Button from "../../components/Button/Button";
 import { useRental } from "../../hooks/useRental";
+import { listRentals, createRental, updateRentalById, deleteRentalById } from "../../services/RentalsService";
+import { uploadImage } from "../../services/StorageService";
 import type { Rental } from "../../types/rental";
 import "./RentalManagement.css";
 
 const RentalManagement: React.FC = () => {
-  const { rentals, addRental, updateRental, deleteRental } = useRental();
+  // Usar estado local para compatibilidade com ambos contextos
+  // eslint-disable-next-line no-empty-pattern, @typescript-eslint/no-explicit-any
+  const { /* rentals (unused), */ } = useRental() as any;
+  const [items, setItems] = useState<Rental[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  React.useEffect(() => {
+    (async () => {
+      setLoading(true);
+      try {
+        const data = await listRentals();
+        setItems(data);
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, []);
 
   const [showModal, setShowModal] = useState(false);
   const [editingRental, setEditingRental] = useState<Rental | null>(null);
@@ -32,6 +50,7 @@ const RentalManagement: React.FC = () => {
   const [formData, setFormData] = useState<Partial<Rental>>({
     title: "",
     address: "",
+    image: "",
     monthlyRent: 0,
     deposit: 0,
     status: "pending",
@@ -139,25 +158,39 @@ const RentalManagement: React.FC = () => {
     setShowModal(true);
   };
 
-  const handleDeleteRental = (rentalId: string) => {
-    deleteRental(rentalId);
+  const handleDeleteRental = async (rentalId: string) => {
+    await deleteRentalById(rentalId);
+    setItems((prev: Rental[]) => prev.filter(r => r.id !== rentalId));
   };
 
-  const handleSaveRental = () => {
+  const handleSaveRental = async () => {
     if (editingRental) {
-      updateRental(editingRental.id, formData);
+      await updateRentalById(editingRental.id, formData);
+      setItems((prev: Rental[]) => prev.map(r => r.id === editingRental.id ? { ...r, ...formData } as Rental : r));
     } else {
-      const newRental: Rental = {
-        ...formData,
-        id: Date.now().toString()
-      } as Rental;
-      addRental(newRental);
+      // Não enviar campo id para o Firestore (gera erro com undefined)
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { id: _omitId, ...payload } = (formData as Rental);
+      let imageUrl = payload.image || "";
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      if ((formData as any).imageFile instanceof File) {
+        try {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          imageUrl = await uploadImage((formData as any).imageFile, "rentals");
+        } catch { /* empty */ }
+      }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const newId = await createRental({ ...(payload as any), image: imageUrl } as Omit<Rental, "id">);
+      setItems((prev: Rental[]) => [
+        ...prev,
+        { ...(formData as Rental), id: newId } as Rental,
+      ]);
     }
     setShowModal(false);
     setEditingRental(null);
   };
 
-  const filteredRentals = rentals.filter(rental => {
+  const filteredRentals = items.filter(rental => {
     const statusMatch = statusFilter === "all" || rental.status === statusFilter as "active" | "pending" | "expired" | "cancelled";
     const businessTypeMatch = businessTypeFilter === "all" || rental.businessType === businessTypeFilter as "daily_rent" | "sale";
     return statusMatch && businessTypeMatch;
@@ -229,6 +262,7 @@ const RentalManagement: React.FC = () => {
         </div>
 
         <div className="rentals-grid">
+          {loading && <div className="empty-state"><p>Carregando...</p></div>}
           {filteredRentals.map((rental) => (
             <div key={rental.id} className="rental-card">
               <div className="rental-status-hover">
@@ -346,6 +380,14 @@ const RentalManagement: React.FC = () => {
                       value={formData.address}
                       onChange={(e) => setFormData({ ...formData, address: e.target.value })}
                       placeholder="Endereço completo"
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Imagem (arquivo)</label>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={() => setFormData({ ...formData })}
                     />
                   </div>
 

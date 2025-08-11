@@ -5,13 +5,13 @@ import { RentalProvider } from "./contexts/RentalContext";
 import { BrowserRouter, useLocation } from "react-router-dom";
 import { Sidebar, SidebarToggle } from "./components/Sidebar/Sidebar";
 import { useSidebar } from "./hooks/useSidebar";
-import { useState } from "react";
+import { SidebarCollapseProvider, useSidebarCollapse } from "./contexts/SidebarCollapseContext";
 
-function AppContent() {
+function AppFrame() {
   const { isOpen, isMobile, toggle } = useSidebar();
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const { isCollapsed, toggleCollapsed } = useSidebarCollapse();
   const location = useLocation();
-  
+
   // Não mostrar sidebar na página inicial, login e registro
   const isLandingPage = location.pathname === "/";
   const isLoginPage = location.pathname === "/login";
@@ -19,7 +19,7 @@ function AppContent() {
   const shouldHideSidebar = isLandingPage || isLoginPage || isRegisterPage;
 
   const toggleSidebar = () => {
-    setSidebarCollapsed(!sidebarCollapsed);
+    toggleCollapsed();
   };
 
   return (
@@ -28,7 +28,7 @@ function AppContent() {
         <Sidebar
           isOpen={isOpen}
           onToggle={toggle}
-          isCollapsed={sidebarCollapsed}
+          isCollapsed={isCollapsed}
           onToggleCollapse={toggleSidebar}
         />
       )}
@@ -38,7 +38,7 @@ function AppContent() {
         className="main-content-with-sidebar"
         style={{
           minHeight: "100vh",
-          marginLeft: shouldHideSidebar ? "0px" : (sidebarCollapsed ? "70px" : "280px"),
+          marginLeft: shouldHideSidebar ? "0px" : (isCollapsed ? "70px" : "280px"),
           transition: "margin-left 0.3s ease",
           display: "flex",
           flexDirection: "column"
@@ -55,7 +55,9 @@ function App() {
     <BrowserRouter>
       <AuthProvider>
         <RentalProvider>
-          <AppContent />
+          <SidebarCollapseProvider>
+            <AppFrame />
+          </SidebarCollapseProvider>
         </RentalProvider>
       </AuthProvider>
     </BrowserRouter>

@@ -1,3 +1,7 @@
+.investment-value, .stat-value, .price-value {
+  color: #ffffff !important;
+}
+
 /* Estilos originais do Marketplace */
 .marketplace-page-wrapper {
   min-height: 100vh;

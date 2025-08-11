@@ -1,6 +1,7 @@
 .properties-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  /* Cards ainda mais largos */
+  grid-template-columns: repeat(auto-fill, minmax(480px, 1fr));
   gap: 1.5rem;
   align-items: stretch;
 }

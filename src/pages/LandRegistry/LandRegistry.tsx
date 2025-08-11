@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./LandRegistry.css";
 import { MdLocationOn, MdAdd, MdEdit, MdDelete, MdVisibility, MdClose, MdPhone, MdAccessTime, MdTerrain } from "react-icons/md";
 import Button from "../../components/Button/Button";
@@ -28,47 +28,25 @@ interface LandFormData {
   features: string[];
 }
 
-const mockLands: Land[] = [
-  {
-    id: 1,
-    title: "Terreno Praia do Rosa",
-    location: "Imbituba, SC",
-    area: "2.500m²",
-    price: 850000,
-    status: "disponível",
-    image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=250&fit=crop",
-    description: "Terreno privilegiado com vista para o mar, ideal para resort de luxo",
-    coordinates: { lat: -28.2356, lng: -48.6667 },
-    features: ["Vista para o mar", "Acesso direto à praia", "Infraestrutura básica"]
-  },
-  {
-    id: 2,
-    title: "Terreno Serra da Mantiqueira",
-    location: "Campos do Jordão, SP",
-    area: "5.000m²",
-    price: 1200000,
-    status: "reservado",
-    image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=250&fit=crop",
-    description: "Terreno em região montanhosa, perfeito para hotel boutique",
-    coordinates: { lat: -22.7392, lng: -45.5912 },
-    features: ["Vista panorâmica", "Clima ameno", "Turismo de inverno"]
-  },
-  {
-    id: 3,
-    title: "Terreno Chapada Diamantina",
-    location: "Lençóis, BA",
-    area: "8.000m²",
-    price: 650000,
-    status: "disponível",
-    image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=250&fit=crop",
-    description: "Terreno em região de ecoturismo, ideal para pousada ecológica",
-    coordinates: { lat: -12.5619, lng: -41.3928 },
-    features: ["Ecoturismo", "Cachoeiras próximas", "Natureza preservada"]
-  }
-];
+const mockLands: Land[] = [];
+import { listLands, createLand, updateLand, deleteLand as deleteLandSvc } from "../../services/LandsService";
+import { uploadImage } from "../../services/StorageService";
 
 const LandRegistry: React.FC = () => {
   const [lands, setLands] = useState<Land[]>(mockLands);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        setLoading(true);
+        const data = await listLands();
+        setLands(data);
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, []);
   const [showModal, setShowModal] = useState(false);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [selectedLand, setSelectedLand] = useState<Land | null>(null);
@@ -135,34 +113,62 @@ const LandRegistry: React.FC = () => {
     setShowModal(true);
   };
 
-  const handleDeleteLand = (landId: number) => {
-    if (window.confirm("Tem certeza que deseja excluir este terreno?")) {
-      setLands(lands.filter(land => land.id !== landId));
-    }
+  const handleDeleteLand = async (landId: number) => {
+    if (!window.confirm("Tem certeza que deseja excluir este terreno?")) return;
+    await deleteLandSvc(landId);
+    setLands(prev => prev.filter(land => land.id !== landId));
   };
 
-  const handleSaveLand = () => {
+  const handleSaveLand = async () => {
     if (!formData.title || !formData.location || !formData.area || formData.price <= 0) {
       alert("Por favor, preencha todos os campos obrigatórios.");
       return;
     }
 
     if (editingLand) {
-      // Editar terreno existente
-      setLands(lands.map(land =>
-        land.id === editingLand.id
-          ? { ...land, ...formData }
-          : land
-      ));
+      let imageUrl = (formData as any).image || editingLand.image || "";
+      if ((formData as any).imageFile instanceof File) {
+        try {
+          imageUrl = await uploadImage((formData as any).imageFile, "lands");
+        } catch { }
+      }
+      await updateLand(editingLand.id, { ...formData, image: imageUrl } as any);
+      setLands(prev => prev.map(land => land.id === editingLand.id ? { ...land, ...formData } as Land : land));
     } else {
-      // Adicionar novo terreno
-      const newLand: Land = {
-        id: Math.max(...lands.map(l => l.id)) + 1,
-        ...formData,
-        image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=250&fit=crop",
-        coordinates: { lat: -23.5505, lng: -46.6333 } // São Paulo default
-      };
-      setLands([...lands, newLand]);
+      let imageUrl = (formData as any).image || "";
+      if ((formData as any).imageFile instanceof File) {
+        try {
+          imageUrl = await uploadImage((formData as any).imageFile, "lands");
+        } catch { }
+      }
+      const newId = await createLand({
+        ...(formData as any),
+        image: imageUrl,
+        coordinates: (formData as any).coordinates || { lat: -23.5505, lng: -46.6333 },
+        features: formData.features || [],
+        status: (formData.status as any) || "disponível",
+        description: formData.description || "",
+        location: formData.location || "",
+        area: formData.area || "",
+        price: Number(formData.price || 0),
+        title: formData.title || "",
+        id: undefined,
+      } as any);
+      setLands(prev => [
+        ...prev,
+        {
+          id: newId,
+          image: "",
+          coordinates: { lat: -23.5505, lng: -46.6333 },
+          features: [],
+          status: "disponível",
+          description: "",
+          location: formData.location!,
+          area: formData.area!,
+          price: formData.price!,
+          title: formData.title!,
+        } as Land,
+      ]);
     }
 
     setShowModal(false);
@@ -195,7 +201,9 @@ const LandRegistry: React.FC = () => {
         </div>
 
         <div className="land-registry-content">
-          {lands.length === 0 ? (
+          {loading ? (
+            <div className="empty-state"><p>Carregando...</p></div>
+          ) : lands.length === 0 ? (
             <div className="empty-state">
               <h2>Nenhum terreno registrado</h2>
               <p>Comece adicionando seu primeiro terreno para gerenciar suas propriedades.</p>
@@ -393,7 +401,7 @@ const LandRegistry: React.FC = () => {
                   className="modal-close"
                   onClick={() => setShowModal(false)}
                 >
-                  ×
+                  x
                 </button>
               </div>
 
@@ -439,6 +447,13 @@ const LandRegistry: React.FC = () => {
                       onChange={(e) => setFormData({ ...formData, price: Number(e.target.value) })}
                       placeholder="0"
                     />
+                  </div>
+                </div>
+
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>Imagem (arquivo)</label>
+                    <input type="file" accept="image/*" onChange={(e) => setFormData((prev) => ({ ...(prev as any), imageFile: e.target.files?.[0] } as any))} />
                   </div>
                 </div>
 
@@ -491,7 +506,7 @@ const LandRegistry: React.FC = () => {
                               features: formData.features.filter((_, i) => i !== index)
                             })}
                           >
-                            ×
+                            x
                           </button>
                         </span>
                       ))}

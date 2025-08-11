@@ -19,56 +19,7 @@ interface Investment {
 const MyInvestments: React.FC = () => {
   // const { user } = useAuth(); // Removido pois não está sendo usado
 
-  const [investments] = useState<Investment[]>([
-    {
-      id: "1",
-      propertyName: "Resort Tropical Paradise",
-      location: "Maceió, AL",
-      investmentAmount: 50000,
-      investmentDate: "2024-01-15",
-      projectStatus: "em_andamento",
-      expectedReturn: 12.5,
-      currentValue: 56250,
-      photos: ["https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=800&h=600&fit=crop"],
-      lastUpdate: "2024-03-15"
-    },
-    {
-      id: "2",
-      propertyName: "Hotel Business Center",
-      location: "São Paulo, SP",
-      investmentAmount: 75000,
-      investmentDate: "2023-11-20",
-      projectStatus: "concluido",
-      expectedReturn: 15.0,
-      currentValue: 86250,
-      photos: ["https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&h=600&fit=crop"],
-      lastUpdate: "2024-02-28"
-    },
-    {
-      id: "3",
-      propertyName: "Pousada Serra Verde",
-      location: "Gramado, RS",
-      investmentAmount: 30000,
-      investmentDate: "2024-02-10",
-      projectStatus: "planejamento",
-      expectedReturn: 18.0,
-      currentValue: 30000,
-      photos: ["https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800&h=600&fit=crop"],
-      lastUpdate: "2024-03-10"
-    },
-    {
-      id: "4",
-      propertyName: "Hotel Beach Resort",
-      location: "Florianópolis, SC",
-      investmentAmount: 45000,
-      investmentDate: "2024-01-05",
-      projectStatus: "em_andamento",
-      expectedReturn: 14.0,
-      currentValue: 51300,
-      photos: ["https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?w=800&h=600&fit=crop"],
-      lastUpdate: "2024-03-20"
-    }
-  ]);
+  const [investments] = useState<Investment[]>([]);
 
   // Estados para filtros
   const [searchTerm, setSearchTerm] = useState("");
@@ -337,7 +288,7 @@ const MyInvestments: React.FC = () => {
 
       {filteredInvestments.length === 0 && (
         <div className="empty-state">
-          <div className="empty-icon">📈</div>
+          <div className="empty-icon"></div>
           <h3>Nenhum investimento encontrado</h3>
           <p>Comece investindo em resorts e hotéis para aparecer aqui</p>
           <button className="btn-primary">Explorar Oportunidades</button>
@@ -350,9 +301,7 @@ const MyInvestments: React.FC = () => {
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
               <h2>Detalhes do Investimento</h2>
-              <button className="modal-close" onClick={handleCloseModal}>
-                ×
-              </button>
+              <button className="modal-close" onClick={handleCloseModal}>x</button>
             </div>
 
             <div className="modal-body">

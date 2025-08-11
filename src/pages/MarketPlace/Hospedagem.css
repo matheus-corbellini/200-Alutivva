@@ -75,6 +75,8 @@
 
 .map-icon {
   font-size: 1rem;
+  display: inline-flex;
+  align-items: center;
 }
 
 .map-text {
@@ -95,7 +97,7 @@
 }
 
 .hospedagem-content.with-map {
-  max-width: 50%;
+  max-width: 45%;
 }
 
 .search-filters {
@@ -217,8 +219,17 @@
 
 .properties-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, 1fr); /* layout padrão (mapa fechado) */
   gap: 1rem;
+  align-items: stretch;
+}
+
+.hospedagem-content.with-map .properties-grid {
+  grid-template-columns: 1fr; /* com mapa: cards largos em uma coluna */
+}
+
+.hospedagem-content.full-width .properties-grid {
+  grid-template-columns: repeat(4, 1fr);
 }
 
 /* Estilos para os cards de propriedades */
@@ -230,6 +241,13 @@
   transition: all 0.3s ease;
   cursor: pointer;
   border: 1px solid #e0e0e0;
+  display: flex;
+  flex-direction: column; /* padrão (mapa fechado) */
+  height: 100%;
+}
+
+.hospedagem-content.with-map .property-card {
+  flex-direction: row; /* com mapa: imagem à esquerda */
 }
 
 .property-card:hover {
@@ -239,8 +257,13 @@
 
 .property-image {
   position: relative;
-  height: 200px;
+  height: 200px; /* padrão */
   overflow: hidden;
+}
+
+.hospedagem-content.with-map .property-image {
+  height: 160px;
+  width: 220px;
 }
 
 .property-image img {
@@ -280,11 +303,19 @@
 
 .property-info {
   padding: 16px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  gap: 8px;
+}
+
+.hospedagem-content.with-map .property-info {
+  flex: 1;
 }
 
 .property-info h3 {
   margin: 0 0 8px 0;
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 600;
   color: #1c4f52;
 }
@@ -316,8 +347,12 @@
 .property-details {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  margin-bottom: 12px;
+  gap: 4px 10px;
+  margin-bottom: 8px;
+  padding: 6px 8px;
+  background: #f9fbfc;
+  border: 1px solid #e6edf2;
+  border-radius: 10px;
 }
 
 .detail-item {
@@ -325,6 +360,12 @@
   justify-content: space-between;
   align-items: center;
   padding: 4px 0;
+  border-top: 1px solid #eef2f6;
+}
+
+.detail-item:nth-child(-n+2) {
+  /* remove linha da primeira linha da grid */
+  border-top: none;
 }
 
 .detail-label {
@@ -345,7 +386,7 @@
 }
 
 .property-amenities {
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
 
 .amenities-label {
@@ -359,7 +400,9 @@
 .amenities-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px;
+  gap: 6px;
+  max-height: 36px; /* limita ainda mais para manter o card compacto */
+  overflow: hidden;
 }
 
 .amenity-tag {
@@ -376,12 +419,13 @@
   background: #1c4f52;
   color: white;
   border: none;
-  padding: 10px 16px;
+  padding: 10px 14px;
   border-radius: 6px;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  margin-top: auto; /* fixa o botão na base do card */
 }
 
 .view-details-btn:hover {
@@ -859,6 +903,21 @@
   border-radius: 4px;
   font-size: 12px;
   font-weight: 500;
+}
+
+.popup-reserve-btn {
+  margin-top: 8px;
+  background: #1c4f52;
+  color: #fff;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.popup-reserve-btn:hover {
+  background: #0f3a3d;
 }
 
 /* Responsividade */

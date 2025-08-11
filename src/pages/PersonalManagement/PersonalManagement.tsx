@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import { useAppNavigate } from "../../hooks/useAppNavigate";
 import Button from "../../components/Button/Button";
@@ -51,22 +51,63 @@ const PersonalManagement: React.FC = () => {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  // Mock data - em produção viria do backend
   const [profile, setProfile] = useState<UserProfile>({
-    name: user?.name || "João Silva",
-    email: firebaseUser?.email || "joao.silva@email.com",
-    phone: "+55 (11) 99999-9999",
+    name: user?.name || "",
+    email: firebaseUser?.email || "",
+    phone: "",
     role: user?.role || "investor",
-    company: "Investimentos Silva Ltda",
-    address: "Rua das Flores, 123 - São Paulo, SP",
-    birthDate: "1985-03-15",
-    documentNumber: "123.456.789-00",
-    verified: true,
-    joinDate: "2024-01-15",
-    lastLogin: "2024-12-19"
+    company: "",
+    address: "",
+    birthDate: "",
+    documentNumber: "",
+    verified: false,
+    joinDate: new Date().toISOString(),
+    lastLogin: new Date().toISOString(),
   });
 
   const [formData, setFormData] = useState<UserProfile>(profile);
+  const [, setLoading] = useState<boolean>(true);
+  const [, setError] = useState<string>("");
+
+  useEffect(() => {
+    async function load() {
+      try {
+        setLoading(true);
+        // user já vem do AuthContext a partir de users/{uid}
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const createdAt = (user?.createdAt as any)?.toDate ? (user?.createdAt as any).toDate() : new Date();
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const lastLogin = (user as any)?.lastLogin ? new Date((user as any).lastLogin) : new Date();
+        const loaded: UserProfile = {
+          name: user?.name || firebaseUser?.displayName || "",
+          email: user?.email || firebaseUser?.email || "",
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          phone: (user as any)?.phone || "",
+          role: user?.role || "investor",
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          company: (user as any)?.company || "",
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          address: (user as any)?.address || "",
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          birthDate: (user as any)?.birthDate || "",
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          documentNumber: (user as any)?.documentNumber || "",
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          verified: (user as any)?.verified ?? false,
+          joinDate: createdAt.toISOString(),
+          lastLogin: lastLogin.toISOString(),
+        };
+        setProfile(loaded);
+        setFormData(loaded);
+      } catch (e) {
+        console.error("Erro ao carregar perfil do usuário:", e);
+        setError("Não foi possível carregar seus dados agora.");
+      } finally {
+        setLoading(false);
+      }
+    }
+    load();
+  }, [user?.id]);
 
   const handleEdit = () => {
     setFormData(profile);
@@ -147,7 +188,7 @@ const PersonalManagement: React.FC = () => {
                 )}
               </div>
               <div className="profile-info">
-                <h2>{profile.name}</h2>
+                <h2>{profile.name || ""}</h2>
                 <p className="role">{getRoleLabel(profile.role)}</p>
                 <p className="email">{profile.email}</p>
                 <div className="profile-stats">

@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./MyLands.css";
+import { listLands } from "../../services/LandsService";
 
 interface Land {
   id: string;
@@ -13,28 +14,31 @@ interface Land {
 }
 
 const MyLands: React.FC = () => {
-  const [lands] = useState<Land[]>([
-    {
-      id: "1",
-      name: "Terreno Residencial - Jardim Botânico",
-      location: "Brasília, DF",
-      area: 500,
-      partnershipType: "venda",
-      status: "ativo",
-      photos: ["/background.jpg"],
-      createdAt: "2024-01-14"
-    },
-    {
-      id: "2",
-      name: "Terreno Comercial - Centro Empresarial",
-      location: "São Paulo, SP",
-      area: 1200,
-      partnershipType: "sociedade",
-      status: "ativo",
-      photos: ["/background.jpg"],
-      createdAt: "2024-02-20"
-    }
-  ]);
+  const [lands, setLands] = useState<Land[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      setLoading(true);
+      try {
+        const data = await listLands();
+        // adaptar estrutura do serviço para o formato usado nesta página
+        const adapted: Land[] = data.map(d => ({
+          id: String(d.id),
+          name: d.title,
+          location: d.location,
+          area: Number(d.area?.toString().replace(/\D/g, "")) || 0,
+          partnershipType: ("venda") as any,
+          status: (d.status === "disponível" ? "ativo" : "inativo") as any,
+          photos: [d.image || "/background.jpg"],
+          createdAt: d.createdAt || new Date().toISOString(),
+        }));
+        setLands(adapted);
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, []);
 
   const getPartnershipTypeLabel = (type: string) => {
     switch (type) {
@@ -78,6 +82,7 @@ const MyLands: React.FC = () => {
         <div className="lands-sidebar left"></div>
 
         <div className="lands-main">
+          {loading && <div className="empty-state"><p>Carregando...</p></div>}
           {lands.map((land) => (
             <div key={land.id} className="land-card">
               <div className="land-image">
@@ -117,7 +122,7 @@ const MyLands: React.FC = () => {
 
       {lands.length === 0 && (
         <div className="empty-state">
-          <div className="empty-icon">🏞️</div>
+          <div className="empty-icon"></div>
           <h3>Nenhum terreno cadastrado</h3>
           <p>Comece cadastrando seu primeiro terreno para aparecer aqui</p>
           <button className="btn-primary">Cadastrar Terreno</button>

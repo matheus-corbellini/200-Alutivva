@@ -94,25 +94,25 @@ const PropertyHero: React.FC<PropertyHeroProps> = ({
               <div className="investment-item">
                 <span className="investment-label">Valor do Investimento:</span>
                 <span className="investment-value">
-                  {formatCurrency(property.financialProjection.investmentValue)}
+                  {formatCurrency(property.financialProjection?.investmentValue ?? property.quotaValue ?? 0)}
                 </span>
               </div>
               <div className="investment-item">
                 <span className="investment-label">Retorno Mensal:</span>
                 <span className="investment-value">
-                  {formatCurrency(property.financialProjection.monthlyReturn)}
+                  {formatCurrency(property.financialProjection?.monthlyReturn ?? 0)}
                 </span>
               </div>
               <div className="investment-item">
                 <span className="investment-label">Retorno Anual:</span>
                 <span className="investment-value">
-                  {formatCurrency(property.financialProjection.annualReturn)}
+                  {formatCurrency(property.financialProjection?.annualReturn ?? 0)}
                 </span>
               </div>
               <div className="investment-item">
                 <span className="investment-label">Payback:</span>
                 <span className="investment-value">
-                  {property.financialProjection.paybackPeriod} meses
+                  {(property.financialProjection?.paybackPeriod ?? 0)} meses
                 </span>
               </div>
             </div>

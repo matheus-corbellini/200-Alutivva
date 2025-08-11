@@ -12,6 +12,9 @@ import RentalManagement from "../pages/RentalManagement/RentalManagement";
 import MyLands from "../pages/MyLands/MyLands";
 import MyInvestments from "../pages/MyInvestments/MyInvestments";
 import ReturnsHistory from "../pages/ReturnsHistory/ReturnsHistory";
+import MyReservations from "../pages/MyReservations/MyReservations";
+import Documents from "../pages/Documents/Documents";
+import UserNotifications from "../pages/Notifications/UserNotifications";
 import AdminDashboard from "../pages/AdminDashboard/AdminDashboard";
 import { ProtectedRoute } from "../components/common/ProtectedRoute";
 
@@ -82,6 +85,30 @@ const AppRoutes: React.FC = () => {
         element={
           <ProtectedRoute requiredRole="investor">
             <MyInvestments />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/minhas-reservas"
+        element={
+          <ProtectedRoute requiredRole="investor">
+            <MyReservations />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/documentos"
+        element={
+          <ProtectedRoute>
+            <Documents />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/notificacoes"
+        element={
+          <ProtectedRoute>
+            <UserNotifications />
           </ProtectedRoute>
         }
       />

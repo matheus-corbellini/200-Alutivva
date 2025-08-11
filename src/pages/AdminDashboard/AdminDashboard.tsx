@@ -6,6 +6,7 @@ import { Notification } from "../../components/common/Notification";
 import { getAllUsers, updateUserStatus, updateUserRole, type AdminUser } from "../../services/UserServices/GetAllUsers";
 import type { UserRole } from "../../types/users";
 import { PDFService } from "../../services/PDFService";
+import { createProperty, updateProperty, listProperties, listPropertiesWithDocId, deleteProperty } from "../../services/PropertiesService";
 import {
   MdDashboard,
   MdPeople,
@@ -27,6 +28,8 @@ import {
 import Button from "../../components/Button/Button";
 import { Footer } from "borderless";
 import AdminQuotaManager from "../../components/AdminQuotaManager/AdminQuotaManager";
+import { listAllReservations } from "../../services/ReservationsService";
+import AdminNotifications from "./AdminNotifications";
 import "./AdminDashboard.css";
 
 interface AdminMetrics {
@@ -45,6 +48,7 @@ interface PendingProject {
   title: string;
   location: string;
   developer: string;
+  description?: string;
   quotaValue: number;
   totalQuotas: number;
   status: "pending" | "approved" | "rejected";
@@ -60,52 +64,18 @@ const AdminDashboard: React.FC = () => {
   const { notification, showNotification, hideNotification } = useNotification();
   const [activeTab, setActiveTab] = useState("dashboard");
   const [selectedProjectForQuotas, setSelectedProjectForQuotas] = useState<string | null>(null);
-  const [metrics] = useState<AdminMetrics>({
-    totalUsers: 1247,
-    activeUsers: 892,
-    totalProjects: 45,
-    pendingProjects: 8,
-    totalInvestments: 12500000,
-    totalRevenue: 1250000,
-    monthlyGrowth: 15.3,
-    pendingApprovals: 12,
+  const [metrics, setMetrics] = useState<AdminMetrics>({
+    totalUsers: 0,
+    activeUsers: 0,
+    totalProjects: 0,
+    pendingProjects: 0,
+    totalInvestments: 0,
+    totalRevenue: 0,
+    monthlyGrowth: 0,
+    pendingApprovals: 0,
   });
 
-  const [pendingProjects, setPendingProjects] = useState<PendingProject[]>([
-    {
-      id: "1",
-      title: "Resort Tropical Paradise",
-      location: "Maceió, AL",
-      developer: "Desenvolvedora Costa Azul",
-      quotaValue: 50000,
-      totalQuotas: 100,
-      status: "pending",
-      submittedAt: "2024-03-15",
-      developerId: "dev1",
-    },
-    {
-      id: "2",
-      title: "Hotel Business Center",
-      location: "São Paulo, SP",
-      developer: "Empresa Imobiliária SP",
-      quotaValue: 75000,
-      totalQuotas: 80,
-      status: "pending",
-      submittedAt: "2024-03-14",
-      developerId: "dev2",
-    },
-    {
-      id: "3",
-      title: "Pousada Serra Verde",
-      location: "Gramado, RS",
-      developer: "Desenvolvedora Serra",
-      quotaValue: 30000,
-      totalQuotas: 120,
-      status: "pending",
-      submittedAt: "2024-03-13",
-      developerId: "dev3",
-    },
-  ]);
+  const [pendingProjects, setPendingProjects] = useState<PendingProject[]>([]);
 
   const [pendingUsers, setPendingUsers] = useState<AdminUser[]>([]);
   const [loading, setLoading] = useState(false);
@@ -127,12 +97,15 @@ const AdminDashboard: React.FC = () => {
   });
 
   const [showAddProjectModal, setShowAddProjectModal] = useState(false);
+  const [editingProject, setEditingProject] = useState<PendingProject | null>(null);
   const [newProject, setNewProject] = useState({
     name: '',
     description: '',
     location: '',
     developer: '',
-    status: 'pending' as "pending" | "approved" | "rejected"
+    status: 'pending' as "pending" | "approved" | "rejected",
+    lat: '',
+    lng: '',
   });
 
   // Verificar se o usuário é admin
@@ -142,25 +115,76 @@ const AdminDashboard: React.FC = () => {
     }
   }, [user, goToHome]);
 
-  // Carregar usuários do banco de dados
+  // Carregar dados reais (usuários, propriedades, reservas) para métricas e listas
   useEffect(() => {
-    const loadUsers = async () => {
-      if (user?.role === "admin") {
-        setLoading(true);
-        try {
-          const users = await getAllUsers();
-          setPendingUsers(users);
-        } catch (error) {
-          console.error("Erro ao carregar usuários:", error);
-          // Não mostrar notificação automática de erro para evitar spam
-        } finally {
-          setLoading(false);
-        }
-      }
-    };
+    async function load() {
+      if (user?.role !== "admin") return;
+      setLoading(true);
+      try {
+        const [users, properties, reservations] = await Promise.all([
+          getAllUsers(),
+          listProperties(),
+          listAllReservations(),
+        ]);
 
-    loadUsers();
-  }, [user]);
+        setPendingUsers(users);
+
+        // Preencher a aba de projetos com os empreendimentos existentes
+        try {
+          type RawProperty = {
+            id: number | string;
+            title?: string;
+            description?: string;
+            location?: { address?: string };
+            developer?: string;
+            quotaValue?: number;
+            totalQuotas?: number;
+            completionDate?: string;
+            developerId?: string;
+          };
+          const mappedProjects: PendingProject[] = (properties as unknown as RawProperty[]).map((p) => ({
+            id: String(p.id),
+            title: p.title || "Projeto",
+            location: p.location?.address || "",
+            developer: p.developer || "-",
+            description: p.description || "",
+            quotaValue: p.quotaValue || 0,
+            totalQuotas: p.totalQuotas || 0,
+            status: "approved",
+            submittedAt: p.completionDate || new Date().toISOString(),
+            developerId: p.developerId || "",
+          }));
+          setPendingProjects(mappedProjects);
+        } catch {
+          // non-fatal mapping error; keep list vazia
+        }
+
+        const totalUsers = users.length;
+        const activeUsers = users.filter(u => u.status === "active").length;
+        const totalProjects = properties.length;
+        // pendingProjects ainda não vem do Firestore; manter 0 por enquanto
+        const pendingProjects = 0;
+        // Total captado: somar totalAmount das reservas aprovadas
+        const totalInvestments = reservations
+          .filter(r => r.status === "approved")
+          .reduce((sum, r) => sum + (r.totalAmount || 0), 0);
+
+        setMetrics(prev => ({
+          ...prev,
+          totalUsers,
+          activeUsers,
+          totalProjects,
+          pendingProjects,
+          totalInvestments,
+        }));
+      } catch (e) {
+        console.error("Erro ao carregar dados do painel:", e);
+      } finally {
+        setLoading(false);
+      }
+    }
+    load();
+  }, [user?.role]);
 
   if (!user || user.role !== "admin") {
     return (
@@ -209,7 +233,8 @@ const AdminDashboard: React.FC = () => {
       case "rejected":
         return "Rejeitado";
       case "active":
-        return "Ativo";
+        // Não exibimos badge para "ativo"
+        return "";
       case "blocked":
         return "Bloqueado";
       default:
@@ -243,7 +268,7 @@ const AdminDashboard: React.FC = () => {
     );
     showNotification(
       "success",
-      "✅ Projeto Aprovado",
+      "Projeto Aprovado",
       `"${project?.title || 'Projeto'}" foi aprovado e está disponível para investimentos.`
     );
   };
@@ -259,7 +284,7 @@ const AdminDashboard: React.FC = () => {
     );
     showNotification(
       "error",
-      "❌ Projeto Rejeitado",
+      "Projeto Rejeitado",
       `"${project?.title || 'Projeto'}" foi rejeitado e não estará disponível para investimentos.`
     );
   };
@@ -277,14 +302,14 @@ const AdminDashboard: React.FC = () => {
       );
       showNotification(
         "success",
-        "✅ Usuário Aprovado",
+        "Usuário Aprovado",
         `${user?.name || 'Usuário'} foi aprovado e agora tem acesso completo ao sistema.`
       );
     } catch (error) {
       console.error("Erro ao aprovar usuário:", error);
       showNotification(
         "error",
-        "❌ Erro na Aprovação",
+        "Erro na Aprovação",
         "Não foi possível aprovar o usuário. Verifique sua conexão e tente novamente."
       );
     }
@@ -310,7 +335,7 @@ const AdminDashboard: React.FC = () => {
       console.error("Erro ao bloquear usuário:", error);
       showNotification(
         "error",
-        "❌ Erro no Bloqueio",
+        "Erro no Bloqueio",
         "Não foi possível bloquear o usuário. Verifique sua conexão e tente novamente."
       );
     }
@@ -336,7 +361,7 @@ const AdminDashboard: React.FC = () => {
       console.error("Erro ao desbloquear usuário:", error);
       showNotification(
         "error",
-        "❌ Erro no Desbloqueio",
+        "Erro no Desbloqueio",
         "Não foi possível desbloquear o usuário. Verifique sua conexão e tente novamente."
       );
     }
@@ -356,7 +381,7 @@ const AdminDashboard: React.FC = () => {
       console.error("Erro ao excluir usuário:", error);
       showNotification(
         "error",
-        "❌ Erro na Exclusão",
+        "Erro na Exclusão",
         "Não foi possível excluir o usuário. Verifique sua conexão e tente novamente."
       );
     }
@@ -375,14 +400,14 @@ const AdminDashboard: React.FC = () => {
       );
       showNotification(
         "success",
-        "❌ Usuário Rejeitado",
+        "Usuário Rejeitado",
         `${user?.name || 'Usuário'} foi rejeitado e não pode acessar o sistema.`
       );
     } catch (error) {
       console.error("Erro ao rejeitar usuário:", error);
       showNotification(
         "error",
-        "❌ Erro na Rejeição",
+        "Erro na Rejeição",
         "Não foi possível rejeitar o usuário. Verifique sua conexão e tente novamente."
       );
     }
@@ -419,7 +444,9 @@ const AdminDashboard: React.FC = () => {
       description: '',
       location: '',
       developer: '',
-      status: 'pending' as "pending" | "approved" | "rejected"
+      status: 'pending' as "pending" | "approved" | "rejected",
+      lat: '',
+      lng: '',
     });
   };
 
@@ -444,7 +471,7 @@ const AdminDashboard: React.FC = () => {
 
       showNotification(
         "success",
-        "✅ Usuário Criado",
+        "Usuário Criado",
         `${newUser.name} foi adicionado com sucesso ao sistema.`
       );
 
@@ -453,45 +480,13 @@ const AdminDashboard: React.FC = () => {
       console.error("Erro ao criar usuário:", error);
       showNotification(
         "error",
-        "❌ Erro ao Criar Usuário",
+        "Erro ao Criar Usuário",
         "Não foi possível criar o usuário. Verifique os dados e tente novamente."
       );
     }
   };
 
-  const handleAddNewProject = async () => {
-    try {
-      // Aqui você implementaria a lógica para criar projeto no Firebase
-      // Por enquanto, vamos simular a criação
-      // const mockNewProject = {
-      //   id: `project_${Date.now()}`,
-      //   name: newProject.name,
-      //   description: newProject.description,
-      //   location: newProject.location,
-      //   developer: newProject.developer,
-      //   status: newProject.status,
-      //   date: new Date().toLocaleDateString('pt-BR')
-      // };
-
-      // Adicionar à lista local (você precisaria ter um estado para projetos)
-      // setProjects(prev => [mockNewProject, ...prev]);
-
-      showNotification(
-        "success",
-        "✅ Projeto Criado",
-        `${newProject.name} foi adicionado com sucesso ao sistema.`
-      );
-
-      handleCloseModals();
-    } catch (error) {
-      console.error("Erro ao criar projeto:", error);
-      showNotification(
-        "error",
-        "❌ Erro ao Criar Projeto",
-        "Não foi possível criar o projeto. Verifique os dados e tente novamente."
-      );
-    }
-  };
+  // Removido handler antigo de adicionar projeto (substituído pelo modal unificado)
 
   // Funções para gerar relatórios
   const handleGenerateSalesReport = async () => {
@@ -509,7 +504,7 @@ const AdminDashboard: React.FC = () => {
       console.error("Erro ao gerar relatório de vendas:", error);
       showNotification(
         "error",
-        "❌ Erro no Relatório",
+        "Erro no Relatório",
         "Não foi possível gerar o relatório de vendas."
       );
     }
@@ -530,7 +525,7 @@ const AdminDashboard: React.FC = () => {
       console.error("Erro ao gerar relatório de usuários:", error);
       showNotification(
         "error",
-        "❌ Erro no Relatório",
+        "Erro no Relatório",
         "Não foi possível gerar o relatório de usuários."
       );
     }
@@ -551,7 +546,7 @@ const AdminDashboard: React.FC = () => {
       console.error("Erro ao gerar relatório financeiro:", error);
       showNotification(
         "error",
-        "❌ Erro no Relatório",
+        "Erro no Relatório",
         "Não foi possível gerar o relatório financeiro."
       );
     }
@@ -609,9 +604,28 @@ const AdminDashboard: React.FC = () => {
       console.error("Erro ao salvar alterações:", error);
       showNotification(
         "error",
-        "❌ Erro ao Salvar",
+        "Erro ao Salvar",
         "Não foi possível salvar as alterações. Verifique sua conexão e tente novamente."
       );
+    }
+  };
+
+  const handleDeleteProject = async (projectId: string) => {
+    try {
+      const confirmDelete = window.confirm("Tem certeza que deseja excluir este empreendimento? Esta ação não pode ser desfeita.");
+      if (!confirmDelete) return;
+      const withIds = await listPropertiesWithDocId();
+      const match = withIds.find(p => String(p.id) === String(projectId));
+      if (!match) {
+        showNotification("error", "Erro", "Não foi possível localizar este empreendimento no banco.");
+        return;
+      }
+      await deleteProperty(match.docId);
+      setPendingProjects(prev => prev.filter(p => String(p.id) !== String(projectId)));
+      showNotification("success", "Empreendimento", "Excluído com sucesso.");
+    } catch (e) {
+      console.error("Erro ao excluir projeto:", e);
+      showNotification("error", "Erro", "Não foi possível excluir o empreendimento.");
     }
   };
 
@@ -768,7 +782,7 @@ const AdminDashboard: React.FC = () => {
             </select>
           </div>
         </div>
-        <Button variant="primary" onClick={() => setShowAddProjectModal(true)}>
+        <Button variant="primary" onClick={() => { setEditingProject(null); setNewProject({ name: '', description: '', location: '', developer: '', status: 'pending', lat: '', lng: '' }); setShowAddProjectModal(true); }}>
           <MdAdd size={20} />
           Novo Projeto
         </Button>
@@ -800,9 +814,14 @@ const AdminDashboard: React.FC = () => {
                 <td>{project.developer}</td>
                 <td>{formatCurrency(project.quotaValue)}</td>
                 <td>
-                  <span className={`status-badge ${getStatusColor(project.status)}`}>
-                    {getStatusText(project.status)}
-                  </span>
+                  {(() => {
+                    const statusText = getStatusText(project.status);
+                    return statusText ? (
+                      <span className={`status-badge ${getStatusColor(project.status)}`}>
+                        {statusText}
+                      </span>
+                    ) : null;
+                  })()}
                 </td>
                 <td>{formatDate(project.submittedAt)}</td>
                 <td>
@@ -810,7 +829,7 @@ const AdminDashboard: React.FC = () => {
                     <Button variant="secondary" size="small" title="Visualizar projeto">
                       <MdVisibility size={16} />
                     </Button>
-                    <Button variant="secondary" size="small" title="Editar projeto">
+                    <Button variant="secondary" size="small" title="Editar projeto" onClick={() => { setEditingProject(project); setNewProject({ name: project.title, description: project.description || '', location: project.location, developer: project.developer, status: project.status, lat: '', lng: '' }); setShowAddProjectModal(true); }}>
                       <MdEdit size={16} />
                     </Button>
                     {project.status === "pending" && (
@@ -839,7 +858,7 @@ const AdminDashboard: React.FC = () => {
                         </Button>
                       </>
                     )}
-                    <Button variant="danger" size="small" title="Excluir projeto">
+                    <Button variant="danger" size="small" title="Excluir projeto" onClick={() => handleDeleteProject(project.id)}>
                       <MdDelete size={16} />
                     </Button>
                   </div>
@@ -925,9 +944,14 @@ const AdminDashboard: React.FC = () => {
                   <td>{user.email}</td>
                   <td>{getRoleDisplayText(user.role)}</td>
                   <td>
-                    <span className={`status-badge ${getStatusColor(user.status)}`}>
-                      {getStatusText(user.status)}
-                    </span>
+                    {(() => {
+                      const statusText = getStatusText(user.status);
+                      return statusText ? (
+                        <span className={`status-badge ${getStatusColor(user.status)}`}>
+                          {statusText}
+                        </span>
+                      ) : null;
+                    })()}
                   </td>
                   <td>{user.registrationDate}</td>
                   <td>{user.lastLogin ? user.lastLogin : "Nunca"}</td>
@@ -1093,6 +1117,10 @@ const AdminDashboard: React.FC = () => {
     </div>
   );
 
+  const renderAdminNotifications = () => (
+    <AdminNotifications />
+  );
+
   return (
     <div className="admin-dashboard-page-wrapper">
       {/* Notification Component */}
@@ -1136,9 +1164,14 @@ const AdminDashboard: React.FC = () => {
                 </div>
                 <div className="detail-row">
                   <label>Status:</label>
-                  <span className={`status-badge ${getStatusColor(selectedUser.status)}`}>
-                    {getStatusText(selectedUser.status)}
-                  </span>
+                  {(() => {
+                    const statusText = getStatusText(selectedUser.status);
+                    return statusText ? (
+                      <span className={`status-badge ${getStatusColor(selectedUser.status)}`}>
+                        {statusText}
+                      </span>
+                    ) : null;
+                  })()}
                 </div>
                 <div className="detail-row">
                   <label>Data de Cadastro:</label>
@@ -1238,81 +1271,7 @@ const AdminDashboard: React.FC = () => {
         </div>
       )}
 
-      {/* Modal de Adicionar Projeto */}
-      {showAddProjectModal && (
-        <div className="modal-overlay" onClick={handleCloseModals}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <h3>Adicionar Novo Projeto</h3>
-              <button className="modal-close" onClick={handleCloseModals}>
-                <MdClose size={20} />
-              </button>
-            </div>
-            <div className="modal-body">
-              <div className="edit-user-form">
-                <div className="form-group">
-                  <label>Nome do Projeto:</label>
-                  <input
-                    type="text"
-                    value={newProject.name}
-                    onChange={(e) => setNewProject({ ...newProject, name: e.target.value })}
-                    placeholder="Digite o nome do projeto"
-                  />
-                </div>
-                <div className="form-group">
-                  <label>Descrição:</label>
-                  <textarea
-                    value={newProject.description}
-                    onChange={(e) => setNewProject({ ...newProject, description: e.target.value })}
-                    placeholder="Digite a descrição do projeto"
-                    rows={3}
-                  />
-                </div>
-                <div className="form-group">
-                  <label>Localização:</label>
-                  <input
-                    type="text"
-                    value={newProject.location}
-                    onChange={(e) => setNewProject({ ...newProject, location: e.target.value })}
-                    placeholder="Digite a localização"
-                  />
-                </div>
-                <div className="form-group">
-                  <label>Desenvolvedor:</label>
-                  <input
-                    type="text"
-                    value={newProject.developer}
-                    onChange={(e) => setNewProject({ ...newProject, developer: e.target.value })}
-                    placeholder="Digite o nome do desenvolvedor"
-                  />
-                </div>
-                <div className="form-group">
-                  <label>Status:</label>
-                  <select
-                    value={newProject.status}
-                    onChange={(e) => setNewProject({ ...newProject, status: e.target.value as "pending" | "approved" | "rejected" })}
-                  >
-                    <option value="pending">Pendente</option>
-                    <option value="approved">Aprovado</option>
-                    <option value="rejected">Rejeitado</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-            <div className="modal-footer">
-              <Button variant="secondary" onClick={handleCloseModals}>
-                Cancelar
-              </Button>
-              <Button
-                variant="primary"
-                onClick={handleAddNewProject}
-              >
-                Adicionar Projeto
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Removido: modal antigo de adicionar projeto para evitar duplicidade */}
 
       {/* Modal de Edição do Usuário */}
       {showEditUserModal && selectedUser && (
@@ -1439,6 +1398,13 @@ const AdminDashboard: React.FC = () => {
           <MdAttachMoney size={20} />
           Cotas
         </button>
+        <button
+          className={`nav-tab ${activeTab === "notifications" ? "active" : ""}`}
+          onClick={() => setActiveTab("notifications")}
+        >
+          <MdTrendingUp size={20} />
+          Notificações
+        </button>
       </div>
 
       <div className="admin-content">
@@ -1447,7 +1413,164 @@ const AdminDashboard: React.FC = () => {
         {activeTab === "users" && renderUsers()}
         {activeTab === "reports" && renderReports()}
         {activeTab === "quotas" && renderQuotas()}
+        {activeTab === "notifications" && renderAdminNotifications()}
       </div>
+
+      {showAddProjectModal && (
+        <div className="modal-overlay" onClick={handleCloseModals}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>{editingProject ? "Editar Empreendimento" : "Novo Empreendimento"}</h3>
+              <button className="modal-close" onClick={handleCloseModals}>
+                <MdClose size={20} />
+              </button>
+            </div>
+            <div className="modal-body">
+              <div className="form-group">
+                <label>Nome</label>
+                <input
+                  type="text"
+                  value={newProject.name}
+                  onChange={(e) => setNewProject({ ...newProject, name: e.target.value })}
+                />
+              </div>
+              <div className="form-group">
+                <label>Descrição</label>
+                <input
+                  type="text"
+                  value={newProject.description}
+                  onChange={(e) => setNewProject({ ...newProject, description: e.target.value })}
+                />
+              </div>
+              <div className="form-group">
+                <label>Localização</label>
+                <input
+                  type="text"
+                  value={newProject.location}
+                  onChange={(e) => setNewProject({ ...newProject, location: e.target.value })}
+                />
+              </div>
+              <div className="form-group" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                <div>
+                  <label>Latitude</label>
+                  <input
+                    type="text"
+                    value={newProject.lat}
+                    onChange={(e) => setNewProject({ ...newProject, lat: e.target.value })}
+                    placeholder="-23.5505"
+                  />
+                </div>
+                <div>
+                  <label>Longitude</label>
+                  <input
+                    type="text"
+                    value={newProject.lng}
+                    onChange={(e) => setNewProject({ ...newProject, lng: e.target.value })}
+                    placeholder="-46.6333"
+                  />
+                </div>
+              </div>
+              <div className="form-group">
+                <label>Desenvolvedor</label>
+                <input
+                  type="text"
+                  value={newProject.developer}
+                  onChange={(e) => setNewProject({ ...newProject, developer: e.target.value })}
+                />
+              </div>
+            </div>
+            <div className="modal-footer">
+              <Button variant="secondary" onClick={handleCloseModals}>Cancelar</Button>
+              <Button
+                variant="primary"
+                onClick={async () => {
+                  try {
+                    if (editingProject) {
+                      // descobrir docId pelo id numérico/lógico
+                      const withIds = await listPropertiesWithDocId();
+                      const match = withIds.find(p => String(p.id) === String(editingProject.id));
+                      const targetDocId = match?.docId || String(editingProject.id);
+                      await updateProperty(targetDocId, {
+                        title: newProject.name as string,
+                        description: newProject.description as string,
+                        // casting para tipo genérico do serviço
+                        ...(newProject.developer ? { developer: newProject.developer as unknown as string } : {}),
+                        ...(newProject.location || newProject.lat || newProject.lng
+                          ? {
+                            location: {
+                              address: newProject.location,
+                              ...(newProject.lat && newProject.lng
+                                ? { coordinates: { lat: Number(newProject.lat), lng: Number(newProject.lng) } }
+                                : {}),
+                            },
+                          }
+                          : {}),
+                      } as unknown as Record<string, unknown>);
+                      showNotification("success", "Empreendimento", "Atualizado com sucesso.");
+                    } else {
+                      // Monta payload mínimo dentro do tipo Property
+                      await createProperty({
+                        id: Date.now(),
+                        title: newProject.name as string,
+                        description: newProject.description as string,
+                        // Campos obrigatórios do tipo Property
+                        type: "Residencial",
+                        status: "Em construção" as never,
+                        roi: 0,
+                        quotaValue: 0,
+                        totalQuotas: 0,
+                        soldQuotas: 0,
+                        expectedReturn: "",
+                        completionDate: new Date().toISOString().slice(0, 10),
+                        image: "/logo.png",
+                        location: {
+                          address: newProject.location as string,
+                          coordinates: (newProject.lat && newProject.lng)
+                            ? { lat: Number(newProject.lat), lng: Number(newProject.lng) }
+                            : { lat: 0, lng: 0 },
+                          nearbyPlaces: [],
+                        },
+                        ...(newProject.developer ? { developer: newProject.developer as unknown as string } : {}),
+                      });
+                      showNotification("success", "Empreendimento", "Criado com sucesso.");
+                    }
+                    setShowAddProjectModal(false);
+                    // Recarregar listagem
+                    const props = await listProperties();
+                    type RawProperty = {
+                      id: number | string;
+                      title?: string;
+                      location?: { address?: string };
+                      developer?: string;
+                      quotaValue?: number;
+                      totalQuotas?: number;
+                      completionDate?: string;
+                      developerId?: string;
+                    };
+                    const mapped = (props as unknown as RawProperty[]).map((p) => ({
+                      id: String(p.id),
+                      title: p.title || "Projeto",
+                      location: p.location?.address || "",
+                      developer: p.developer || "-",
+                      quotaValue: p.quotaValue || 0,
+                      totalQuotas: p.totalQuotas || 0,
+                      status: "approved" as const,
+                      submittedAt: p.completionDate || new Date().toISOString(),
+                      developerId: p.developerId || "",
+                    }));
+                    setPendingProjects(mapped);
+                  } catch (e) {
+                    console.error(e);
+                    showNotification("error", "Erro", "Não foi possível salvar o empreendimento.");
+                  }
+                }}
+              >
+                Salvar
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <Footer
         theme="light"

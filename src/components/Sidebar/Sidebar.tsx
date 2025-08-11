@@ -89,10 +89,22 @@ const createMenuItems = (userRole: string, rentalCount: number = 0): MenuItem[] 
         path: "/meus-investimentos",
       },
       {
-        id: "historico-rendimentos",
-        label: "Histórico de Rendimentos",
+        id: "minhas-reservas",
+        label: "Minhas Reservas",
+        icon: <MdAttachMoney />,
+        path: "/minhas-reservas",
+      },
+      {
+        id: "documentos",
+        label: "Documentos",
         icon: <MdHistory />,
-        path: "/historico-rendimentos",
+        path: "/documentos",
+      },
+      {
+        id: "notificacoes",
+        label: "Notificações",
+        icon: <MdDashboard />,
+        path: "/notificacoes",
       },
     ];
   }
@@ -115,12 +127,6 @@ const createMenuItems = (userRole: string, rentalCount: number = 0): MenuItem[] 
   if (userRole === "admin") {
     return [
       ...baseItems,
-      {
-        id: "admin",
-        label: "Painel Admin",
-        icon: <MdDashboard />,
-        path: "/admin",
-      },
       {
         id: "registro-terrenos",
         label: "Registro de terrenos",
@@ -152,6 +158,13 @@ const createMenuItems = (userRole: string, rentalCount: number = 0): MenuItem[] 
         path: "/gestao-alugueis",
         badge: rentalCount > 0 ? rentalCount : undefined,
       },
+      // Painel Admin deve ser sempre o último
+      {
+        id: "admin",
+        label: "Painel Admin",
+        icon: <MdDashboard />,
+        path: "/admin",
+      },
     ];
   }
 
@@ -172,7 +185,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const { rentals } = useRental();
 
   // Contar apenas propriedades ativas para o badge
-  const activeRentalsCount = rentals.filter(rental => rental.status === "active").length;
+  const activeRentalsCount = rentals.filter((rental: any) => rental.status === "active").length;
 
   const menuItems = createMenuItems(user?.role || "", activeRentalsCount);
 

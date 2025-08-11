@@ -1,69 +1,35 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./ReturnsHistory.css";
 // import { useAuth } from "../../hooks/useAuth"; // Removido pois não está sendo usado
 import { MdTrendingUp, MdTrendingDown, MdRemove, MdFilterList } from "react-icons/md";
+import { listReturnsByUser, type ReturnRecord as ServiceReturnRecord } from "../../services/ReturnsService";
+import { useAuth } from "../../contexts/AuthContext";
 
-interface ReturnRecord {
-  id: string;
-  propertyName: string;
-  date: string;
-  initialValue: number;
-  currentValue: number;
-  returnPercentage: number;
-  returnAmount: number;
-  period: string;
-  status: "positive" | "negative" | "neutral";
-}
+type ReturnRecord = ServiceReturnRecord;
 
 const ReturnsHistory: React.FC = () => {
-  // const { user } = useAuth(); // Removido pois não está sendo usado
+  const { user } = useAuth();
 
-  const [returnsHistory] = useState<ReturnRecord[]>([
-    {
-      id: "1",
-      propertyName: "Resort Tropical Paradise",
-      date: "2024-03-15",
-      initialValue: 50000,
-      currentValue: 56250,
-      returnPercentage: 12.5,
-      returnAmount: 6250,
-      period: "3 meses",
-      status: "positive"
-    },
-    {
-      id: "2",
-      propertyName: "Hotel Business Center",
-      date: "2024-02-28",
-      initialValue: 75000,
-      currentValue: 86250,
-      returnPercentage: 15.0,
-      returnAmount: 11250,
-      period: "4 meses",
-      status: "positive"
-    },
-    {
-      id: "3",
-      propertyName: "Pousada Serra Verde",
-      date: "2024-03-10",
-      initialValue: 30000,
-      currentValue: 30000,
-      returnPercentage: 0.0,
-      returnAmount: 0,
-      period: "1 mês",
-      status: "neutral"
-    },
-    {
-      id: "4",
-      propertyName: "Resort Beach Club",
-      date: "2024-01-20",
-      initialValue: 45000,
-      currentValue: 42750,
-      returnPercentage: -5.0,
-      returnAmount: -2250,
-      period: "2 meses",
-      status: "negative"
+  const [returnsHistory, setReturnsHistory] = useState<ReturnRecord[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string>("");
+
+  useEffect(() => {
+    async function load() {
+      if (!user?.id) return;
+      try {
+        setLoading(true);
+        const data = await listReturnsByUser(user.id);
+        setReturnsHistory(data);
+      } catch (e) {
+        console.error("Erro ao carregar rendimentos:", e);
+        setError("Não foi possível carregar os rendimentos agora.");
+      } finally {
+        setLoading(false);
+      }
     }
-  ]);
+    load();
+  }, [user?.id]);
 
   const [filterPeriod, setFilterPeriod] = useState<string>("all");
   const [filterStatus, setFilterStatus] = useState<string>("all");
@@ -87,7 +53,8 @@ const ReturnsHistory: React.FC = () => {
   };
 
   const filteredHistory = returnsHistory.filter(record => {
-    const periodMatch = filterPeriod === "all" || record.period.includes(filterPeriod);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const periodMatch = filterPeriod === "all" || (record as any).period?.includes?.(filterPeriod);
     const statusMatch = filterStatus === "all" || record.status === filterStatus;
     return periodMatch && statusMatch;
   });
@@ -116,6 +83,8 @@ const ReturnsHistory: React.FC = () => {
         <h1>Histórico de Rendimentos</h1>
         <p>Acompanhe o histórico de rendimentos dos seus investimentos</p>
       </div>
+
+      {error && <div className="error-box">{error}</div>}
 
       <div className="returns-overview">
         <div className="overview-card">
@@ -201,44 +170,55 @@ const ReturnsHistory: React.FC = () => {
         </div>
 
         <div className="table-body">
-          {filteredHistory.map((record) => (
-            <div key={record.id} className="table-row">
-              <div className="table-cell property-name">
-                {record.propertyName}
-              </div>
-              <div className="table-cell">
-                {new Date(record.date).toLocaleDateString('pt-BR')}
-              </div>
-              <div className="table-cell">
-                {formatCurrency(record.initialValue)}
-              </div>
-              <div className="table-cell">
-                {formatCurrency(record.currentValue)}
-              </div>
-              <div className="table-cell">
-                <span className={`return-value ${getStatusColor(record.status)}`}>
-                  {record.returnPercentage > 0 ? '+' : ''}{record.returnPercentage.toFixed(2)}%
-                </span>
-                <div className="return-amount">
-                  {formatCurrency(record.returnAmount)}
+          {loading ? (
+            <div className="table-row"><div className="table-cell" style={{ gridColumn: '1 / -1' }}>Carregando...</div></div>
+          ) : (
+            filteredHistory.map((record) => (
+              <div key={record.id} className="table-row">
+                <div className="table-cell property-name">
+                  {record.propertyName}
+                </div>
+                <div className="table-cell">
+                  {new Date(record.date).toLocaleDateString('pt-BR')}
+                </div>
+                <div className="table-cell">
+                  {formatCurrency(record.initialValue)}
+                </div>
+                <div className="table-cell">
+                  {formatCurrency(record.currentValue)}
+                </div>
+                <div className="table-cell">
+                  <span className={`return-value ${getStatusColor(record.status)}`}>
+                    {record.returnPercentage > 0 ? '+' : ''}{record.returnPercentage.toFixed(2)}%
+                  </span>
+                  <div className="return-amount">
+                    {formatCurrency(record.returnAmount)}
+                  </div>
+                </div>
+                <div className="table-cell">
+                  {record.period}
+                </div>
+                <div className="table-cell">
+                  <span className={`status-indicator ${getStatusColor(record.status)}`}>
+                    {getStatusIcon(record.status)}
+                  </span>
                 </div>
               </div>
-              <div className="table-cell">
-                {record.period}
-              </div>
-              <div className="table-cell">
-                <span className={`status-indicator ${getStatusColor(record.status)}`}>
-                  {getStatusIcon(record.status)}
-                </span>
-              </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
       </div>
 
       {filteredHistory.length === 0 && (
         <div className="empty-state">
-          <div className="empty-icon">📊</div>
+          <div className="empty-icon" aria-hidden="true">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M3 3v18h18" stroke="#94a3b8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              <rect x="6" y="14" width="3" height="4" fill="#cbd5e1" />
+              <rect x="11" y="10" width="3" height="8" fill="#94a3b8" />
+              <rect x="16" y="6" width="3" height="12" fill="#64748b" />
+            </svg>
+          </div>
           <h3>Nenhum registro encontrado</h3>
           <p>Tente ajustar os filtros ou aguarde novos registros de rendimento</p>
         </div>

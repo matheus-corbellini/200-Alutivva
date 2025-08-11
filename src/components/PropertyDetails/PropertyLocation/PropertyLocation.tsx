@@ -11,20 +11,33 @@ type NearbyPlace = {
 type PropertyLocationProps = {
   location: {
     address: string;
+    coordinates?: { lat: number; lng: number };
+    postalCode?: string;
     nearbyPlaces: NearbyPlace[];
   };
 };
 
 const PropertyLocation: React.FC<PropertyLocationProps> = ({ location }) => {
+  // Normaliza valores para evitar undefined
+  const safeLocation: {
+    postalCode: string | undefined; address: string; coordinates?: { lat: number; lng: number }; nearbyPlaces: NearbyPlace[]
+  } = {
+    address: (location?.address || "").trim(),
+    coordinates: location?.coordinates,
+    nearbyPlaces: Array.isArray(location?.nearbyPlaces) ? (location!.nearbyPlaces as NearbyPlace[]) : [],
+    postalCode: undefined
+  };
   const [selectedPlace, setSelectedPlace] = useState<NearbyPlace | null>(null);
   const [mapCenter, setMapCenter] = useState<[number, number]>([-23.5505, -46.6333]); // São Paulo default
 
   // Geocoding function to get coordinates from address
-  const geocodeAddress = async (address: string): Promise<[number, number] | null> => {
+  // Geocodifica por CEP (postalCode) – fallback para endereço
+  const geocodeAddressOrCep = async (postalCode?: string, address?: string): Promise<[number, number] | null> => {
     try {
-      const response = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&limit=1`
-      );
+      const query = postalCode && postalCode.trim().length >= 8
+        ? `${postalCode}, Brasil`
+        : (address ? `${address}, Brasil` : "");
+      const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1`);
       const data = await response.json();
       if (data && data.length > 0) {
         return [parseFloat(data[0].lat), parseFloat(data[0].lon)];
@@ -38,19 +51,23 @@ const PropertyLocation: React.FC<PropertyLocationProps> = ({ location }) => {
   // Carregar coordenadas do endereço quando o componente montar
   useEffect(() => {
     const loadMapCoordinates = async () => {
-      console.log('Iniciando geocodificação para:', location.address);
-      const coords = await geocodeAddress(location.address);
+      // 1) Preferir coordenadas fornecidas
+      if (safeLocation.coordinates && Number.isFinite(safeLocation.coordinates.lat) && Number.isFinite(safeLocation.coordinates.lng)) {
+        setMapCenter([safeLocation.coordinates.lat, safeLocation.coordinates.lng]);
+        return;
+      }
+      // 2) Caso contrário, geocodificar por CEP ou endereço
+      const coords = await geocodeAddressOrCep(safeLocation.postalCode, safeLocation.address);
       if (coords) {
         setMapCenter(coords);
-        console.log('Coordenadas carregadas:', coords);
       } else {
-        console.log('Falha na geocodificação, usando coordenadas padrão');
-        setMapCenter([-23.5505, -46.6333]); // São Paulo
+        // 3) Fallback: SP
+        setMapCenter([-23.5505, -46.6333]);
       }
     };
 
     loadMapCoordinates();
-  }, [location.address]);
+  }, [safeLocation.address, safeLocation.coordinates?.lat, safeLocation.coordinates?.lng]);
 
   const getPlaceIcon = (type: string) => {
     switch (type.toLowerCase()) {
@@ -106,7 +123,7 @@ const PropertyLocation: React.FC<PropertyLocationProps> = ({ location }) => {
             <MdLocationOn size={24} />
           </div>
           <div className="location-address-content">
-            <div className="location-address">{location.address}</div>
+            <div className="location-address">{safeLocation.address}</div>
           </div>
         </div>
 
@@ -128,7 +145,7 @@ const PropertyLocation: React.FC<PropertyLocationProps> = ({ location }) => {
       <div className="nearby-section">
         <h3 className="nearby-title">Pontos de Interesse Próximos</h3>
         <div className="nearby-places">
-          {location.nearbyPlaces.map((place, index) => (
+          {(safeLocation.nearbyPlaces || []).map((place, index) => (
             <div
               key={index}
               className={`nearby-item ${selectedPlace?.name === place.name ? 'selected' : ''}`}
@@ -151,7 +168,7 @@ const PropertyLocation: React.FC<PropertyLocationProps> = ({ location }) => {
                 className="nearby-directions-btn"
                 onClick={(e) => {
                   e.stopPropagation();
-                  getDirections(location.address, place.name);
+                  getDirections(safeLocation.address, place.name);
                 }}
                 title={`Como chegar em ${place.name}`}
               >
@@ -170,7 +187,7 @@ const PropertyLocation: React.FC<PropertyLocationProps> = ({ location }) => {
               className="close-details-btn"
               onClick={() => setSelectedPlace(null)}
             >
-              ×
+              x
             </button>
           </div>
           <div className="selected-place-content">
@@ -179,7 +196,7 @@ const PropertyLocation: React.FC<PropertyLocationProps> = ({ location }) => {
             <div className="selected-place-actions">
               <button
                 className="action-btn primary"
-                onClick={() => getDirections(location.address, selectedPlace.name)}
+                onClick={() => getDirections(safeLocation.address, selectedPlace.name)}
               >
                 <MdDirections size={16} />
                 Como Chegar

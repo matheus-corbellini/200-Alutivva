@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { Filters, Property } from "../types/property";
-import { mockProperties } from "../data/mockProperties";
+import { listProperties } from "../services/PropertiesService";
 
 export function usePropertyFilters() {
   const [filters, setFilter] = useState<Filters>({
@@ -12,11 +12,27 @@ export function usePropertyFilters() {
     search: "",
   });
 
-  const [filteredProperties, setFilteredProperties] =
-    useState<Property[]>(mockProperties);
+  const [allProperties, setAllProperties] = useState<Property[]>([]);
+  const [filteredProperties, setFilteredProperties] = useState<Property[]>([]);
+
+  const reload = async () => {
+    try {
+      const props = await listProperties();
+      setAllProperties(props);
+      setFilteredProperties(props);
+    } catch (e) {
+      console.error("Erro ao carregar propriedades", e);
+      setAllProperties([]);
+      setFilteredProperties([]);
+    }
+  };
+
+  useEffect(() => {
+    reload();
+  }, []);
 
   const applyFilters = (currentFilters: Filters) => {
-    let filtered = mockProperties;
+    let filtered = allProperties;
 
     if (currentFilters.search) {
       filtered = filtered.filter(
@@ -82,7 +98,7 @@ export function usePropertyFilters() {
       search: "",
     };
     setFilter(initialFilters);
-    setFilteredProperties(mockProperties);
+    setFilteredProperties(allProperties);
   };
 
   return {
@@ -90,5 +106,6 @@ export function usePropertyFilters() {
     filteredProperties,
     handleFilterChange,
     clearFilters,
+    reload,
   };
 }

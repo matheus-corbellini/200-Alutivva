@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { mockPropertyDetails } from "../../data/mockPropertyDetails";
+// Dados devem vir do backend; removido mock
+import { getPropertyByNumericId } from "../../services/PropertiesService";
 import PropertyDetailsHeader from "../../components/PropertyDetails/PropertyDetailsHeader/PropertyDetailsHeader";
 import PropertyAmenities from "../../components/PropertyDetails/PropertyAmenities/PropertyAmenities";
 import PropertyLocation from "../../components/PropertyDetails/PropertyLocation/PropertyLocation";
@@ -14,27 +15,43 @@ import PropertyHero from "../../components/PropertyDetails/PropertyHero/Property
 import PropertyMilestones from "../../components/PropertyDetails/PropertyMilestones/PropertyMilestones";
 import PropertyVideos from "../../components/PropertyDetails/PropertyVideos/PropertyVideos";
 import InvestmentSimulationModal from "../../components/PropertyDetails/InvestmentSimulationModal/InvestmentSimulationModal";
+import ReservationConfirmModal from "../../components/PropertyDetails/ReservationConfirmModal";
 import Button from "../../components/Button/Button";
 import "./PropertyDetails.css";
 import { formatCurrency } from "../../utils/currency";
 import { Footer } from "borderless";
+import { useAuth } from "../../contexts/AuthContext";
+import { createReservation } from "../../services/ReservationsService";
+import { useNotification } from "../../hooks/useNotification";
 
 export default function PropertyDetails() {
   const { id } = useParams<{ id: string }>();
+  const { user } = useAuth();
+  const { showNotification } = useNotification();
   const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [showSimulationModal, setShowSimulationModal] = useState(false);
+  const [showReservationModal, setShowReservationModal] = useState(false);
 
-  const propertyId = Number.parseInt(id || "1");
-  const property = propertyId === 0 ? null : mockPropertyDetails[propertyId];
+  const propertyId = Number.parseInt(id || "0");
+  const [property, setProperty] = useState<any | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (!propertyId) return;
+    (async () => {
+      setLoading(true);
+      try {
+        const p = await getPropertyByNumericId(propertyId);
+        setProperty(p);
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, [propertyId]);
 
   const handleReserve = () => {
-    setIsLoading(true);
-    // Simula uma ação de reserva
-    setTimeout(() => {
-      alert("Reserva realizada com sucesso! Entraremos em contato em breve.");
-      setIsLoading(false);
-    }, 1500);
+    setShowReservationModal(true);
   };
 
   const handleSimulate = () => {
@@ -50,6 +67,17 @@ export default function PropertyDetails() {
       closeVideoModal();
     }
   };
+
+  // Loading state
+  if (loading) {
+    return (
+      <div className="property-details-container">
+        <div className="property-details-content">
+          <p style={{ padding: 24 }}>Carregando...</p>
+        </div>
+      </div>
+    );
+  }
 
   // 404 Not Found
   if (!property && propertyId !== 0) {
@@ -126,8 +154,8 @@ export default function PropertyDetails() {
             <PropertyFloorPlans floorPlans={property.floorPlans} />
           )}
 
-          {/* Financial Projection - Always present */}
-          {property && (
+          {/* Financial Projection - Only if has data */}
+          {property?.financialProjection && (
             <PropertyFinancialProjection
               financialProjection={property.financialProjection}
               formatCurrency={formatCurrency}
@@ -164,11 +192,11 @@ export default function PropertyDetails() {
             <PropertyAmenities amenities={property.amenities} />
           )}
 
-          {/* Location - Always present */}
-          {property && <PropertyLocation location={property.location} />}
+          {/* Location - Present if data exists */}
+          {property?.location && <PropertyLocation location={property.location} />}
 
-          {/* Developer - Always present */}
-          {property && <PropertyDeveloper developer={property.developer} />}
+          {/* Developer - Only if has data */}
+          {property?.developer && <PropertyDeveloper developer={property.developer} />}
 
           {/* Risks - Only if has risks */}
           {property?.risks && property.risks.length > 0 && (
@@ -196,7 +224,7 @@ export default function PropertyDetails() {
                 onClick={closeVideoModal}
                 aria-label="Fechar vídeo"
               >
-                ×
+                x
               </button>
               <iframe
                 src={selectedVideo}
@@ -227,6 +255,40 @@ export default function PropertyDetails() {
             onClose={() => setShowSimulationModal(false)}
             property={property}
             formatCurrency={formatCurrency}
+          />
+        )}
+
+        {/* Reservation Confirm Modal */}
+        {property && (
+          <ReservationConfirmModal
+            isOpen={showReservationModal}
+            onClose={() => setShowReservationModal(false)}
+            onConfirm={async (quantity) => {
+              setShowReservationModal(false);
+              if (!property || !user) return;
+              setIsLoading(true);
+              try {
+                await createReservation({
+                  propertyId: propertyId,
+                  propertyTitle: property.title,
+                  quotaValue: property.quotaValue,
+                  quantity,
+                  totalAmount: property.quotaValue * quantity,
+                  roi: property.roi,
+                  status: "pending",
+                  // user.id vem do contexto; o tipo aqui é amplo
+                  userId: user.id,
+                } as any);
+                showNotification("success", "Reserva enviada", "Sua reserva foi registrada como pendente.");
+              } catch (e) {
+                showNotification("error", "Erro", "Não foi possível registrar a reserva.");
+              } finally {
+                setIsLoading(false);
+              }
+            }}
+            propertyTitle={property.title}
+            quotaValue={property.quotaValue}
+            roi={property.roi}
           />
         )}
       </div>

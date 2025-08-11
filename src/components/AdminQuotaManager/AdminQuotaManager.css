@@ -14,8 +14,9 @@
 }
 
 /* Ocultar qualquer elemento que possa estar sendo exibido incorretamente */
-.admin-quota-manager .status-badge:not(.quotas-table .status-badge),
-.admin-quota-manager [class*="badge"]:not(.quotas-table [class*="badge"]) {
+/* Ocultar badges globalmente neste módulo e reabilitar apenas dentro das células da tabela */
+.admin-quota-manager .status-badge,
+.admin-quota-manager [class*="badge"] {
   display: none !important;
   visibility: hidden !important;
   opacity: 0 !important;
@@ -23,7 +24,7 @@
 
 /* Regra específica para elementos que podem estar sendo renderizados automaticamente */
 .admin-quota-manager [class*="blocked"],
-.admin-quota-manager [class*="red"]:not(.quotas-table [class*="red"]) {
+.admin-quota-manager [class*="red"] {
   display: none !important;
   visibility: hidden !important;
   opacity: 0 !important;
@@ -228,7 +229,7 @@
   background: #f8fafc;
 }
 
-.status-badge {
+.quota-status-badge {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -242,45 +243,40 @@
   white-space: nowrap;
 }
 
-/* Garantir que badges só apareçam dentro da tabela */
-.quotas-table .status-badge {
+/* Garantir que badges só apareçam dentro das células da tabela */
+.quotas-table td .quota-status-badge {
   display: inline-flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 
-/* Ocultar badges fora da tabela */
-.admin-quota-manager .status-badge:not(.quotas-table .status-badge) {
-  display: none !important;
-  visibility: hidden !important;
-  opacity: 0 !important;
-}
-
-.status-badge svg {
+.quota-status-badge svg {
   flex-shrink: 0;
   width: 10px;
   height: 10px;
 }
 
-.status-badge.green {
+.quota-status-badge.green {
   background: #d1fae5;
   color: #059669;
 }
 
-.status-badge.orange {
+.quota-status-badge.orange {
   background: #fef3c7;
   color: #d97706;
 }
 
-.status-badge.blue {
+.quota-status-badge.blue {
   background: #dbeafe;
   color: #2563eb;
 }
 
-.status-badge.red {
+.quota-status-badge.red {
   background: #fee2e2;
   color: #dc2626;
 }
 
-.status-badge.gray {
+.quota-status-badge.gray {
   background: #f1f5f9;
   color: #64748b;
 }

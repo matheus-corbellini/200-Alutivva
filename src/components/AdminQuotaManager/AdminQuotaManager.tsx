@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   MdAdd,
   MdEdit,
@@ -13,19 +13,9 @@ import {
 import Button from "../Button/Button";
 import "./AdminQuotaManager.css";
 
-interface Quota {
-  id: string;
-  projectId: string;
-  projectTitle: string;
-  quotaNumber: string;
-  value: number;
-  status: "available" | "reserved" | "sold" | "blocked";
-  reservedBy?: string;
-  reservedAt?: string;
-  soldAt?: string;
-  soldTo?: string;
-  soldValue?: number;
-}
+import { listQuotas, updateQuota, deleteQuota, type QuotaRecord } from "../../services/QuotasService";
+
+type Quota = QuotaRecord;
 
 interface AdminQuotaManagerProps {
   projectId?: string;
@@ -38,45 +28,25 @@ const AdminQuotaManager: React.FC<AdminQuotaManagerProps> = ({
   onQuotaUpdate,
   onQuotaDelete,
 }) => {
-  const [quotas, setQuotas] = useState<Quota[]>([
-    {
-      id: "1",
-      projectId: "proj1",
-      projectTitle: "Resort Tropical Paradise",
-      quotaNumber: "COTA-001",
-      value: 50000,
-      status: "available",
-    },
-    {
-      id: "2",
-      projectId: "proj1",
-      projectTitle: "Resort Tropical Paradise",
-      quotaNumber: "COTA-002",
-      value: 50000,
-      status: "reserved",
-      reservedBy: "joao.silva@email.com",
-      reservedAt: "2024-03-15",
-    },
-    {
-      id: "3",
-      projectId: "proj1",
-      projectTitle: "Resort Tropical Paradise",
-      quotaNumber: "COTA-003",
-      value: 50000,
-      status: "sold",
-      soldTo: "maria.santos@email.com",
-      soldAt: "2024-03-10",
-      soldValue: 50000,
-    },
-    {
-      id: "4",
-      projectId: "proj1",
-      projectTitle: "Resort Tropical Paradise",
-      quotaNumber: "COTA-004",
-      value: 50000,
-      status: "blocked",
-    },
-  ]);
+  const [quotas, setQuotas] = useState<Quota[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string>("");
+
+  useEffect(() => {
+    async function load() {
+      try {
+        setLoading(true);
+        const data = await listQuotas(projectId);
+        setQuotas(data);
+      } catch (e) {
+        console.error("Erro ao carregar cotas:", e);
+        setError("Não foi possível carregar as cotas.");
+      } finally {
+        setLoading(false);
+      }
+    }
+    load();
+  }, [projectId]);
 
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingQuota, setEditingQuota] = useState<Quota | null>(null);
@@ -133,22 +103,33 @@ const AdminQuotaManager: React.FC<AdminQuotaManagerProps> = ({
     setShowAddModal(true);
   };
 
-  const handleDeleteQuota = (quotaId: string) => {
-    if (window.confirm("Tem certeza que deseja excluir esta cota?")) {
+  const handleDeleteQuota = async (quotaId: string) => {
+    if (!window.confirm("Tem certeza que deseja excluir esta cota?")) return;
+    try {
+      await deleteQuota(quotaId);
       setQuotas(prev => prev.filter(q => q.id !== quotaId));
       onQuotaDelete?.(quotaId);
+    } catch (e) {
+      console.error("Erro ao excluir cota:", e);
+      setError("Não foi possível excluir a cota.");
     }
   };
 
-  const handleStatusChange = (quotaId: string, newStatus: Quota["status"]) => {
-    setQuotas(prev =>
-      prev.map(quota =>
-        quota.id === quotaId
-          ? { ...quota, status: newStatus }
-          : quota
-      )
-    );
-    onQuotaUpdate?.(quotaId, { status: newStatus });
+  const handleStatusChange = async (quotaId: string, newStatus: Quota["status"]) => {
+    try {
+      await updateQuota(quotaId, { status: newStatus });
+      setQuotas(prev =>
+        prev.map(quota =>
+          quota.id === quotaId
+            ? { ...quota, status: newStatus }
+            : quota
+        )
+      );
+      onQuotaUpdate?.(quotaId, { status: newStatus });
+    } catch (e) {
+      console.error("Erro ao atualizar status da cota:", e);
+      setError("Não foi possível atualizar o status.");
+    }
   };
 
   const filteredQuotas = quotas.filter(quota => {
@@ -246,6 +227,8 @@ const AdminQuotaManager: React.FC<AdminQuotaManagerProps> = ({
         </div>
       </div>
 
+      {error && <div className="error-box">{error}</div>}
+
       <div className="quotas-table">
         <table>
           <thead>
@@ -262,47 +245,56 @@ const AdminQuotaManager: React.FC<AdminQuotaManagerProps> = ({
             </tr>
           </thead>
           <tbody>
-            {filteredQuotas.map(quota => (
-              <tr key={quota.id}>
-                <td>
-                  <strong>{quota.quotaNumber}</strong>
-                </td>
-                <td>{quota.projectTitle}</td>
-                <td>{formatCurrency(quota.value)}</td>
-                <td>
-                  <span className={`status-badge ${getStatusColor(quota.status)}`}>
-                    {getStatusText(quota.status)}
-                  </span>
-                </td>
-                <td>{quota.reservedBy || "-"}</td>
-                <td>{quota.reservedAt ? formatDate(quota.reservedAt) : "-"}</td>
-                <td>{quota.soldTo || "-"}</td>
-                <td>{quota.soldAt ? formatDate(quota.soldAt) : "-"}</td>
-                <td>
-                  <div className="action-buttons">
-                    <Button variant="secondary" size="small">
-                      <MdVisibility size={16} />
-                    </Button>
-                    <Button variant="secondary" size="small" onClick={() => handleEditQuota(quota)}>
-                      <MdEdit size={16} />
-                    </Button>
-                    <select
-                      value={quota.status}
-                      onChange={(e) => handleStatusChange(quota.id, e.target.value as Quota["status"])}
-                      className="status-select"
-                    >
-                      <option value="available">Disponível</option>
-                      <option value="reserved">Reservada</option>
-                      <option value="sold">Vendida</option>
-                      <option value="blocked">Bloqueada</option>
-                    </select>
-                    <Button variant="danger" size="small" onClick={() => handleDeleteQuota(quota.id)}>
-                      <MdDelete size={16} />
-                    </Button>
-                  </div>
-                </td>
-              </tr>
-            ))}
+            {loading ? (
+              <tr><td colSpan={9}>Carregando...</td></tr>
+            ) : (
+              filteredQuotas.map(quota => (
+                <tr key={quota.id}>
+                  <td>
+                    <strong>{quota.quotaNumber}</strong>
+                  </td>
+                  <td>{quota.projectTitle}</td>
+                  <td>{formatCurrency(quota.value)}</td>
+                  <td>
+                    {(() => {
+                      const text = getStatusText(quota.status);
+                      return text ? (
+                        <span className={`quota-status-badge ${getStatusColor(quota.status)}`}>
+                          {text}
+                        </span>
+                      ) : null;
+                    })()}
+                  </td>
+                  <td>{quota.reservedBy || "-"}</td>
+                  <td>{quota.reservedAt ? formatDate(quota.reservedAt) : "-"}</td>
+                  <td>{quota.soldTo || "-"}</td>
+                  <td>{quota.soldAt ? formatDate(quota.soldAt) : "-"}</td>
+                  <td>
+                    <div className="action-buttons">
+                      <Button variant="secondary" size="small">
+                        <MdVisibility size={16} />
+                      </Button>
+                      <Button variant="secondary" size="small" onClick={() => handleEditQuota(quota)}>
+                        <MdEdit size={16} />
+                      </Button>
+                      <select
+                        value={quota.status}
+                        onChange={(e) => handleStatusChange(quota.id, e.target.value as Quota["status"])}
+                        className="status-select"
+                      >
+                        <option value="available">Disponível</option>
+                        <option value="reserved">Reservada</option>
+                        <option value="sold">Vendida</option>
+                        <option value="blocked">Bloqueada</option>
+                      </select>
+                      <Button variant="danger" size="small" onClick={() => handleDeleteQuota(quota.id)}>
+                        <MdDelete size={16} />
+                      </Button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>
@@ -320,7 +312,7 @@ const AdminQuotaManager: React.FC<AdminQuotaManagerProps> = ({
             <div className="modal-header">
               <h3>{editingQuota ? "Editar Cota" : "Adicionar Nova Cota"}</h3>
               <button className="modal-close" onClick={() => setShowAddModal(false)}>
-                ×
+                x
               </button>
             </div>
             <div className="modal-body">

@@ -4,6 +4,19 @@
   padding: 20px;
 }
 
+/* Ocultar qualquer badge/etiqueta de status acidental fora das tabelas */
+.admin-dashboard-page-wrapper .status-badge,
+.admin-dashboard-page-wrapper [class*="pending"],
+.admin-dashboard-page-wrapper [class*="badge"] {
+  display: none;
+}
+
+/* Reabilitar badges apenas onde são esperados (células das tabelas) */
+.projects-table td .status-badge,
+.users-table td .status-badge {
+  display: inline-block;
+}
+
 .admin-dashboard-container {
   max-width: 1400px;
   margin: 0 auto;
@@ -117,6 +130,59 @@
 .admin-content {
   padding: 32px;
   min-height: 600px;
+}
+
+/* Admin Notifications */
+.notification-form {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  margin-bottom: 16px;
+}
+
+.inputs-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.filters-grid {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.nf-input {
+  padding: 10px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 14px;
+  width: 100%;
+}
+
+.nf-input:focus {
+  outline: none;
+  border-color: #1c4f52;
+  box-shadow: 0 0 0 3px rgba(28,79,82,0.1);
+}
+
+.nf-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #475569;
+}
+
+.send-row { display: flex; justify-content: flex-end; }
+.send-btn { min-width: 220px; }
+
+@media (max-width: 1024px) {
+  .inputs-grid { grid-template-columns: 1fr; }
 }
 
 /* Dashboard */
@@ -660,6 +726,8 @@ tr:hover {
   .admin-actions .pending-badge,
   .admin-header .status-badge,
   .admin-header .pending-badge,
+  .content-header .status-badge,
+  .admin-navigation .status-badge,
   .admin-actions *[class*="badge"],
   .admin-actions *[class*="status"],
   .admin-actions *[class*="pending"],
