@@ -1,8 +1,10 @@
 import { getFirestore, collection, addDoc, getDocs, query, orderBy, updateDoc, deleteDoc, doc } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
 import app from "../lib/firebaseConfig";
 import type { Rental } from "../types/rental";
 
 const db = getFirestore(app);
+const auth = getAuth(app);
 const rentalsCollection = collection(db, "rentals");
 
 export async function listRentals(): Promise<Rental[]> {
@@ -12,7 +14,16 @@ export async function listRentals(): Promise<Rental[]> {
 }
 
 export async function createRental(data: Omit<Rental, "id">): Promise<string> {
-    const docRef = await addDoc(rentalsCollection, { ...data, createdAt: new Date().toISOString() });
+    const user = auth.currentUser;
+    if (!user) {
+        throw new Error("Usuário não autenticado");
+    }
+
+    const docRef = await addDoc(rentalsCollection, { 
+        ...data, 
+        createdAt: new Date().toISOString(),
+        ownerId: user.uid // 🔑 Adiciona o UID do usuário logado
+    });
     return docRef.id;
 }
 

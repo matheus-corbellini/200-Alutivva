@@ -10,6 +10,7 @@ export interface Reservation {
     roi?: number;
     createdAt: string; // ISO date
     status: ReservationStatus;
+    userId?: string; // 🔑 Campo obrigatório para regras de segurança
 }
 
 

@@ -120,59 +120,87 @@ const LandRegistry: React.FC = () => {
   };
 
   const handleSaveLand = async () => {
+    console.log("💾 handleSaveLand: Iniciando salvamento de terreno");
+    console.log("📋 handleSaveLand: Dados do formulário:", formData);
+    
     if (!formData.title || !formData.location || !formData.area || formData.price <= 0) {
+      console.warn("⚠️ handleSaveLand: Campos obrigatórios não preenchidos");
       alert("Por favor, preencha todos os campos obrigatórios.");
       return;
     }
 
-    if (editingLand) {
-      let imageUrl = (formData as any).image || editingLand.image || "";
-      if ((formData as any).imageFile instanceof File) {
-        try {
-          imageUrl = await uploadImage((formData as any).imageFile, "lands");
-        } catch { }
+    try {
+      if (editingLand) {
+        console.log("✏️ handleSaveLand: Editando terreno existente");
+        let imageUrl = (formData as any).image || editingLand.image || "";
+        if ((formData as any).imageFile instanceof File) {
+          try {
+            console.log("📤 handleSaveLand: Fazendo upload de imagem para edição");
+            imageUrl = await uploadImage((formData as any).imageFile, "lands");
+            console.log("✅ handleSaveLand: Upload de imagem concluído:", imageUrl);
+          } catch (error) {
+            console.error("❌ handleSaveLand: Erro no upload de imagem:", error);
+          }
+        }
+        await updateLand(editingLand.id, { ...formData, image: imageUrl } as any);
+        setLands(prev => prev.map(land => land.id === editingLand.id ? { ...land, ...formData } as Land : land));
+        console.log("✅ handleSaveLand: Terreno atualizado com sucesso");
+      } else {
+        console.log("🆕 handleSaveLand: Criando novo terreno");
+        let imageUrl = (formData as any).image || "";
+        if ((formData as any).imageFile instanceof File) {
+          try {
+            console.log("📤 handleSaveLand: Fazendo upload de imagem para novo terreno");
+            imageUrl = await uploadImage((formData as any).imageFile, "lands");
+            console.log("✅ handleSaveLand: Upload de imagem concluído:", imageUrl);
+          } catch (error) {
+            console.error("❌ handleSaveLand: Erro no upload de imagem:", error);
+          }
+        }
+        
+        const landData = {
+          ...(formData as any),
+          image: imageUrl || "/logo.png", // Usar imagem padrão se não houver upload
+          coordinates: (formData as any).coordinates || { lat: -23.5505, lng: -46.6333 },
+          features: formData.features || [],
+          status: (formData.status as any) || "disponível",
+          description: formData.description || "",
+          location: formData.location || "",
+          area: formData.area || "",
+          price: Number(formData.price || 0),
+          title: formData.title || "",
+          id: undefined,
+        } as any;
+        
+        console.log("📦 handleSaveLand: Dados para criação:", landData);
+        
+        const newId = await createLand(landData);
+        console.log("✅ handleSaveLand: Terreno criado com sucesso, ID:", newId);
+        
+        setLands(prev => [
+          ...prev,
+          {
+            id: newId,
+            image: "",
+            coordinates: { lat: -23.5505, lng: -46.6333 },
+            features: [],
+            status: "disponível",
+            description: "",
+            location: formData.location!,
+            area: formData.area!,
+            price: formData.price!,
+            title: formData.title!,
+          } as Land,
+        ]);
       }
-      await updateLand(editingLand.id, { ...formData, image: imageUrl } as any);
-      setLands(prev => prev.map(land => land.id === editingLand.id ? { ...land, ...formData } as Land : land));
-    } else {
-      let imageUrl = (formData as any).image || "";
-      if ((formData as any).imageFile instanceof File) {
-        try {
-          imageUrl = await uploadImage((formData as any).imageFile, "lands");
-        } catch { }
-      }
-      const newId = await createLand({
-        ...(formData as any),
-        image: imageUrl,
-        coordinates: (formData as any).coordinates || { lat: -23.5505, lng: -46.6333 },
-        features: formData.features || [],
-        status: (formData.status as any) || "disponível",
-        description: formData.description || "",
-        location: formData.location || "",
-        area: formData.area || "",
-        price: Number(formData.price || 0),
-        title: formData.title || "",
-        id: undefined,
-      } as any);
-      setLands(prev => [
-        ...prev,
-        {
-          id: newId,
-          image: "",
-          coordinates: { lat: -23.5505, lng: -46.6333 },
-          features: [],
-          status: "disponível",
-          description: "",
-          location: formData.location!,
-          area: formData.area!,
-          price: formData.price!,
-          title: formData.title!,
-        } as Land,
-      ]);
-    }
 
-    setShowModal(false);
-    setEditingLand(null);
+      setShowModal(false);
+      setEditingLand(null);
+      console.log("✅ handleSaveLand: Operação concluída com sucesso");
+    } catch (error) {
+      console.error("❌ handleSaveLand: Erro durante o salvamento:", error);
+      alert("Erro ao salvar terreno. Verifique o console para mais detalhes.");
+    }
   };
 
   const handleViewDetails = (land: Land) => {
@@ -216,7 +244,7 @@ const LandRegistry: React.FC = () => {
               {lands.map((land) => (
                 <div key={land.id} className="land-card">
                   <div className="land-image">
-                    <img src={land.image} alt={land.title} />
+                    <img src={land.image || "/logo.png"} alt={land.title} />
                     <div className={`status-badge ${land.status}`}>
                       {getStatusText(land.status)}
                     </div>
@@ -299,7 +327,7 @@ const LandRegistry: React.FC = () => {
 
               <div className="details-modal-body">
                 <div className="details-image-section">
-                  <img src={selectedLand.image} alt={selectedLand.title} />
+                  <img src={selectedLand.image || "/logo.png"} alt={selectedLand.title} />
                   <div className={`details-status-badge ${selectedLand.status}`}>
                     {getStatusText(selectedLand.status)}
                   </div>

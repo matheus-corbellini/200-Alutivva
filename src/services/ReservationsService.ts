@@ -1,13 +1,21 @@
 import { getFirestore, addDoc, collection, serverTimestamp, query, where, getDocs, updateDoc, doc, orderBy } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
 import app from "../lib/firebaseConfig";
 import type { Reservation, ReservationStatus } from "../types/reservation";
 
 const db = getFirestore(app);
+const auth = getAuth(app);
 
 export async function createReservation(data: Omit<Reservation, "id" | "createdAt">) {
+    const user = auth.currentUser;
+    if (!user) {
+        throw new Error("Usuário não autenticado");
+    }
+
     const ref = await addDoc(collection(db, "reservations"), {
         ...data,
         createdAt: serverTimestamp(),
+        userId: user.uid // 🔑 Adiciona o UID do usuário logado
     });
     return ref.id;
 }

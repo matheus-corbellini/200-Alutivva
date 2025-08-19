@@ -19,4 +19,5 @@ export interface Rental {
   instantBooking: boolean;
   cleaningFee: number;
   serviceFee: number;
+  ownerId?: string; // 🔑 Campo obrigatório para regras de segurança
 } 

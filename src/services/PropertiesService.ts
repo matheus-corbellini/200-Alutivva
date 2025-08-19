@@ -1,8 +1,10 @@
 import { getFirestore, collection, getDocs, addDoc, doc, updateDoc, deleteDoc, query, where, limit } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
 import app from "../lib/firebaseConfig";
 import type { Property } from "../types/property";
 
 const db = getFirestore(app);
+const auth = getAuth(app);
 const propertiesCollection = collection(db, "properties");
 
 export async function listProperties(): Promise<Property[]> {
@@ -35,7 +37,17 @@ export async function getPropertyByNumericId(id: number): Promise<Property | nul
 }
 
 export async function createProperty(data: Omit<Property, "id"> & { id?: number }): Promise<string> {
-    const payload = { ...data, id: data.id ?? Date.now() } as any;
+    const user = auth.currentUser;
+    if (!user) {
+        throw new Error("Usuário não autenticado");
+    }
+
+    const payload = { 
+        ...data, 
+        id: data.id ?? Date.now(),
+        ownerId: user.uid // 🔑 Adiciona o UID do usuário logado
+    } as any;
+    
     const ref = await addDoc(propertiesCollection, payload);
     return ref.id;
 }

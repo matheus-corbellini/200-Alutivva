@@ -24,6 +24,7 @@ export interface Property {
   image: string;
   description: string;
   expectedReturn: string;
+  ownerId?: string; // 🔑 Campo obrigatório para regras de segurança
 }
 
 export interface Filters {

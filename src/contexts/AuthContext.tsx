@@ -24,14 +24,17 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (fbUser) => {
+      console.log("🔐 AuthStateChanged:", fbUser?.uid || "null");
       setFirebaseUser(fbUser);
       
       if (fbUser) {
         try {
+          console.log("📋 Buscando dados do usuário:", fbUser.uid);
           const userData = await getUserData(fbUser.uid);
+          console.log("✅ Dados do usuário carregados:", userData);
           setUser(userData as User);
         } catch (error) {
-          console.error("AuthContext - Error getting user data:", error);
+          console.error("❌ AuthContext - Error getting user data:", error);
           setUser(null);
         }
       } else {
