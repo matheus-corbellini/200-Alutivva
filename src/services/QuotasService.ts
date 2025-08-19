@@ -21,12 +21,36 @@ export interface QuotaRecord {
 const db = getFirestore(app);
 
 export async function listQuotas(projectId?: string): Promise<QuotaRecord[]> {
-    const base = collection(db, "quotas");
-    const q = projectId
-        ? query(base, where("projectId", "==", projectId), orderBy("quotaNumber", "asc"))
-        : query(base, orderBy("quotaNumber", "asc"));
-    const snap = await getDocs(q);
-    return snap.docs.map(d => ({ id: d.id, ...(d.data() as any) })) as QuotaRecord[];
+    console.log("📊 listQuotas: Buscando cotas, projectId:", projectId);
+    
+    try {
+        const base = collection(db, "quotas");
+        let q;
+        
+        if (projectId) {
+            // Consulta com filtro por projectId
+            q = query(base, where("projectId", "==", projectId));
+        } else {
+            // Consulta sem filtros
+            q = query(base);
+        }
+        
+        const snap = await getDocs(q);
+        const quotas = snap.docs.map(d => ({ id: d.id, ...(d.data() as any) })) as QuotaRecord[];
+        
+        // Ordenação no cliente por número da cota
+        const sortedQuotas = quotas.sort((a, b) => {
+            const quotaA = parseInt(a.quotaNumber) || 0;
+            const quotaB = parseInt(b.quotaNumber) || 0;
+            return quotaA - quotaB; // Ascending order
+        });
+        
+        console.log("✅ listQuotas: Cotas carregadas com sucesso:", sortedQuotas.length);
+        return sortedQuotas;
+    } catch (error) {
+        console.error("❌ listQuotas: Erro ao carregar cotas:", error);
+        throw error;
+    }
 }
 
 export async function createQuota(data: Omit<QuotaRecord, "id" | "createdAt">): Promise<string> {

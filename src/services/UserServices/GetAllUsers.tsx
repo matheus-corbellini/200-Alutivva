@@ -11,10 +11,15 @@ export interface AdminUser extends User {
 }
 
 export async function getAllUsers(): Promise<AdminUser[]> {
+  console.log("👥 getAllUsers: Iniciando busca de todos os usuários");
+  
   try {
     const usersRef = collection(db, "users");
     const q = query(usersRef, orderBy("createdAt", "desc"));
+    console.log("🔍 getAllUsers: Executando consulta na coleção users");
+    
     const querySnapshot = await getDocs(q);
+    console.log("✅ getAllUsers: Consulta executada com sucesso, documentos encontrados:", querySnapshot.size);
 
     const users: AdminUser[] = [];
     querySnapshot.forEach((doc) => {
@@ -35,9 +40,10 @@ export async function getAllUsers(): Promise<AdminUser[]> {
       users.push(user);
     });
 
+    console.log("✅ getAllUsers: Usuários processados com sucesso:", users.length);
     return users;
   } catch (error) {
-    console.error("Erro ao buscar usuários:", error);
+    console.error("❌ getAllUsers: Erro ao buscar usuários:", error);
     throw error;
   }
 }
