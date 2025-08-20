@@ -1,3 +1,60 @@
+/* App Layout - Mobile First & Responsive */
+.app-wrapper {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden; /* Previne scroll horizontal */
+}
+
+/* Main content container */
+.main-content-with-sidebar {
+  flex: 1;
+  width: 100%;
+  min-height: 100vh;
+  transition: margin-left 0.3s ease;
+  position: relative;
+  /* Default: no margin for mobile */
+  margin-left: 0;
+}
+
+/* No sidebar (landing, login, register pages) */
+.main-content-with-sidebar.no-sidebar {
+  margin-left: 0 !important;
+}
+
+/* Desktop sidebar states */
+@media (min-width: 1024px) {
+  .main-content-with-sidebar.sidebar-expanded {
+    margin-left: 280px;
+  }
+  
+  .main-content-with-sidebar.sidebar-collapsed {
+    margin-left: 70px;
+  }
+}
+
+/* Tablet - mantém mobile behavior */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .main-content-with-sidebar {
+    margin-left: 0 !important;
+  }
+}
+
+/* Mobile - força zero margin e adiciona espaço para navegação mobile */
+@media (max-width: 768px) {
+  .main-content-with-sidebar {
+    margin-left: 0 !important;
+    width: 100% !important;
+    /* Os paddings serão controlados pelos componentes MobileHeader e MobileBottomNav */
+  }
+  
+  .app-wrapper {
+    overflow-x: hidden;
+    position: relative;
+  }
+}
+
+/* Fallback styles antigos */
 .App {
   text-align: center;
   padding: 2rem;

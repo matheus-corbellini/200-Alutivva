@@ -1,8 +1,35 @@
+/* Results Summary Responsivo */
 .results-summary {
-  margin-bottom: 1.5rem;
+  margin-bottom: var(--spacing-lg);
+  margin-top: var(--spacing-sm);
   color: #6b7280;
+  font-size: var(--font-size-base);
+  padding: 0 var(--spacing-xs);
+}
+
+.results-summary p {
+  margin: 0;
+  line-height: 1.5;
 }
 
 .font-semibold {
   font-weight: 600;
+  color: #374151;
+}
+
+/* Mobile adjustments */
+@media (max-width: 480px) {
+  .results-summary {
+    margin-bottom: var(--spacing-md);
+    margin-top: var(--spacing-xs);
+    font-size: var(--font-size-sm);
+    padding: 0;
+  }
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
+  .results-summary {
+    margin-bottom: var(--spacing-lg);
+    font-size: var(--font-size-base);
+  }
 }

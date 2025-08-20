@@ -3,15 +3,92 @@
 }
 
 /* Estilos originais do Marketplace */
+/* Marketplace wrapper responsivo */
 .marketplace-page-wrapper {
   min-height: 100vh;
   background: #f8fafc;
+  width: 100%;
+  overflow-x: hidden; /* Previne scroll horizontal */
+  position: relative;
 }
 
-.container {
-  max-width: 1200px;
+/* Container responsivo otimizado */
+.marketplace-page-wrapper .container {
+  max-width: var(--container-2xl);
   margin: 0 auto;
-  padding: 0 1rem;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0 var(--padding-mobile);
+  /* Garantir que não ultrapasse a tela */
+  max-width: 100vw;
+  overflow: visible; /* Permite que o conteúdo seja visível */
+  position: relative;
+}
+
+@media (min-width: 640px) {
+  .marketplace-page-wrapper .container {
+    padding: 0 var(--padding-tablet);
+  }
+}
+
+@media (min-width: 1024px) {
+  .marketplace-page-wrapper .container {
+    padding: 0 var(--padding-desktop);
+    /* Em desktop, pode usar a largura máxima */
+    max-width: var(--container-2xl);
+  }
+}
+
+/* Container do marketplace com espaçamento responsivo */
+.marketplace-container {
+  flex: 1;
+  padding-top: var(--spacing-xl);
+  padding-bottom: var(--spacing-xl);
+}
+
+/* Correção específica para mobile */
+@media (max-width: 767px) {
+  .marketplace-page-wrapper {
+    width: 100vw;
+    max-width: 100vw;
+    overflow-x: hidden;
+    position: relative;
+  }
+  
+  .marketplace-page-wrapper .container {
+    width: 100%;
+    max-width: 100%;
+    padding: 0 var(--padding-mobile);
+    margin: 0;
+    overflow: visible;
+    /* Garante que há espaço suficiente */
+    min-height: auto;
+  }
+  
+  .marketplace-container {
+    padding-top: var(--spacing-sm);
+    padding-bottom: var(--spacing-md);
+    width: 100%;
+    max-width: 100%;
+    overflow: visible;
+  }
+}
+
+/* Ajustes para dispositivos muito pequenos */
+@media (max-width: 320px) {
+  .marketplace-container {
+    padding-top: var(--spacing-xs) !important;
+    padding-bottom: var(--spacing-sm) !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  
+  .marketplace-page-wrapper .container {
+    padding: 0 0.5rem !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: visible !important;
+  }
 }
 
 .btn-primary {
@@ -216,7 +293,56 @@
   background: #0f2d2f;
 }
 
-@media (max-width: 768px) {
+/* Responsividade melhorada para modais */
+@media (max-width: 480px) {
+  .new-property-modal-content {
+    margin: 0.5rem;
+    max-height: calc(100vh - 1rem);
+    border-radius: 16px;
+  }
+  
+  .new-property-modal-header,
+  .new-property-modal-body,
+  .new-property-modal-footer {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  .new-property-modal-header {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+  
+  .new-property-modal-body {
+    padding-top: 1rem;
+  }
+  
+  .new-property-form .form-row {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .new-property-form .form-group input,
+  .new-property-form .form-group textarea,
+  .new-property-form .form-group select {
+    font-size: 16px; /* Previne zoom em iOS */
+    min-height: var(--touch-target);
+  }
+  
+  .new-property-modal-footer {
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1rem;
+  }
+  
+  .new-property-modal-footer .btn {
+    width: 100%;
+    min-height: var(--touch-target);
+    font-size: 16px;
+  }
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
   .new-property-modal-content {
     margin: 1rem;
     max-height: calc(100vh - 2rem);
@@ -234,7 +360,8 @@
   }
   
   .new-property-modal-footer {
-    flex-direction: column;
+    flex-direction: row;
+    gap: 1rem;
   }
 }
 
@@ -507,7 +634,59 @@
   background: #0f2d2f;
 }
 
-@media (max-width: 768px) {
+/* Modal de reserva responsivo */
+@media (max-width: 480px) {
+  .modal-content {
+    margin: 0.5rem;
+    max-height: calc(100vh - 1rem);
+    border-radius: 16px;
+  }
+  
+  .modal-header,
+  .modal-body,
+  .modal-footer {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  .modal-header {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+  
+  .investment-detail-stats {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+  
+  .detail-stat {
+    padding: 0.75rem;
+  }
+  
+  .investment-detail-image img {
+    height: 160px;
+  }
+  
+  .reserve-form .form-input {
+    font-size: 16px; /* Previne zoom em iOS */
+    min-height: var(--touch-target);
+  }
+  
+  .modal-footer {
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1rem;
+  }
+  
+  .btn-secondary,
+  .btn-primary {
+    width: 100%;
+    min-height: var(--touch-target);
+    font-size: 16px;
+  }
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
   .modal-content {
     margin: 1rem;
     max-height: calc(100vh - 2rem);
@@ -521,11 +700,11 @@
   }
   
   .investment-detail-stats {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
   }
   
   .modal-footer {
-    flex-direction: column;
+    flex-direction: row;
   }
 }
 
@@ -563,13 +742,6 @@
 /* Estilos para propriedades de aluguel */
 .properties-container {
   padding: 2rem 0;
-}
-
-.properties-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-  gap: 2rem;
-  margin-top: 2rem;
 }
 
 .property-card {
@@ -910,36 +1082,156 @@
   flex: 1;
 }
 
-/* Responsividade */
-@media (max-width: 768px) {
-  .properties-grid {
-    grid-template-columns: 1fr;
-    gap: 1rem;
+/* Responsividade abrangente */
+@media (max-width: 480px) {
+  .marketplace-page-wrapper {
+    padding-top: 0;
   }
-
+  
+  /* Cards de propriedade para aluguel */
+  .property-card {
+    border-radius: 16px;
+    margin-bottom: 1rem;
+  }
+  
+  .property-image {
+    height: 160px;
+  }
+  
+  .property-info {
+    padding: 1rem;
+  }
+  
+  .property-info h3 {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+  }
+  
   .property-details {
     grid-template-columns: 1fr;
+    gap: 0.5rem;
   }
+  
+  .detail-item {
+    padding: 0.25rem 0;
+  }
+  
+  /* Modal de reserva de hospedagem */
+  .booking-modal-content {
+    margin: 0.5rem;
+    max-height: calc(100vh - 1rem);
+    border-radius: 16px;
+  }
+  
+  .booking-modal-header,
+  .booking-modal-body,
+  .booking-modal-footer {
+    padding: 1rem;
+  }
+  
+  .property-summary {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .property-summary img {
+    width: 100%;
+    height: 120px;
+  }
+  
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+  
+  .form-group input,
+  .form-group select {
+    font-size: 16px; /* Previne zoom em iOS */
+    min-height: var(--touch-target);
+  }
+  
+  .booking-modal-footer {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .btn-secondary,
+  .booking-modal-footer .btn-primary {
+    width: 100%;
+    min-height: var(--touch-target);
+  }
+}
 
+@media (min-width: 481px) and (max-width: 768px) {
+  .property-details {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
   .booking-modal-content {
     margin: 1rem;
-    max-height: 95vh;
+    max-height: calc(100vh - 2rem);
   }
-
+  
   .form-row {
     grid-template-columns: 1fr;
   }
-
+  
   .booking-modal-footer {
-    flex-direction: column;
+    flex-direction: row;
+    gap: 1rem;
   }
-
+  
   .property-summary {
-    flex-direction: column;
+    flex-direction: row;
   }
-
+  
   .property-summary img {
-    width: 100%;
-    height: 150px;
+    width: 150px;
+    height: 100px;
+  }
+}
+
+/* Orientação paisagem */
+@media (orientation: landscape) and (max-height: 500px) {
+  .marketplace-page-wrapper .container {
+    margin-top: var(--spacing-md);
+  }
+  
+  .modal-content,
+  .new-property-modal-content,
+  .booking-modal-content {
+    max-height: 95vh;
+    overflow-y: auto;
+  }
+}
+
+/* Telas muito pequenas */
+@media (max-width: 320px) {
+  .marketplace-page-wrapper .container {
+    padding: 0 0.5rem;
+  }
+  
+  .btn-primary,
+  .btn-secondary {
+    font-size: 14px;
+    padding: 0.6rem 1rem;
+  }
+}
+
+/* Performance otimizations para dispositivos móveis */
+@media (max-width: 768px) {
+  .property-card-modern:hover {
+    /* Reduz animações complexas em mobile */
+    transform: translateY(-2px);
+    transition: transform 0.2s ease;
+  }
+  
+  /* Remove efeitos de hover complexos em touch devices */
+  @media (hover: none) {
+    .property-card-modern:hover,
+    .btn-primary:hover,
+    .btn-secondary:hover {
+      transform: none;
+    }
   }
 } 

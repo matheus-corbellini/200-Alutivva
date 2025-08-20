@@ -1,13 +1,128 @@
+/* Grid System Otimizado para Mobile First */
 .properties-grid {
   display: grid;
-  /* Cards ainda mais largos */
-  grid-template-columns: repeat(auto-fill, minmax(480px, 1fr));
-  gap: 1.5rem;
-  align-items: stretch;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-lg);
+  align-items: start;
+  padding: var(--spacing-md) 0 var(--spacing-xl) 0;
+  width: 100%;
+  max-width: 100%;
+  overflow: visible;
+  box-sizing: border-box;
+  /* Garante que o grid não corte o conteúdo */
+  min-width: 0;
 }
 
-@media (max-width: 768px) {
+/* Mobile pequeno (320px+) */
+@media (min-width: 320px) {
   .properties-grid {
-    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+    padding: var(--spacing-sm) 0 var(--spacing-lg) 0;
+    /* Garante espaço para o conteúdo */
+    margin: 0;
+  }
+}
+
+/* Mobile médio (375px+) */
+@media (min-width: 375px) {
+  .properties-grid {
+    gap: var(--spacing-lg);
+    padding: var(--spacing-sm) 0 var(--spacing-xl) 0;
+  }
+}
+
+/* Mobile grande / Tablet pequeno (480px+) */
+@media (min-width: 480px) {
+  .properties-grid {
+    gap: var(--spacing-lg);
+    padding: var(--spacing-md) 0 var(--spacing-xl) 0;
+  }
+}
+
+/* Tablet (640px+) - Permite 2 colunas se houver espaço */
+@media (min-width: 640px) {
+  .properties-grid {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.75rem;
+  }
+}
+
+/* Tablet grande (768px+) */
+@media (min-width: 768px) {
+  .properties-grid {
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 2rem;
+    padding: 2rem 0;
+  }
+}
+
+/* Desktop pequeno (1024px+) */
+@media (min-width: 1024px) {
+  .properties-grid {
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2.25rem;
+  }
+}
+
+/* Desktop médio (1280px+) */
+@media (min-width: 1280px) {
+  .properties-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+}
+
+/* Desktop grande (1536px+) */
+@media (min-width: 1536px) {
+  .properties-grid {
+    grid-template-columns: repeat(3, 1fr);
+    max-width: 1300px;
+    gap: 2.75rem;
+  }
+}
+
+/* Melhorias para orientação paisagem em dispositivos móveis */
+@media (orientation: landscape) and (max-height: 600px) {
+  .properties-grid {
+    padding: var(--spacing-md) 0;
+  }
+}
+
+/* Grid fallback para navegadores antigos */
+@supports not (display: grid) {
+  .properties-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .properties-grid > * {
+    flex: 1 1 100%;
+    max-width: 400px;
+    margin-bottom: var(--spacing-lg);
+  }
+  
+  @media (min-width: 768px) {
+    .properties-grid > * {
+      flex: 1 1 calc(50% - var(--spacing-md));
+      margin-right: var(--spacing-md);
+    }
+    
+    .properties-grid > *:nth-child(even) {
+      margin-right: 0;
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    .properties-grid > * {
+      flex: 1 1 calc(33.333% - var(--spacing-lg));
+      margin-right: var(--spacing-lg);
+    }
+    
+    .properties-grid > *:nth-child(3n) {
+      margin-right: 0;
+    }
   }
 }

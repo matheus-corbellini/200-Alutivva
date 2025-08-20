@@ -9,6 +9,27 @@
 
 /* Variáveis CSS globais */
 :root {
+  /* Breakpoints para responsividade */
+  --breakpoint-xs: 375px;
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1536px;
+
+  /* Container máximo para diferentes telas */
+  --container-xs: 100%;
+  --container-sm: 640px;
+  --container-md: 768px;
+  --container-lg: 1024px;
+  --container-xl: 1280px;
+  --container-2xl: 1400px;
+
+  /* Padding responsivo */
+  --padding-mobile: 1rem;
+  --padding-tablet: 1.5rem;
+  --padding-desktop: 2rem;
+
   /* Cores principais */
   --primary-color: #2563eb;
   --primary-hover: #1d4ed8;
@@ -35,25 +56,27 @@
   --warning-color: #f59e0b;
   --info-color: #3b82f6;
 
-  /* Tipografia */
+  /* Tipografia responsiva */
   --font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
     "Roboto", "Oxygen", "Ubuntu", "Cantarell", sans-serif;
-  --font-size-xs: 0.75rem;
-  --font-size-sm: 0.875rem;
-  --font-size-base: 1rem;
-  --font-size-lg: 1.125rem;
-  --font-size-xl: 1.25rem;
-  --font-size-2xl: 1.5rem;
-  --font-size-3xl: 1.875rem;
-  --font-size-4xl: 2.25rem;
+  
+  /* Mobile first font sizes - mais conservador */
+  --font-size-xs: clamp(0.65rem, 1.8vw, 0.75rem);
+  --font-size-sm: clamp(0.75rem, 2vw, 0.875rem);
+  --font-size-base: clamp(0.85rem, 2.2vw, 1rem);
+  --font-size-lg: clamp(0.95rem, 2.8vw, 1.125rem);
+  --font-size-xl: clamp(1.05rem, 3.2vw, 1.25rem);
+  --font-size-2xl: clamp(1.2rem, 3.8vw, 1.5rem);
+  --font-size-3xl: clamp(1.4rem, 4.5vw, 1.875rem);
+  --font-size-4xl: clamp(1.6rem, 5.5vw, 2.25rem);
 
-  /* Espaçamentos */
-  --spacing-xs: 0.25rem;
-  --spacing-sm: 0.5rem;
-  --spacing-md: 1rem;
-  --spacing-lg: 1.5rem;
-  --spacing-xl: 2rem;
-  --spacing-2xl: 3rem;
+  /* Espaçamentos responsivos */
+  --spacing-xs: clamp(0.2rem, 1vw, 0.25rem);
+  --spacing-sm: clamp(0.4rem, 1.5vw, 0.5rem);
+  --spacing-md: clamp(0.8rem, 2.5vw, 1rem);
+  --spacing-lg: clamp(1.2rem, 3.5vw, 1.5rem);
+  --spacing-xl: clamp(1.5rem, 4vw, 2rem);
+  --spacing-2xl: clamp(2rem, 6vw, 3rem);
 
   /* Bordas */
   --border-radius-sm: 0.25rem;
@@ -71,6 +94,9 @@
   --transition-fast: 150ms ease-in-out;
   --transition-normal: 250ms ease-in-out;
   --transition-slow: 350ms ease-in-out;
+
+  /* Touch targets mínimos */
+  --touch-target: 44px;
 }
 
 /* Leaflet Map Styles */
@@ -107,6 +133,9 @@
 html {
   font-size: 16px;
   scroll-behavior: smooth;
+  /* Otimização para dispositivos móveis */
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
 }
 
 body {
@@ -117,9 +146,87 @@ body {
   background-color: var(--bg-primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  
+  /* Melhor experiência touch */
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  
+  /* Suporte a orientação */
+  overflow-x: hidden;
 }
 
-/* Elementos de texto */
+/* Reset para elementos interativos */
+button,
+input,
+textarea,
+select,
+a {
+  -webkit-user-select: auto;
+  -moz-user-select: auto;
+  -ms-user-select: auto;
+  user-select: auto;
+}
+
+/* Container responsivo global */
+.container {
+  width: 100%;
+  margin: 0 auto;
+  padding-left: var(--padding-mobile);
+  padding-right: var(--padding-mobile);
+  max-width: var(--container-2xl);
+}
+
+@media (min-width: 640px) {
+  .container {
+    padding-left: var(--padding-tablet);
+    padding-right: var(--padding-tablet);
+  }
+}
+
+@media (min-width: 1024px) {
+  .container {
+    padding-left: var(--padding-desktop);
+    padding-right: var(--padding-desktop);
+  }
+}
+
+/* Utilitários de responsividade */
+.hidden-mobile {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .hidden-mobile {
+    display: block;
+  }
+  
+  .hidden-desktop {
+    display: none;
+  }
+}
+
+/* Touch targets mínimos para acessibilidade */
+button,
+input[type="button"],
+input[type="submit"],
+input[type="reset"],
+a {
+  min-height: var(--touch-target);
+  min-width: var(--touch-target);
+}
+
+/* Imagens responsivas */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Elementos de texto responsivos */
 h1,
 h2,
 h3,
@@ -130,28 +237,169 @@ h6 {
   line-height: 1.25;
   margin-bottom: var(--spacing-md);
   color: var(--text-primary);
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
 }
 
 h1 {
   font-size: var(--font-size-4xl);
+  line-height: 1.1;
 }
 h2 {
   font-size: var(--font-size-3xl);
+  line-height: 1.15;
 }
 h3 {
   font-size: var(--font-size-2xl);
+  line-height: 1.2;
 }
 h4 {
   font-size: var(--font-size-xl);
+  line-height: 1.25;
 }
 h5 {
   font-size: var(--font-size-lg);
+  line-height: 1.3;
 }
 h6 {
   font-size: var(--font-size-base);
+  line-height: 1.35;
 }
 
 p {
   margin-bottom: var(--spacing-md);
   color: var(--text-secondary);
+  /* Melhor legibilidade em dispositivos móveis */
+  line-height: 1.6;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/* Otimizações para orientação de tela */
+@media (orientation: landscape) and (max-height: 500px) {
+  .hero-section {
+    margin-top: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+  }
+}
+
+/* Melhorias para telas pequenas */
+@media (max-width: 480px) {
+  :root {
+    --padding-mobile: 0.75rem;
+  }
+  
+  body {
+    font-size: 14px;
+  }
+  
+  h1 { font-size: clamp(1.4rem, 5.5vw, 1.8rem); }
+  h2 { font-size: clamp(1.2rem, 4.8vw, 1.6rem); }
+  h3 { font-size: clamp(1rem, 4.2vw, 1.4rem); }
+  h4 { font-size: clamp(0.95rem, 3.8vw, 1.2rem); }
+}
+
+/* Ajustes para dispositivos muito pequenos */
+@media (max-width: 320px) {
+  :root {
+    --padding-mobile: 0.5rem;
+    --spacing-xs: 0.15rem;
+    --spacing-sm: 0.3rem;
+    --spacing-md: 0.6rem;
+    --spacing-lg: 0.9rem;
+    --spacing-xl: 1.2rem;
+  }
+  
+  body {
+    font-size: 13px;
+  }
+  
+  h1 { font-size: 1.3rem; }
+  h2 { font-size: 1.15rem; }
+  h3 { font-size: 1rem; }
+  h4 { font-size: 0.9rem; }
+  h5 { font-size: 0.85rem; }
+  h6 { font-size: 0.8rem; }
+  
+  /* Força containers pequenos */
+  .container {
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+  }
+}
+
+/* Suporte para telas muito grandes */
+@media (min-width: 1536px) {
+  .container {
+    max-width: 1400px;
+  }
+}
+
+/* CORREÇÕES CRÍTICAS PARA MOBILE */
+/* Previne overflow horizontal em toda a aplicação */
+html, body {
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100vw;
+}
+
+#root {
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+/* Força todos os elementos a respeitarem o viewport */
+* {
+  max-width: 100vw;
+  box-sizing: border-box;
+}
+
+/* Correção específica para evitar cortes */
+*:not(html):not(body) {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  hyphens: auto;
+}
+
+/* Previne problemas comuns de overflow */
+.app-wrapper,
+.main-content-with-sidebar,
+.marketplace-page-wrapper {
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+/* Garante que containers nunca ultrapassem a tela */
+.container {
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+/* Específico para dispositivos móveis */
+@media (max-width: 767px) {
+  html, body, #root {
+    width: 100vw;
+    max-width: 100vw;
+    overflow-x: hidden;
+    position: relative;
+  }
+  
+  .app-wrapper {
+    width: 100vw;
+    max-width: 100vw;
+    overflow-x: hidden;
+    position: relative;
+  }
+  
+  .main-content-with-sidebar {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    margin-left: 0 !important;
+    overflow-x: hidden;
+    position: relative;
+  }
 }

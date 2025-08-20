@@ -1,7 +1,8 @@
 .filters-section {
-  margin-bottom: 2rem;
+  margin-bottom: var(--spacing-xl);
+  margin-top: var(--spacing-lg);
   background: white;
-  border-radius: 12px;
+  border-radius: var(--border-radius-xl);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
   border: 1px solid #e2e8f0;
   overflow: hidden;
@@ -15,18 +16,20 @@
 .filters-toggle-btn {
   background: white;
   border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  padding: 0.75rem 1rem;
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-md) var(--spacing-lg);
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: 100%;
   cursor: pointer;
   transition: all 0.2s ease;
-  font-size: 0.9rem;
+  font-size: var(--font-size-base);
   font-weight: 500;
   color: #1a365d;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  min-height: var(--touch-target);
+  box-sizing: border-box;
 }
 
 .filters-toggle-btn:hover {
@@ -121,12 +124,14 @@
 
 .filters-section .search-input {
   width: 100%;
-  padding: 0.75rem 0.75rem 0.75rem 3rem;
+  padding: var(--spacing-md) var(--spacing-md) var(--spacing-md) 3rem;
   border: 1px solid #d1d5db;
-  border-radius: 0.375rem;
-  font-size: 0.875rem;
+  border-radius: var(--border-radius-md);
+  font-size: 16px; /* Previne zoom em iOS */
   background: white;
   transition: all 0.2s ease;
+  min-height: var(--touch-target);
+  box-sizing: border-box;
 }
 
 .search-input:focus {
@@ -137,10 +142,10 @@
 
 .filters-section .select {
   width: 100%;
-  padding: 0.75rem;
+  padding: var(--spacing-md);
   border: 1px solid #d1d5db;
-  border-radius: 0.375rem;
-  font-size: 0.875rem;
+  border-radius: var(--border-radius-md);
+  font-size: 16px; /* Previne zoom em iOS */
   background: white;
   color: #374151;
   cursor: pointer;
@@ -151,6 +156,8 @@
   background-repeat: no-repeat;
   background-size: 1.5em 1.5em;
   padding-right: 2.5rem;
+  min-height: var(--touch-target);
+  box-sizing: border-box;
 }
 
 .filters-section .select:focus {
@@ -159,15 +166,18 @@
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
+/* Inputs responsivos e touch-friendly */
 .filters-section .input {
   width: 100%;
-  padding: 0.75rem;
+  padding: var(--spacing-md);
   border: 1px solid #d1d5db;
-  border-radius: 0.375rem;
-  font-size: 0.875rem;
+  border-radius: var(--border-radius-md);
+  font-size: 16px; /* Previne zoom em iOS */
   background: white;
   color: #374151;
   transition: all 0.2s ease;
+  min-height: var(--touch-target);
+  box-sizing: border-box;
 }
 
 .filters-section .input:focus {
@@ -181,12 +191,109 @@
   color: #9ca3af;
 }
 
-@media (max-width: 768px) {
+/* Responsividade mobile-first */
+@media (max-width: 480px) {
+  .filters-section {
+    margin-bottom: var(--spacing-md);
+    margin-top: var(--spacing-md);
+    border-radius: var(--border-radius-lg);
+  }
+  
   .filters-section .card-content {
-    padding: 1rem;
+    padding: var(--spacing-md);
+  }
+  
+  .filters-section .card-header {
+    padding: var(--spacing-md) var(--spacing-md) 0;
+  }
+  
+  .filters-grid,
+  .filters-grid-2 {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+  }
+  
+  .filters-toggle-btn {
+    padding: var(--spacing-md);
+    font-size: 16px; /* Previne zoom em iOS */
+    min-height: var(--touch-target);
+  }
+  
+  /* Inputs otimizados para mobile */
+  .filters-section .search-input,
+  .filters-section .select,
+  .filters-section .input {
+    padding: var(--spacing-md);
+    font-size: 16px;
+    border-radius: var(--border-radius-lg);
+  }
+  
+  .filters-section .search-input {
+    padding-left: 2.5rem;
+  }
+  
+  .filters-section .search-icon {
+    left: var(--spacing-md);
+  }
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
+  .filters-section .card-content {
+    padding: var(--spacing-lg);
   }
   
   .filters-grid-2 {
     grid-template-columns: 1fr;
+    gap: var(--spacing-lg);
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .filters-grid-2 {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-lg);
+  }
+}
+
+/* Orientação paisagem */
+@media (orientation: landscape) and (max-height: 500px) {
+  .filters-section {
+    margin-bottom: var(--spacing-md);
+  }
+  
+  .filters-section .card-content {
+    padding: var(--spacing-md);
+  }
+}
+
+/* Touch devices */
+@media (pointer: coarse) {
+  .filters-toggle-btn:hover {
+    background: #f8fafc;
+    transform: none; /* Remove hover complexo em touch */
+  }
+  
+  .filters-section .search-input:focus,
+  .filters-section .select:focus,
+  .filters-section .input:focus {
+    /* Feedback visual mais sutil em touch */
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+  }
+}
+
+/* Telas muito pequenas */
+@media (max-width: 320px) {
+  .filters-section .card-content {
+    padding: 0.75rem;
+  }
+  
+  .filters-section .search-input {
+    padding-left: 2rem;
+  }
+  
+  .filters-section .search-icon {
+    left: 0.5rem;
+    width: 1rem;
+    height: 1rem;
   }
 }

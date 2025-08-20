@@ -1,0 +1,282 @@
+/* ULTRA MOBILE CSS - ABORDAGEM CONTAINER QUERIES E CSS MODERNO */
+
+/* Usando CSS Container Queries para máxima responsividade */
+@container (max-width: 400px) {
+  .property-card-modern * {
+    max-width: 100% !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+  }
+}
+
+/* RESET COMPLETO PARA MOBILE */
+@media (max-width: 768px) {
+  /* Remove TODAS as restrições de largura */
+  .marketplace-page-wrapper,
+  .marketplace-page-wrapper .container,
+  .properties-grid,
+  .property-card-modern,
+  .property-content-modern,
+  .property-header-info,
+  .property-title-modern,
+  .property-description-modern,
+  .property-location-modern,
+  .property-metrics,
+  .metric-card,
+  .metric-content,
+  .meta-summary,
+  .meta-left,
+  .meta-right,
+  .quota-progress-section,
+  .property-actions-modern {
+    max-width: 100% !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  /* FORÇA QUEBRA DE LINHA EM TUDO */
+  .property-title-modern,
+  .property-description-modern,
+  .property-location-modern,
+  .property-location-modern span,
+  .metric-label,
+  .metric-value,
+  .meta-left span,
+  .mini-progress-label {
+    white-space: normal !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    hyphens: auto !important;
+    text-overflow: clip !important;
+  }
+
+  /* LAYOUT SIMPLIFICADO PARA PROPERTY CARDS */
+  .property-card-modern {
+    display: block !important;
+    overflow: hidden !important;
+    margin-bottom: 1rem !important;
+    border-radius: 1rem !important;
+  }
+
+  .property-content-modern {
+    display: block !important;
+    padding: 0.75rem !important;
+    gap: 0.5rem !important;
+  }
+
+  /* TIPOGRAFIA FORÇADA */
+  .property-title-modern {
+    font-size: 0.875rem !important;
+    line-height: 1.25 !important;
+    margin-bottom: 0.5rem !important;
+    display: block !important;
+    -webkit-line-clamp: unset !important;
+  }
+
+  .property-description-modern {
+    font-size: 0.75rem !important;
+    line-height: 1.4 !important;
+    margin-bottom: 0.5rem !important;
+    display: block !important;
+    -webkit-line-clamp: unset !important;
+  }
+
+  .property-location-modern {
+    font-size: 0.75rem !important;
+    display: block !important;
+    margin-bottom: 0.5rem !important;
+  }
+
+  /* MÉTRICAS COMO LISTA SIMPLES */
+  .property-metrics {
+    display: block !important;
+    margin: 0.5rem 0 !important;
+  }
+
+  .metric-card {
+    display: block !important;
+    margin-bottom: 0.5rem !important;
+    padding: 0.5rem !important;
+    border: 1px solid #e5e7eb !important;
+    border-radius: 0.5rem !important;
+    background: #fff !important;
+  }
+
+  .metric-content {
+    display: block !important;
+  }
+
+  .metric-label {
+    font-size: 0.6875rem !important;
+    color: #6b7280 !important;
+    margin-bottom: 0.25rem !important;
+    display: block !important;
+  }
+
+  .metric-value {
+    font-size: 0.75rem !important;
+    font-weight: 600 !important;
+    display: block !important;
+  }
+
+  /* META SUMMARY SIMPLIFICADO */
+  .meta-summary {
+    display: block !important;
+    margin: 0.5rem 0 !important;
+  }
+
+  .meta-left,
+  .meta-right {
+    display: block !important;
+    margin-bottom: 0.25rem !important;
+    width: 100% !important;
+  }
+
+  /* PROGRESS SECTION */
+  .quota-progress-section {
+    margin: 0.5rem 0 !important;
+    padding: 0.5rem !important;
+    border-radius: 0.5rem !important;
+  }
+
+  /* BOTÕES SIMPLIFICADOS */
+  .property-actions-modern {
+    display: block !important;
+    margin-top: 0.75rem !important;
+  }
+
+  .property-btn-details,
+  .property-btn-reserve {
+    display: block !important;
+    width: 100% !important;
+    margin-bottom: 0.5rem !important;
+    padding: 0.75rem !important;
+    font-size: 0.875rem !important;
+    border-radius: 0.5rem !important;
+    box-sizing: border-box !important;
+  }
+}
+
+/* DISPOSITIVOS MUITO PEQUENOS - MODO ULTRA COMPACTO */
+@media (max-width: 375px) {
+  .property-card-modern {
+    margin-bottom: 0.75rem !important;
+    border-radius: 0.75rem !important;
+  }
+
+  .property-content-modern {
+    padding: 0.5rem !important;
+  }
+
+  .property-title-modern {
+    font-size: 0.8125rem !important;
+    line-height: 1.2 !important;
+  }
+
+  .property-description-modern {
+    font-size: 0.6875rem !important;
+  }
+
+  .property-location-modern {
+    font-size: 0.6875rem !important;
+  }
+
+  .metric-card {
+    padding: 0.375rem !important;
+    margin-bottom: 0.375rem !important;
+  }
+
+  .metric-label {
+    font-size: 0.625rem !important;
+  }
+
+  .metric-value {
+    font-size: 0.6875rem !important;
+  }
+
+  .property-btn-details,
+  .property-btn-reserve {
+    padding: 0.625rem !important;
+    font-size: 0.8125rem !important;
+  }
+}
+
+/* SMARTPHONES MUITO PEQUENOS */
+@media (max-width: 320px) {
+  .property-content-modern {
+    padding: 0.375rem !important;
+  }
+
+  .property-title-modern {
+    font-size: 0.75rem !important;
+    margin-bottom: 0.375rem !important;
+  }
+
+  .property-description-modern {
+    font-size: 0.625rem !important;
+    margin-bottom: 0.375rem !important;
+  }
+
+  .property-location-modern {
+    font-size: 0.625rem !important;
+  }
+
+  .metric-card {
+    padding: 0.25rem !important;
+    margin-bottom: 0.25rem !important;
+  }
+
+  .metric-label {
+    font-size: 0.5625rem !important;
+  }
+
+  .metric-value {
+    font-size: 0.625rem !important;
+  }
+
+  .property-btn-details,
+  .property-btn-reserve {
+    padding: 0.5rem !important;
+    font-size: 0.75rem !important;
+    margin-bottom: 0.375rem !important;
+  }
+}
+
+/* FALLBACK DE EMERGÊNCIA - USANDO CSS GRID MAIS SIMPLES */
+@supports not (container-type: inline-size) {
+  @media (max-width: 768px) {
+    .properties-grid {
+      display: block !important;
+      width: 100% !important;
+    }
+
+    .property-card-modern {
+      display: block !important;
+      width: 100% !important;
+      max-width: 100% !important;
+      margin: 0 0 1rem 0 !important;
+    }
+  }
+}
+
+/* MODO DEBUG - PODE SER REMOVIDO EM PRODUÇÃO */
+@media (max-width: 768px) {
+  .property-card-modern {
+    /* Adiciona uma borda vermelha para debug visual */
+    /* border: 1px solid red !important; */
+  }
+
+  .property-content-modern {
+    /* Adiciona fundo para debug visual */
+    /* background-color: rgba(255, 0, 0, 0.1) !important; */
+  }
+}
+
+/* FORCE HARDWARE ACCELERATION PARA MELHOR PERFORMANCE */
+@media (max-width: 768px) {
+  .property-card-modern {
+    will-change: transform;
+    transform: translateZ(0);
+  }
+}

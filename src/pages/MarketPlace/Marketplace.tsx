@@ -14,6 +14,8 @@ import { MdClose } from "react-icons/md";
 import type { Property } from "../../types/property";
 import { Notification } from "../../components/common/Notification";
 import "../../components/Marketplace/styles/index.css";
+import "../../components/Marketplace/styles/mobile-force.css";
+import "../../components/Marketplace/styles/ultra-mobile.css";
 import "./Marketplace.css";
 import { createProperty } from "../../services/PropertiesService";
 import { uploadImage } from "../../services/StorageService";
@@ -68,7 +70,7 @@ export default function MarketplacePage() {
 
   return (
     <div className="marketplace-page-wrapper" style={{ minHeight: "100vh" }}>
-      <div className="container" style={{ marginTop: "32px", flex: 1 }}>
+      <div className="container marketplace-container">
         <HeroSection
           title="Invista em Imóveis com Segurança"
           description="Diversifique seus investimentos com cotas de empreendimentos imobiliários selecionados. Rentabilidade atrativa e transparência total."
