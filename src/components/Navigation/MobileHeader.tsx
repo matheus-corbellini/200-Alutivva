@@ -3,13 +3,11 @@ import { useAuth } from "../../contexts/AuthContext";
 import { useAppNavigate } from "../../hooks/useAppNavigate";
 import { 
   MdNotifications,
-  MdMenu,
   MdSettings,
   MdLogout,
   MdClose,
   MdTerrain,
-  MdHistory,
-  MdDashboard
+  MdHistory
 } from "react-icons/md";
 import "./MobileHeader.css";
 

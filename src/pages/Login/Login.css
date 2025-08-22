@@ -1,3 +1,33 @@
+/* Remover espaços em branco globais na página de login */
+html, body {
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow-x: hidden !important;
+}
+
+/* Garantir que o container principal não tenha margens indesejadas */
+.app-wrapper,
+.main-content-with-sidebar,
+.main-content-with-sidebar.no-sidebar {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Remover espaço branco no topo especificamente para a página de login */
+.login-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #f8fafc;
+  padding: 24px;
+  position: relative;
+  min-height: 100vh;
+  /* Remover espaço no topo */
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
 .back-button {
   position: absolute;
   top: 24px;
@@ -22,17 +52,6 @@
 .back-button:focus {
   outline: 2px solid #1a355b;
   outline-offset: 2px;
-}
-
-.login-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background: #f8fafc;
-  padding: 24px;
-  position: relative;
-  min-height: 100vh;
 }
 
 .login-logo {
@@ -188,5 +207,81 @@
   }
   100% {
     transform: rotate(360deg);
+  }
+}
+
+/* Estilos específicos para mobile */
+@media (max-width: 768px) {
+  .login-container {
+    padding: 16px;
+    min-height: 100vh;
+    justify-content: flex-start;
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+    /* Remover espaço branco no topo */
+    background: #f8fafc;
+  }
+
+  .back-button {
+    top: 16px;
+    left: 16px;
+    padding: 8px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+  }
+
+  .login-logo {
+    width: 100px;
+    margin-bottom: 24px;
+    margin-top: 60px;
+  }
+
+  .login-form {
+    width: 100%;
+    max-width: none;
+    min-width: 0;
+    padding: 32px 24px 24px 24px;
+    margin-bottom: 16px;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  }
+
+  .input-icon {
+    padding: 0 16px;
+    margin-bottom: 16px;
+  }
+
+  .input-icon input {
+    padding: 16px 0;
+    font-size: 1rem;
+  }
+
+  .login-redirect-message {
+    font-size: 0.95rem;
+    padding: 10px 16px;
+    margin-bottom: 16px;
+  }
+}
+
+/* Para dispositivos muito pequenos */
+@media (max-width: 375px) {
+  .login-container {
+    padding: 12px;
+    padding-top: 70px;
+  }
+
+  .login-form {
+    padding: 24px 20px 20px 20px;
+  }
+
+  .back-button {
+    top: 12px;
+    left: 12px;
+  }
+
+  .login-logo {
+    width: 80px;
   }
 }

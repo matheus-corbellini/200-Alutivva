@@ -1,24 +1,22 @@
-import { useRef, useState } from "react";
-import {
-  HeroSection,
-  FiltersSection,
-  PropertiesGrid,
-  ResultsSummary,
-  EmptyState,
-} from "../../components/Marketplace";
-import { usePropertyFilters } from "../../hooks/usePropertyFilters";
+import { useState, useRef, useEffect } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import { useNotification } from "../../hooks/useNotification";
-import { Footer } from "borderless";
-import { MdClose } from "react-icons/md";
+import { usePropertyFilters } from "../../hooks/usePropertyFilters";
 import type { Property } from "../../types/property";
+import { createProperty } from "../../services/PropertiesService";
+import { uploadImage } from "../../services/StorageService";
+import { MdClose } from "react-icons/md";
+import { Footer } from "borderless";
+import { HeroSection } from "../../components/Marketplace/HeroSection";
+import { FiltersSection } from "../../components/Marketplace/FiltersSection";
+import { PropertiesGrid } from "../../components/Marketplace/PropertiesGrid";
+import { EmptyState } from "../../components/Marketplace/EmptyState";
+import { ResultsSummary } from "../../components/Marketplace/ResultsSummary";
 import { Notification } from "../../components/common/Notification";
+import "./Marketplace.css";
 import "../../components/Marketplace/styles/index.css";
 import "../../components/Marketplace/styles/mobile-force.css";
 import "../../components/Marketplace/styles/ultra-mobile.css";
-import "./Marketplace.css";
-import { createProperty } from "../../services/PropertiesService";
-import { uploadImage } from "../../services/StorageService";
 
 export default function MarketplacePage() {
   const { filters, filteredProperties, handleFilterChange, clearFilters, reload } =
@@ -31,6 +29,13 @@ export default function MarketplacePage() {
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
   const [reserveAmount, setReserveAmount] = useState<number>(0);
   const [isProcessingReserve] = useState(false);
+
+  // Cleanup do modal quando componente for desmontado
+  useEffect(() => {
+    return () => {
+      document.body.classList.remove('modal-open');
+    };
+  }, []);
 
   const handleAddProperty = () => {
     // Investidores não podem adicionar empreendimentos
@@ -48,12 +53,16 @@ export default function MarketplacePage() {
     setSelectedProperty(property);
     setReserveAmount(property.quotaValue);
     setShowReserveModal(true);
+    // Prevenir scroll do body
+    document.body.classList.add('modal-open');
   };
 
   const closeReserveModal = () => {
     setShowReserveModal(false);
     setSelectedProperty(null);
     setReserveAmount(0);
+    // Restaurar scroll do body
+    document.body.classList.remove('modal-open');
   };
 
   const handleConfirmReserve = () => {
@@ -231,109 +240,151 @@ export default function MarketplacePage() {
         </div>
       )}
 
-      {/* Reserve Quota Modal */}
+      {/* Modal Futurista de Reserva */}
       {showReserveModal && selectedProperty && (
-        <div className="modal-overlay" onClick={closeReserveModal}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <h2>Reservar Cota</h2>
-              <button className="modal-close" onClick={closeReserveModal}>
-                <MdClose size={20} />
-              </button>
+        <div className="futuristic-modal-overlay" onClick={closeReserveModal}>
+          <div className="futuristic-modal" onClick={(e) => e.stopPropagation()}>
+            {/* Header com gradiente */}
+            <div className="futuristic-header">
+              <div className="header-gradient"></div>
+              <div className="header-content">
+                <h2>
+                  <span className="reserve-icon">🚀</span>
+                  Reservar Cota
+                </h2>
+                <button className="futuristic-close" onClick={closeReserveModal}>
+                  <span className="close-icon">✕</span>
+                </button>
+              </div>
             </div>
 
-            <div className="modal-body">
-              <div className="investment-detail-image">
-                <img src={selectedProperty.image} alt={selectedProperty.title} />
-                <div className="investment-detail-status">
-                  <span className={`status-badge ${selectedProperty.status.toLowerCase().replace(/[^a-z0-9]/g, '-')}`}>
+            {/* Conteúdo principal */}
+            <div className="futuristic-content">
+              {/* Card da propriedade */}
+              <div className="property-card-futuristic">
+                <div className="property-image-container">
+                  <img 
+                    src={selectedProperty.image || "/logo.png"} 
+                    alt={selectedProperty.title}
+                    onError={(e) => {
+                      e.currentTarget.src = "/logo.png";
+                    }}
+                  />
+                  <div className="image-overlay"></div>
+                  <div className="status-badge-futuristic">
+                    <span className="status-dot"></span>
                     {selectedProperty.status}
-                  </span>
+                  </div>
+                </div>
+                
+                <div className="property-details">
+                  <h3 className="property-title-futuristic">{selectedProperty.title}</h3>
+                  <div className="property-location-futuristic">
+                    <span className="location-icon">📍</span>
+                    {selectedProperty.location.address}
+                  </div>
                 </div>
               </div>
 
-              <div className="investment-detail-info">
-                <h3>{selectedProperty.title}</h3>
-                <p className="investment-detail-location">{selectedProperty.location.address}</p>
-
-                <div className="investment-detail-stats">
-                  <div className="detail-stat">
-                    <span className="stat-label">Valor da Cota</span>
-                    <span className="stat-value">{formatCurrency(selectedProperty.quotaValue)}</span>
-                  </div>
-
-                  <div className="detail-stat">
-                    <span className="stat-label">ROI Estimado</span>
-                    <span className="stat-value">{selectedProperty.roi}% a.a.</span>
-                  </div>
-
-                  <div className="detail-stat">
-                    <span className="stat-label">Retorno Esperado</span>
-                    <span className="stat-value">{formatCurrency(selectedProperty.quotaValue * (selectedProperty.roi / 100))}/ano</span>
-                  </div>
-
-                  <div className="detail-stat">
-                    <span className="stat-label">Cotas Disponíveis</span>
-                    <span className="stat-value">{selectedProperty.totalQuotas - selectedProperty.soldQuotas} de {selectedProperty.totalQuotas}</span>
-                  </div>
-
-                  <div className="detail-stat">
-                    <span className="stat-label">Data de Conclusão</span>
-                    <span className="stat-value">{selectedProperty.completionDate}</span>
-                  </div>
-
-                  <div className="detail-stat">
-                    <span className="stat-label">Progresso de Vendas</span>
-                    <span className="stat-value">{Math.round((selectedProperty.soldQuotas / selectedProperty.totalQuotas) * 100)}%</span>
+              {/* Métricas em grid */}
+              <div className="metrics-grid">
+                <div className="metric-card">
+                  <div className="metric-icon">💰</div>
+                  <div className="metric-content">
+                    <span className="metric-label">Valor da Cota</span>
+                    <span className="metric-value">{formatCurrency(selectedProperty.quotaValue)}</span>
                   </div>
                 </div>
-
-                <div className="investment-detail-description">
-                  <h4>Descrição do Projeto</h4>
-                  <p>{selectedProperty.description}</p>
-                </div>
-
-                <div className="reserve-form">
-                  <h4>Dados da Reserva</h4>
-                  <div className="form-group">
-                    <label>Quantidade de Cotas</label>
-                    <input
-                      type="number"
-                      min="1"
-                      max={selectedProperty.totalQuotas - selectedProperty.soldQuotas}
-                      value={reserveAmount / selectedProperty.quotaValue}
-                      onChange={(e) => setReserveAmount(Number(e.target.value) * selectedProperty.quotaValue)}
-                      className="form-input"
-                    />
+                
+                <div className="metric-card">
+                  <div className="metric-icon">📈</div>
+                  <div className="metric-content">
+                    <span className="metric-label">ROI Estimado</span>
+                    <span className="metric-value">{selectedProperty.roi}% a.a.</span>
                   </div>
-                  <div className="form-group">
-                    <label>Valor Total</label>
-                    <input
-                      type="text"
-                      value={formatCurrency(reserveAmount)}
-                      readOnly
-                      className="form-input readonly"
-                    />
+                </div>
+                
+                <div className="metric-card">
+                  <div className="metric-icon">🎯</div>
+                  <div className="metric-content">
+                    <span className="metric-label">Disponíveis</span>
+                    <span className="metric-value">
+                      {selectedProperty.totalQuotas - selectedProperty.soldQuotas} de {selectedProperty.totalQuotas}
+                    </span>
                   </div>
                 </div>
               </div>
-            </div>
 
-            <div className="modal-footer">
-              <button
-                className="btn-secondary"
-                onClick={closeReserveModal}
-                disabled={isProcessingReserve}
-              >
-                Cancelar
-              </button>
-              <button
-                className={`btn-primary ${isProcessingReserve ? 'loading' : ''}`}
-                onClick={handleConfirmReserve}
-                disabled={isProcessingReserve}
-              >
-                {isProcessingReserve ? 'Processando...' : 'Confirmar Reserva'}
-              </button>
+              {/* Descrição com efeito glassmorphism */}
+              <div className="description-card">
+                <h4>
+                  <span className="section-icon">📋</span>
+                  Sobre o Projeto
+                </h4>
+                <p>{selectedProperty.description}</p>
+              </div>
+
+              {/* Formulário futurista */}
+              <div className="investment-form">
+                <h4>
+                  <span className="section-icon">⚡</span>
+                  Configure seu Investimento
+                </h4>
+                
+                <div className="form-row">
+                  <div className="input-group">
+                    <label className="futuristic-label">Quantidade de Cotas</label>
+                    <div className="input-container">
+                      <input
+                        type="number"
+                        min="1"
+                        max={selectedProperty.totalQuotas - selectedProperty.soldQuotas}
+                        value={Math.max(1, Math.floor(reserveAmount / selectedProperty.quotaValue))}
+                        onChange={(e) => {
+                          const quantity = Math.max(1, parseInt(e.target.value) || 1);
+                          setReserveAmount(quantity * selectedProperty.quotaValue);
+                        }}
+                        className="futuristic-input"
+                      />
+                      <div className="input-highlight"></div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Total com efeito neon */}
+                <div className="total-container">
+                  <div className="total-card">
+                    <span className="total-label">Investimento Total</span>
+                    <span className="total-value-neon">{formatCurrency(reserveAmount)}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Botões dentro do conteúdo scrollável */}
+              <div className="futuristic-buttons-container">
+                <button className="btn-futuristic btn-cancel" onClick={closeReserveModal}>
+                  <span className="btn-icon">❌</span>
+                  Cancelar
+                  <div className="btn-ripple"></div>
+                </button>
+                
+                <button 
+                  className="btn-futuristic btn-primary" 
+                  onClick={handleConfirmReserve}
+                  disabled={isProcessingReserve}
+                >
+                  <span className="btn-icon">🚀</span>
+                  {isProcessingReserve ? (
+                    <>
+                      <span className="loading-spinner"></span>
+                      Processando...
+                    </>
+                  ) : (
+                    'Confirmar Reserva'
+                  )}
+                  <div className="btn-ripple"></div>
+                </button>
+              </div>
             </div>
           </div>
         </div>

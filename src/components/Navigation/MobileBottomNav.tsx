@@ -17,7 +17,9 @@ const MobileBottomNav: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
 
-  // Define itens baseado no role do usuário
+
+
+  // Define itens baseado no role do usuário - VERSÃO CORRIGIDA
   const getNavigationItems = () => {
     const baseItems = [
       {
@@ -34,91 +36,91 @@ const MobileBottomNav: React.FC = () => {
       }
     ];
 
-    // Para investidores
-    if (user?.role === "investor") {
-      return [
-        ...baseItems,
-        {
-          id: "investimentos",
-          label: "Investimentos", 
-          icon: <MdTrendingUp size={24} />,
-          path: "/meus-investimentos",
-        },
-        {
-          id: "reservas",
-          label: "Reservas",
-          icon: <MdAttachMoney size={24} />,
-          path: "/minhas-reservas",
-        },
-        {
-          id: "perfil",
-          label: "Perfil",
-          icon: <MdPerson size={24} />,
-          path: "/personal-management",
-        }
-      ];
+    // Definir itens específicos baseado no role usando switch
+    let roleSpecificItems: Array<{
+      id: string;
+      label: string;
+      icon: React.ReactNode;
+      path: string;
+    }> = [];
+
+    switch(user?.role) {
+      case "investor":
+        roleSpecificItems = [
+          {
+            id: "investimentos",
+            label: "Investimentos", 
+            icon: <MdTrendingUp size={24} />,
+            path: "/meus-investimentos",
+          },
+          {
+            id: "reservas",
+            label: "Reservas",
+            icon: <MdAttachMoney size={24} />,
+            path: "/minhas-reservas",
+          }
+        ];
+        break;
+
+      case "landowner":
+        roleSpecificItems = [
+          {
+            id: "terrenos",
+            label: "Terrenos",
+            icon: <MdTerrain size={24} />,
+            path: "/meus-terrenos",
+          },
+          {
+            id: "gestao",
+            label: "Gestão",
+            icon: <MdAttachMoney size={24} />,
+            path: "/gestao-alugueis",
+          }
+        ];
+        break;
+
+      case "admin":
+        roleSpecificItems = [
+          {
+            id: "admin",
+            label: "Admin",
+            icon: <MdDashboard size={24} />,
+            path: "/admin",
+          },
+          {
+            id: "gestao",
+            label: "Gestão",
+            icon: <MdAttachMoney size={24} />,
+            path: "/gestao-alugueis",
+          }
+        ];
+        break;
+
+      case "entrepreneur":
+        roleSpecificItems = [
+          {
+            id: "gestao",
+            label: "Gestão",
+            icon: <MdAttachMoney size={24} />,
+            path: "/gestao-alugueis",
+          }
+        ];
+        break;
+
+      default:
+        roleSpecificItems = [];
     }
 
-    // Para proprietários
-    if (user?.role === "landowner") {
-      return [
-        ...baseItems,
-        {
-          id: "terrenos",
-          label: "Terrenos",
-          icon: <MdTerrain size={24} />,
-          path: "/meus-terrenos",
-        },
-        {
-          id: "gestao",
-          label: "Gestão",
-          icon: <MdAttachMoney size={24} />,
-          path: "/gestao-alugueis",
-        },
-        {
-          id: "perfil",
-          label: "Perfil",
-          icon: <MdPerson size={24} />,
-          path: "/personal-management",
-        }
-      ];
-    }
+    // Adicionar perfil sempre como último item
+    const profileItem = {
+      id: "perfil",
+      label: "Perfil",
+      icon: <MdPerson size={24} />,
+      path: "/personal-management",
+    };
 
-    // Para admin
-    if (user?.role === "admin") {
-      return [
-        ...baseItems,
-        {
-          id: "admin",
-          label: "Admin",
-          icon: <MdDashboard size={24} />,
-          path: "/admin",
-        },
-        {
-          id: "gestao",
-          label: "Gestão",
-          icon: <MdAttachMoney size={24} />,
-          path: "/gestao-alugueis",
-        },
-        {
-          id: "perfil",
-          label: "Perfil",
-          icon: <MdPerson size={24} />,
-          path: "/personal-management",
-        }
-      ];
-    }
-
-    // Default para todos os usuários
-    return [
-      ...baseItems,
-      {
-        id: "perfil",
-        label: "Perfil",
-        icon: <MdPerson size={24} />,
-        path: "/personal-management",
-      }
-    ];
+    const finalItems = [...baseItems, ...roleSpecificItems, profileItem];
+    return finalItems;
   };
 
   const navigationItems = getNavigationItems();

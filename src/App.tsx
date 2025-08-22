@@ -4,7 +4,7 @@ import AppRoutes from "./routes/AppRoutes";
 import { AuthProvider } from "./contexts/AuthContext";
 import { RentalProvider } from "./contexts/RentalContext";
 import { BrowserRouter, useLocation } from "react-router-dom";
-import { Sidebar, SidebarToggle } from "./components/Sidebar/Sidebar";
+import { Sidebar } from "./components/Sidebar/Sidebar";
 import MobileBottomNav from "./components/Navigation/MobileBottomNav";
 import MobileHeader from "./components/Navigation/MobileHeader";
 import { useSidebar } from "./hooks/useSidebar";
@@ -60,6 +60,8 @@ function AppFrame() {
       {!shouldHideNavigation && isMobile && isLoggedIn && (
         <MobileBottomNav />
       )}
+
+
     </div>
   );
 }

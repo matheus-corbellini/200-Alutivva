@@ -6,6 +6,7 @@ import { Footer } from "borderless";
 
 const LandingPage: React.FC = () => {
   const { goToLogin, goToRegister } = useAppNavigate();
+
   return (
     <div className="landing-page-wrapper">
       <div className="landing-container">

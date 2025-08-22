@@ -23,10 +23,12 @@
   max-width: 100%;
   margin: 0 auto;
   min-height: 56px;
+  position: relative;
 }
 
 .mobile-header-logo {
   flex-shrink: 0;
+  z-index: 2;
 }
 
 .mobile-header-logo img {
@@ -36,9 +38,13 @@
 }
 
 .mobile-header-title {
-  flex: 1;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
   text-align: center;
-  margin: 0 16px;
+  z-index: 1;
+  pointer-events: none;
 }
 
 .mobile-header-title h1 {
@@ -61,6 +67,7 @@
   align-items: center;
   gap: 12px;
   flex-shrink: 0;
+  z-index: 2;
 }
 
 .mobile-header-notifications {
@@ -323,6 +330,13 @@
     min-height: 52px;
   }
   
+  .mobile-header-title {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+  
   .mobile-header-title h1 {
     font-size: 1rem;
   }
@@ -358,7 +372,10 @@
   }
   
   .mobile-header-title {
-    margin: 0 8px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
   }
   
   .mobile-header-title h1 {

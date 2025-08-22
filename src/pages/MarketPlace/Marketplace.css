@@ -365,49 +365,71 @@
   }
 }
 
-/* Modal de Reserva de Cota */
+/* Prevenir scroll do body quando modal está aberto */
+body.modal-open {
+  overflow: hidden !important;
+  /* Remover position fixed que pode estar causando problemas */
+  /* position: fixed !important; */
+  /* width: 100% !important; */
+}
+
+/* Modal de Reserva de Cota - Design Mobile First */
 .modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.6);
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
   z-index: 1000;
-  padding: 1rem;
+  padding: 0;
+  backdrop-filter: blur(4px);
 }
 
 .modal-content {
   background: white;
-  border-radius: 12px;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  max-width: 800px;
+  border-radius: 20px 20px 0 0;
+  box-shadow: 0 -10px 25px rgba(0, 0, 0, 0.15);
   width: 100%;
-  max-height: 90vh;
+  max-height: 95vh;
   overflow-y: auto;
   position: relative;
+  transform: translateY(0);
+  transition: transform 0.3s ease-out;
+  /* Scroll suave */
+  scroll-behavior: smooth;
+  /* Prevenir scroll do body quando modal está aberto */
+  overscroll-behavior: contain;
+  /* Garantir que o scroll funcione */
+  -webkit-overflow-scrolling: touch;
 }
 
 .modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1.5rem 2rem;
-  border-bottom: 1px solid #e2e8f0;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid #f1f5f9;
+  background: white;
+  /* Remover position sticky que pode estar causando problemas */
+  /* position: sticky; */
+  /* top: 0; */
+  /* z-index: 10; */
+  border-radius: 20px 20px 0 0;
 }
 
 .modal-header h2 {
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   font-weight: 700;
   color: #1c4f52;
   margin: 0;
 }
 
 .modal-close {
-  background: none;
+  background: #f8fafc;
   border: none;
   color: #64748b;
   cursor: pointer;
@@ -417,119 +439,136 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
+  font-size: 1.25rem;
+  font-weight: bold;
 }
 
 .modal-close:hover {
-  background: #f1f5f9;
+  background: #e2e8f0;
   color: #1a355b;
 }
 
 .modal-body {
-  padding: 2rem;
+  padding: 1.5rem;
+  /* Garantir que o conteúdo seja scrollável */
+  overflow-y: auto;
+  max-height: calc(95vh - 100px); /* Altura total menos header e footer */
+  /* Garantir que o scroll funcione */
+  -webkit-overflow-scrolling: touch;
 }
 
 .investment-detail-image {
   position: relative;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.25rem;
+  border-radius: 12px;
+  overflow: hidden;
 }
 
 .investment-detail-image img {
   width: 100%;
-  height: 200px;
+  height: 180px;
   object-fit: cover;
-  border-radius: 8px;
+  border-radius: 12px;
 }
 
 .investment-detail-status {
   position: absolute;
-  top: 1rem;
-  right: 1rem;
+  top: 0.75rem;
+  right: 0.75rem;
 }
 
 .status-badge {
-  padding: 0.25rem 0.75rem;
+  padding: 0.375rem 0.75rem;
   border-radius: 20px;
   font-size: 0.75rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  backdrop-filter: blur(8px);
+  background: rgba(255, 255, 255, 0.9);
 }
 
 .status-badge.em-construção,
 .status-badge.em-construcao {
-  background: #fef3c7;
+  background: rgba(254, 243, 199, 0.9);
   color: #92400e;
 }
 
 .status-badge.lançamento,
 .status-badge.lancamento {
-  background: #dbeafe;
+  background: rgba(219, 234, 254, 0.9);
   color: #1e40af;
 }
 
 .status-badge.finalizado {
-  background: #dcfce7;
+  background: rgba(220, 252, 231, 0.9);
   color: #166534;
 }
 
 .investment-detail-info h3 {
-  font-size: 1.5rem;
+  font-size: 1.375rem;
   font-weight: 700;
   color: #1c4f52;
   margin: 0 0 0.5rem 0;
+  line-height: 1.3;
 }
 
 .investment-detail-location {
   color: #64748b;
+  font-size: 0.95rem;
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.investment-detail-location::before {
+  content: "📍";
   font-size: 1rem;
-  margin-bottom: 1.5rem;
 }
 
 .investment-detail-stats {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
-  margin-bottom: 2rem;
+  grid-template-columns: 1fr;
+  gap: 0.875rem;
+  margin-bottom: 1.5rem;
 }
 
 .detail-stat {
   background: #f8fafc;
   padding: 1rem;
-  border-radius: 8px;
+  border-radius: 12px;
   border: 1px solid #e2e8f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .stat-label {
-  display: block;
   font-size: 0.875rem;
   color: #64748b;
   font-weight: 500;
-  margin-bottom: 0.5rem;
 }
 
 .stat-value {
-  display: block;
-  font-size: 1.125rem;
+  font-size: 1rem;
   font-weight: 600;
   color: #1c4f52;
-}
-
-.stat-value.positive {
-  color: #059669;
-}
-
-.stat-value.negative {
-  color: #dc2626;
+  text-align: right;
 }
 
 .investment-detail-description {
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
+  background: #f8fafc;
+  padding: 1rem;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
 }
 
 .investment-detail-description h4 {
-  font-size: 1.125rem;
+  font-size: 1rem;
   font-weight: 600;
   color: #1c4f52;
   margin: 0 0 0.75rem 0;
@@ -539,17 +578,18 @@
   color: #64748b;
   line-height: 1.6;
   margin: 0;
+  font-size: 0.9rem;
 }
 
 .reserve-form {
   background: #f8fafc;
-  padding: 1.5rem;
-  border-radius: 8px;
+  padding: 1.25rem;
+  border-radius: 12px;
   border: 1px solid #e2e8f0;
 }
 
 .reserve-form h4 {
-  font-size: 1.125rem;
+  font-size: 1rem;
   font-weight: 600;
   color: #1a355b;
   margin: 0 0 1rem 0;
@@ -562,6 +602,10 @@
   margin-bottom: 1rem;
 }
 
+.reserve-form .form-group:last-child {
+  margin-bottom: 0;
+}
+
 .reserve-form .form-group label {
   font-weight: 600;
   color: #1c4f52;
@@ -569,7 +613,7 @@
 }
 
 .reserve-form .form-input {
-  padding: 0.75rem;
+  padding: 0.875rem;
   border: 1.5px solid #e2e8f0;
   border-radius: 8px;
   font-size: 1rem;
@@ -577,6 +621,7 @@
   background: white;
   width: 100%;
   box-sizing: border-box;
+  min-height: 48px;
 }
 
 .reserve-form .form-input:focus {
@@ -593,24 +638,29 @@
 
 .modal-footer {
   display: flex;
-  gap: 1rem;
-  justify-content: flex-end;
-  padding: 1.5rem 2rem;
-  border-top: 1px solid #e2e8f0;
-  background: #f8fafc;
-  border-radius: 0 0 12px 12px;
+  gap: 0.75rem;
+  justify-content: space-between;
+  padding: 1.25rem 1.5rem;
+  border-top: 1px solid #f1f5f9;
+  background: white;
+  /* Remover position sticky que pode estar causando problemas */
+  /* position: sticky; */
+  /* bottom: 0; */
+  /* z-index: 10; */
 }
 
 .btn-secondary {
-  padding: 0.75rem 1.5rem;
+  padding: 0.875rem 1.25rem;
   border-radius: 8px;
   font-weight: 600;
-  font-size: 0.875rem;
+  font-size: 0.9rem;
   cursor: pointer;
   transition: all 0.2s ease;
   border: 1.5px solid #e2e8f0;
   background: white;
   color: #1c4f52;
+  flex: 1;
+  min-height: 48px;
 }
 
 .btn-secondary:hover {
@@ -619,92 +669,74 @@
 }
 
 .btn-primary {
-  padding: 0.75rem 1.5rem;
+  padding: 0.875rem 1.25rem;
   border-radius: 8px;
   font-weight: 600;
-  font-size: 0.875rem;
+  font-size: 0.9rem;
   cursor: pointer;
   transition: all 0.2s ease;
   border: none;
   background: #1c4f52;
   color: white;
+  flex: 1;
+  min-height: 48px;
 }
 
 .btn-primary:hover {
   background: #0f2d2f;
 }
 
-/* Modal de reserva responsivo */
-@media (max-width: 480px) {
-  .modal-content {
-    margin: 0.5rem;
-    max-height: calc(100vh - 1rem);
-    border-radius: 16px;
-  }
-  
-  .modal-header,
-  .modal-body,
-  .modal-footer {
-    padding-left: 1rem;
-    padding-right: 1rem;
-  }
-  
-  .modal-header {
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-  }
-  
-  .investment-detail-stats {
-    grid-template-columns: 1fr;
-    gap: 0.75rem;
-  }
-  
-  .detail-stat {
-    padding: 0.75rem;
-  }
-  
-  .investment-detail-image img {
-    height: 160px;
-  }
-  
-  .reserve-form .form-input {
-    font-size: 16px; /* Previne zoom em iOS */
-    min-height: var(--touch-target);
-  }
-  
-  .modal-footer {
-    flex-direction: column;
-    gap: 0.75rem;
-    padding: 1rem;
-  }
-  
-  .btn-secondary,
-  .btn-primary {
-    width: 100%;
-    min-height: var(--touch-target);
-    font-size: 16px;
-  }
+.btn-primary:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
 }
 
-@media (min-width: 481px) and (max-width: 768px) {
+/* Desktop styles */
+@media (min-width: 768px) {
+  .modal-overlay {
+    align-items: center;
+    padding: 1rem;
+  }
+
   .modal-content {
-    margin: 1rem;
-    max-height: calc(100vh - 2rem);
+    border-radius: 16px;
+    max-width: 600px;
+    max-height: 85vh;
+    transform: none;
   }
-  
-  .modal-header,
-  .modal-body,
-  .modal-footer {
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
+
+  .modal-header {
+    border-radius: 16px 16px 0 0;
+    padding: 1.5rem 2rem;
   }
-  
+
+  .modal-header h2 {
+    font-size: 1.5rem;
+  }
+
+  .modal-body {
+    padding: 2rem;
+    max-height: calc(85vh - 180px);
+  }
+
+  .investment-detail-image img {
+    height: 220px;
+  }
+
   .investment-detail-stats {
     grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
   }
-  
+
   .modal-footer {
-    flex-direction: row;
+    padding: 1.5rem 2rem;
+    border-radius: 0 0 16px 16px;
+  }
+
+  .btn-secondary,
+  .btn-primary {
+    flex: none;
+    padding: 0.75rem 1.5rem;
   }
 }
 
@@ -1233,5 +1265,1214 @@
     .btn-secondary:hover {
       transform: none;
     }
+  }
+} 
+
+/* Garantir que o scroll funcione em mobile */
+@media (max-width: 767px) {
+  .modal-content {
+    max-height: 90vh;
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .modal-body {
+    max-height: none;
+    overflow-y: visible;
+    padding-bottom: 2rem;
+  }
+
+  .modal-footer {
+    position: relative;
+    margin-top: 1rem;
+  }
+} 
+
+/* ===== MODAL REDESENHADO - MOBILE FIRST ===== */
+
+/* Overlay */
+.modal-overlay-new {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 9999;
+  padding: 0;
+}
+
+/* Modal Container */
+.modal-content-new {
+  background: white;
+  width: 100%;
+  max-height: 85vh;
+  border-radius: 20px 20px 0 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* Header */
+.modal-header-new {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid #e5e7eb;
+  background: white;
+  flex-shrink: 0;
+}
+
+.modal-header-new h2 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0;
+}
+
+.modal-close-new {
+  background: #f3f4f6;
+  border: none;
+  color: #6b7280;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: bold;
+  transition: all 0.2s ease;
+}
+
+.modal-close-new:hover {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+/* Body - Scrollable Content */
+.modal-body-new {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+  padding-bottom: 100px; /* Space for footer */
+}
+
+/* Property Image */
+.property-image-new {
+  margin-bottom: 20px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #f9fafb;
+}
+
+.property-image-new img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  display: block;
+}
+
+/* Property Info */
+.property-info-new {
+  margin-bottom: 24px;
+}
+
+.property-info-new h3 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0 0 8px 0;
+  line-height: 1.3;
+}
+
+.property-location-new {
+  color: #6b7280;
+  font-size: 14px;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Stats Grid */
+.stats-grid-new {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.stat-item-new {
+  background: #f9fafb;
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.stat-label-new {
+  font-size: 14px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.stat-value-new {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1f2937;
+  text-align: right;
+}
+
+/* Description */
+.description-new {
+  margin-bottom: 24px;
+  background: #f9fafb;
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+.description-new h4 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0 0 12px 0;
+}
+
+.description-new p {
+  font-size: 14px;
+  color: #6b7280;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Reservation Form */
+.reservation-form-new {
+  background: #f9fafb;
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+.reservation-form-new h4 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0 0 16px 0;
+}
+
+.form-group-new {
+  margin-bottom: 16px;
+}
+
+.form-group-new:last-child {
+  margin-bottom: 0;
+}
+
+.form-group-new label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 8px;
+}
+
+.form-input-new {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 16px;
+  background: white;
+  box-sizing: border-box;
+  min-height: 48px;
+}
+
+.form-input-new:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.total-value-new {
+  background: white;
+  padding: 12px 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1f2937;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+}
+
+/* Footer */
+.modal-footer-new {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  padding: 16px 24px;
+  border-top: 1px solid #e5e7eb;
+  display: flex;
+  gap: 12px;
+  z-index: 10;
+}
+
+.btn-cancel-new {
+  flex: 1;
+  padding: 14px 20px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background: white;
+  color: #374151;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 48px;
+}
+
+.btn-cancel-new:hover {
+  background: #f9fafb;
+  border-color: #9ca3af;
+}
+
+.btn-confirm-new {
+  flex: 1;
+  padding: 14px 20px;
+  border: none;
+  border-radius: 8px;
+  background: #1c4f52;
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 48px;
+}
+
+.btn-confirm-new:hover {
+  background: #0f2d2f;
+}
+
+.btn-confirm-new:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+}
+
+/* Desktop Styles */
+@media (min-width: 768px) {
+  .modal-overlay-new {
+    align-items: center;
+    padding: 20px;
+  }
+
+  .modal-content-new {
+    max-width: 500px;
+    max-height: 80vh;
+    border-radius: 16px;
+    width: 100%;
+  }
+
+  .modal-header-new {
+    padding: 24px 32px;
+    border-radius: 16px 16px 0 0;
+  }
+
+  .modal-header-new h2 {
+    font-size: 20px;
+  }
+
+  .modal-body-new {
+    padding: 32px;
+    padding-bottom: 120px;
+  }
+
+  .property-image-new img {
+    height: 200px;
+  }
+
+  .stats-grid-new {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .modal-footer-new {
+    position: relative;
+    padding: 24px 32px;
+    border-radius: 0 0 16px 16px;
+  }
+} 
+
+/* ===== MODAL FUTURISTA ===== */
+
+/* Prevenir scroll do body quando modal estiver aberto */
+body.modal-open {
+  overflow: hidden !important;
+  position: fixed !important;
+  width: 100% !important;
+  height: 100% !important;
+  top: 0 !important;
+  left: 0 !important;
+  /* Garantir que o modal seja scrollável no mobile */
+  touch-action: none;
+}
+
+/* Permitir scroll no modal mesmo com body fixo */
+body.modal-open .futuristic-modal-overlay {
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+}
+
+body.modal-open .futuristic-content {
+  overflow-y: scroll !important;
+  -webkit-overflow-scrolling: touch !important;
+}
+
+/* Permitir scroll no modal mesmo com body fixo */
+.futuristic-modal {
+  touch-action: pan-y;
+}
+
+.futuristic-content {
+  touch-action: pan-y;
+}
+
+/* Garantir que o body não role quando modal estiver aberto */
+body.modal-open * {
+  /* Prevenir scroll em todos os elementos filhos */
+  overflow: visible;
+}
+
+body.modal-open .futuristic-modal-overlay,
+body.modal-open .futuristic-content {
+  /* Permitir scroll apenas no modal */
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+}
+
+/* Forçar scroll em dispositivos touch */
+@media (hover: none) and (pointer: coarse) {
+  .futuristic-modal-overlay {
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  
+  .futuristic-modal {
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .futuristic-content {
+    overflow-y: scroll !important;
+    -webkit-overflow-scrolling: touch !important;
+    flex: 1;
+    min-height: 0;
+    max-height: none !important;
+    height: auto !important;
+  }
+}
+
+/* Overlay com efeito blur */
+.futuristic-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.7), rgba(28, 79, 82, 0.3));
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 20px;
+  animation: fadeIn 0.4s ease-out;
+  /* Garantir que o overlay seja scrollável se necessário */
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Modal principal */
+.futuristic-modal {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  width: 100%;
+  max-width: 480px;
+  height: auto;
+  max-height: 90vh;
+  min-height: 400px;
+  border-radius: 24px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 
+    0 25px 50px rgba(0, 0, 0, 0.25),
+    0 0 50px rgba(28, 79, 82, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  animation: slideInUp 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+  /* Garantir que o modal seja flexível */
+  flex: 0 1 auto;
+  /* Permitir scroll interno */
+  overflow: hidden;
+}
+
+@keyframes slideInUp {
+  from {
+    transform: translateY(50px) scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+/* Header com gradiente animado */
+.futuristic-header {
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.header-gradient {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, #1c4f52, #2563eb, #06b6d4);
+  background-size: 300% 300%;
+  animation: gradientShift 3s ease infinite;
+}
+
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+.header-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 28px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+.header-content h2 {
+  font-size: 20px;
+  font-weight: 700;
+  color: white;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.reserve-icon {
+  font-size: 24px;
+  animation: float 2s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-5px); }
+}
+
+.futuristic-close {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.futuristic-close:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+}
+
+.futuristic-close:active {
+  transform: scale(0.95);
+}
+
+.close-icon {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+/* Conteúdo principal */
+.futuristic-content {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 28px;
+  background: linear-gradient(180deg, rgba(248, 250, 252, 0.8), rgba(241, 245, 249, 0.6));
+  /* Garantir que o scroll funcione */
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(28, 79, 82, 0.3) transparent;
+  /* Forçar scroll no mobile */
+  min-height: 0;
+  max-height: none;
+  /* Garantir que o conteúdo seja scrollável */
+  height: 100%;
+  position: relative;
+}
+
+/* Customizar scrollbar para webkit */
+.futuristic-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.futuristic-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.futuristic-content::-webkit-scrollbar-thumb {
+  background: rgba(28, 79, 82, 0.3);
+  border-radius: 3px;
+}
+
+.futuristic-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(28, 79, 82, 0.5);
+}
+
+/* Card da propriedade */
+.property-card-futuristic {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  padding: 0;
+  margin-bottom: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.3s ease;
+}
+
+.property-card-futuristic:hover {
+  transform: translateY(-2px);
+}
+
+.property-image-container {
+  position: relative;
+  height: 160px;
+  overflow: hidden;
+}
+
+.property-image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.property-card-futuristic:hover .property-image-container img {
+  transform: scale(1.05);
+}
+
+.image-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, transparent, rgba(28, 79, 82, 0.3));
+}
+
+.status-badge-futuristic {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  padding: 8px 16px;
+  border-radius: 50px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #1c4f52;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  background: #10b981;
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.property-details {
+  padding: 20px;
+}
+
+.property-title-futuristic {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0 0 12px 0;
+  line-height: 1.3;
+}
+
+.property-location-futuristic {
+  color: #6b7280;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+}
+
+.location-icon {
+  font-size: 16px;
+}
+
+/* Grid de métricas */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.metric-card {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(15px);
+  border-radius: 16px;
+  padding: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.metric-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #1c4f52, #2563eb, #06b6d4);
+  background-size: 200% 100%;
+  animation: gradientMove 2s linear infinite;
+}
+
+@keyframes gradientMove {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.metric-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+}
+
+.metric-icon {
+  font-size: 28px;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #1c4f52, #2563eb);
+  border-radius: 12px;
+  color: white;
+  box-shadow: 0 4px 15px rgba(28, 79, 82, 0.3);
+}
+
+.metric-content {
+  flex: 1;
+}
+
+.metric-label {
+  display: block;
+  font-size: 14px;
+  color: #6b7280;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.metric-value {
+  display: block;
+  font-size: 18px;
+  font-weight: 700;
+  color: #1f2937;
+  background: linear-gradient(135deg, #1c4f52, #2563eb);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Descrição glassmorphism */
+.description-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px);
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+}
+
+.description-card h4 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0 0 12px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.section-icon {
+  font-size: 18px;
+}
+
+.description-card p {
+  font-size: 14px;
+  color: #6b7280;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Formulário futurista */
+.investment-form {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(20px);
+  border-radius: 16px;
+  padding: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+}
+
+.investment-form h4 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0 0 20px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.input-group {
+  margin-bottom: 20px;
+}
+
+.futuristic-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 8px;
+}
+
+.input-container {
+  position: relative;
+}
+
+.futuristic-input {
+  width: 100%;
+  padding: 16px 20px;
+  border: 2px solid rgba(229, 231, 235, 0.5);
+  border-radius: 12px;
+  font-size: 16px;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+  color: #1f2937;
+  font-weight: 500;
+}
+
+.futuristic-input:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 
+    0 0 0 4px rgba(37, 99, 235, 0.1),
+    0 8px 25px rgba(37, 99, 235, 0.15);
+  transform: translateY(-1px);
+}
+
+.input-highlight {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #1c4f52, #2563eb, #06b6d4);
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+  border-radius: 1px;
+}
+
+.futuristic-input:focus + .input-highlight {
+  transform: scaleX(1);
+}
+
+/* Total com efeito neon */
+.total-container {
+  margin-top: 24px;
+}
+
+.total-card {
+  background: linear-gradient(135deg, #1c4f52, #2563eb);
+  border-radius: 16px;
+  padding: 20px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 
+    0 10px 30px rgba(28, 79, 82, 0.3),
+    0 0 50px rgba(37, 99, 235, 0.2);
+}
+
+.total-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+.total-label {
+  display: block;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 500;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.total-value-neon {
+  display: block;
+  font-size: 28px;
+  font-weight: 800;
+  color: white;
+  text-shadow: 
+    0 0 10px rgba(255, 255, 255, 0.5),
+    0 0 20px rgba(255, 255, 255, 0.3);
+  animation: glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+  from { text-shadow: 0 0 10px rgba(255, 255, 255, 0.5), 0 0 20px rgba(255, 255, 255, 0.3); }
+  to { text-shadow: 0 0 15px rgba(255, 255, 255, 0.8), 0 0 30px rgba(255, 255, 255, 0.5); }
+}
+
+/* Botões dentro do conteúdo scrollável */
+.futuristic-buttons-container {
+  display: flex;
+  gap: 16px;
+  padding: 24px 0;
+  margin-top: 24px;
+  border-top: 1px solid rgba(28, 79, 82, 0.1);
+  background: transparent;
+}
+
+.btn-futuristic {
+  flex: 1;
+  padding: 16px 24px;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.btn-cancel {
+  background: rgba(255, 255, 255, 0.8);
+  color: #6b7280;
+  border: 2px solid rgba(229, 231, 235, 0.5);
+}
+
+.btn-cancel:hover {
+  background: rgba(255, 255, 255, 0.9);
+  color: #374151;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #1c4f52, #2563eb);
+  color: white;
+  border: 2px solid transparent;
+  box-shadow: 
+    0 8px 25px rgba(28, 79, 82, 0.3),
+    0 0 30px rgba(37, 99, 235, 0.2);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 
+    0 12px 35px rgba(28, 79, 82, 0.4),
+    0 0 40px rgba(37, 99, 235, 0.3);
+}
+
+.btn-primary:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.btn-primary:disabled {
+  background: linear-gradient(135deg, #9ca3af, #6b7280);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.btn-icon {
+  font-size: 18px;
+}
+
+.btn-ripple {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.btn-futuristic:active .btn-ripple {
+  width: 300px;
+  height: 300px;
+}
+
+.loading-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top: 2px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Responsividade */
+@media (max-width: 640px) {
+  .futuristic-modal-overlay {
+    padding: 10px;
+    align-items: flex-start;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    /* Forçar scroll no overlay se necessário */
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .futuristic-modal {
+    max-height: calc(100vh - 40px);
+    min-height: 300px;
+    border-radius: 20px;
+    margin: auto 0;
+    /* Garantir que o modal seja scrollável */
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .header-content {
+    padding: 20px 24px;
+  }
+
+  .header-content h2 {
+    font-size: 18px;
+  }
+
+  .futuristic-content {
+    padding: 20px 16px;
+    /* Forçar scroll no mobile */
+    overflow-y: scroll !important;
+    -webkit-overflow-scrolling: touch !important;
+    flex: 1;
+    min-height: 0;
+    max-height: none !important;
+    height: auto !important;
+    /* Garantir que o conteúdo seja visível */
+    position: relative;
+  }
+
+  .property-image-container {
+    height: 120px;
+  }
+
+  .metrics-grid {
+    gap: 12px;
+  }
+
+  .metric-card {
+    padding: 16px;
+  }
+
+  .metric-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 24px;
+  }
+
+  .metric-value {
+    font-size: 16px;
+  }
+
+  .total-value-neon {
+    font-size: 24px;
+  }
+
+  .futuristic-buttons-container {
+    padding: 20px 0;
+    margin-top: 20px;
+    gap: 12px;
+  }
+
+  .btn-futuristic {
+    padding: 14px 20px;
+    font-size: 15px;
+  }
+}
+
+@media (min-width: 640px) {
+  .metrics-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Telas muito pequenas */
+@media (max-width: 480px) {
+  .futuristic-modal-overlay {
+    padding: 8px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    /* Forçar scroll */
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  .futuristic-modal {
+    max-height: calc(100vh - 20px);
+    border-radius: 16px;
+    /* Garantir scroll */
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .futuristic-content {
+    padding: 16px 12px;
+    /* Forçar scroll */
+    overflow-y: scroll !important;
+    -webkit-overflow-scrolling: touch !important;
+    flex: 1;
+    min-height: 0;
+    max-height: none !important;
+    height: auto !important;
+  }
+
+  .property-image-container {
+    height: 100px;
+  }
+
+  .metric-card {
+    padding: 12px;
+  }
+
+  .metric-icon {
+    width: 36px;
+    height: 36px;
+    font-size: 20px;
+  }
+
+  .total-value-neon {
+    font-size: 20px;
+  }
+
+  .futuristic-buttons-container {
+    padding: 16px 0;
+    margin-top: 16px;
+  }
+
+  .btn-futuristic {
+    padding: 12px 16px;
+    font-size: 14px;
   }
 } 

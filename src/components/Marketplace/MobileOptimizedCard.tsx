@@ -1,9 +1,7 @@
 import React from "react";
 import type { Property } from "../../types/property";
 import { MapPin, DollarSign, TrendingUp, BarChart3, Eye, ShoppingCart } from "lucide-react";
-import { Badge } from "./Badge";
 import { useAppNavigate } from "../../hooks/useAppNavigate";
-import Button from "../Button/Button";
 
 type MobileOptimizedCardProps = {
   property: Property;

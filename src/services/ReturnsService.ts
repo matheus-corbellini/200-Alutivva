@@ -1,4 +1,4 @@
-import { getFirestore, collection, getDocs, query, where, orderBy } from "firebase/firestore";
+import { getFirestore, collection, getDocs, query, where } from "firebase/firestore";
 import app from "../lib/firebaseConfig";
 
 export interface ReturnRecord {

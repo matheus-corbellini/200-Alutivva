@@ -1,4 +1,4 @@
-import { getFirestore, collection, getDocs, query, where, orderBy, addDoc, updateDoc, deleteDoc, doc, serverTimestamp } from "firebase/firestore";
+import { getFirestore, collection, getDocs, query, where, addDoc, updateDoc, deleteDoc, doc, serverTimestamp } from "firebase/firestore";
 import app from "../lib/firebaseConfig";
 
 export type QuotaStatus = "available" | "reserved" | "sold" | "blocked";
